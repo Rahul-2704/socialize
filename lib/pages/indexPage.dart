@@ -8,9 +8,45 @@ class IndexPage extends StatefulWidget {
 }
 
 class _IndexPageState extends State<IndexPage> {
+
+  bool showSplash = true;
+  LoadHome(){
+    Future.delayed(Duration(seconds: 3), () {
+      setState(() {
+        showSplash = false;
+      });
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    LoadHome();
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return showSplash ? Scaffold(
+      body: Container(
+        decoration: BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage('images/indexBackground.jpg'),
+            fit: BoxFit.cover,
+          ),
+        ),
+        child: Center(
+          child: Container(
+            child: Padding(
+              padding: const EdgeInsets.only(top: 5),
+              child: Image(
+                height: 80,
+                image: AssetImage('images/logo.png'),
+              ),
+            ),
+          ),
+        ),
+      ),
+    ) : Scaffold(
       body: Container(
         decoration: BoxDecoration(
           image: DecorationImage(
@@ -107,6 +143,35 @@ class _IndexPageState extends State<IndexPage> {
                 ),
               ),
             ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class SplashHome extends StatelessWidget {
+  const SplashHome({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Container(
+        decoration: BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage('images/indexBackground.jpg'),
+            fit: BoxFit.cover,
+          ),
+        ),
+        child: Center(
+          child: Container(
+            child: Padding(
+              padding: const EdgeInsets.only(top: 5),
+              child: Image(
+                height: 80,
+                image: AssetImage('images/logo.png'),
+              ),
+            ),
           ),
         ),
       ),

@@ -1,10 +1,8 @@
-import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
 class BioData extends StatefulWidget {
   const BioData({Key? key}) : super(key: key);
-
   @override
   State<BioData> createState() => _BioDataState();
 }
@@ -152,7 +150,7 @@ class _BioDataState extends State<BioData> {
               child: Icon(
                 Icons.camera_alt,
                 color: Colors.teal,
-                size: 28,
+                size: 30,
               ),
             ),
           ),
@@ -174,7 +172,8 @@ class _BioDataState extends State<BioData> {
           Text(
             'Choose Profile Photo',
             style: TextStyle(
-              fontSize: 20,
+              fontSize: 23,
+              fontWeight: FontWeight.w400,
             ),
           ),
           SizedBox(height: 20,),
@@ -185,22 +184,24 @@ class _BioDataState extends State<BioData> {
                 onPressed: () {
                   takePhoto(ImageSource.camera);
                 },
-                label: Text('Camera'),
+                label: Text('Camera', style: TextStyle(fontSize: 20,),),
                 icon: Icon(
                   Icons.camera,
+                  size: 27,
                 ),
               ),
               TextButton.icon(
                 onPressed: () {
                   takePhoto(ImageSource.gallery);
                 },
-                label: Text('Gallery'),
+                label: Text('Gallery', style: TextStyle(fontSize: 20,),),
                 icon: Icon(
                   Icons.image,
+                  size: 27,
                 ),
               ),
             ],
-          )
+          ),
         ],
       ),
     );

@@ -9,7 +9,7 @@ class ChooseInterest extends StatefulWidget {
 }
 
 class _ChooseInterestState extends State<ChooseInterest> {
-  List<Scroll> interests=[
+  List<Scroll> interests = [
     Scroll("Acting", false),
     Scroll("Agriculture", false),
     Scroll("Animals", false),
@@ -69,7 +69,7 @@ class _ChooseInterestState extends State<ChooseInterest> {
               fit: BoxFit.cover,
             ),
           ),
-        child: Center(
+          child: Center(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
@@ -87,7 +87,7 @@ class _ChooseInterestState extends State<ChooseInterest> {
                   ),
                 ),
                 SizedBox(
-                  height: 600,
+                  height: 640,
                   child: Container(
                     child: ListView.builder(
                       itemCount: interests.length,
@@ -124,17 +124,8 @@ class _ChooseInterestState extends State<ChooseInterest> {
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: ElevatedButton(
-        onPressed: () {  },
+        onPressed: () {},
         child: ListTile(
-          title: Padding(
-            padding: const EdgeInsets.only(left: 20.0),
-            child: Text(
-              name,
-              style: TextStyle(
-                fontSize: 20,
-              ),
-            ),
-          ),
           trailing: isSelected ?
           Padding(
             padding: const EdgeInsets.only(right: 20.0),
@@ -148,6 +139,15 @@ class _ChooseInterestState extends State<ChooseInterest> {
             child: Icon(
               Icons.check_circle_outline,
               color: Colors.grey,
+            ),
+          ),
+          title: Padding(
+            padding: const EdgeInsets.only(left: 20.0),
+            child: Text(
+              name,
+              style: TextStyle(
+                fontSize: 20,
+              ),
             ),
           ),
           onTap: (){

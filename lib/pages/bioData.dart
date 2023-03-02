@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:socialize/pages/interest.dart';
 
 class BioData extends StatefulWidget {
   const BioData({Key? key}) : super(key: key);
@@ -59,7 +60,10 @@ class _BioDataState extends State<BioData> {
                 height: 45,
                 width: 350,
                 child: ElevatedButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.pushReplacement(context,
+                        MaterialPageRoute(builder: (BuildContext context) => ChooseInterest(),));
+                  },
                   child: Text(
                     'Submit',
                     style: TextStyle(

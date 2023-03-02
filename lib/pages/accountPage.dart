@@ -1,4 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:socialize/pages/feedPage.dart';
+import 'package:socialize/pages/requestPage.dart';
+
+import '../news/newsPage.dart';
+import 'addPost.dart';
 
 class MyAccount extends StatefulWidget {
   const MyAccount({Key? key}) : super(key: key);
@@ -24,6 +29,7 @@ class _MyAccountState extends State<MyAccount> {
               ),
             ),
             child: AppBar(
+              automaticallyImplyLeading: false,
               backgroundColor: mode ? Colors.black : Colors.white,
               elevation: 0,
               title: Padding(
@@ -227,39 +233,54 @@ class _MyAccountState extends State<MyAccount> {
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: <Widget>[
                 IconButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.pushReplacement(context,
+                        MaterialPageRoute(builder: (BuildContext context) => FeedPage(),));
+                  },
                   icon: Icon(
-                    Icons.home,
-                    color: mode ? Colors.white : Colors.black,
+                    Icons.home_outlined,
+                    color: mode ? Colors.white54 : Colors.grey[700],
                     size: 35,
                   ),
                 ),
                 IconButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.pushReplacement(context,
+                        MaterialPageRoute(builder: (BuildContext context) => NewsScreen(),));
+                  },
                   icon: Icon(
                     Icons.search,
-                    color: mode ? Colors.white : Colors.black,
+                    color: mode ? Colors.white54 : Colors.grey[700],
                     size: 35,
                   ),
                 ),
                 IconButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.pushReplacement(context,
+                        MaterialPageRoute(builder: (BuildContext context) => AddPost(),));
+                  },
                   icon: Icon(
                     Icons.add,
-                    color: mode ? Colors.white : Colors.black,
+                    color: mode ? Colors.white54 : Colors.grey[700],
                     size: 35,
                   ),
                 ),
                 IconButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.pushReplacement(context,
+                        MaterialPageRoute(builder: (BuildContext context) => RequestPage(),));
+                  },
                   icon: Icon(
                     Icons.favorite_border,
-                    color: mode ? Colors.white : Colors.black,
+                    color: mode ? Colors.white54 : Colors.grey[700],
                     size: 35,
                   ),
                 ),
                 IconButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.pushReplacement(context,
+                        MaterialPageRoute(builder: (BuildContext context) => MyAccount(),));
+                  },
                   icon: Icon(
                     Icons.person_outline_outlined,
                     color: mode ? Colors.white : Colors.black,

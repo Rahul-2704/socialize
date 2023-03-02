@@ -6,26 +6,29 @@ import 'package:socialize/pages/register.dart';
 import 'package:socialize/pages/bioData.dart';
 import 'package:socialize/pages/interest.dart';
 import 'package:socialize/pages/requestPage.dart';
-import 'package:socialize/pages/searchNews.dart';
+import 'package:socialize/news/searchNews.dart';
 import 'package:socialize/pages/accountPage.dart';
-import 'package:socialize/views/home.dart';
+import 'package:socialize/news/newsPage.dart';
+import 'package:socialize/pages/feedPage.dart';
 
 void main() {
+  bool mode=false;
   runApp(MaterialApp(
     debugShowCheckedModeBanner: false,
     routes: {
-      // '/': (context) => HomeScreen(),
-      '/':(context) => IndexPage(),
+      '/': (context) => IndexPage(),
+      // '/':(context) => IndexPage(),
       '/indexPage': (context) => IndexPage(),
       '/register': (context) => RegisterPage(),
       '/interest': (context) => ChooseInterest(),
       '/bioData': (context) => BioData(),
       '/login': (context) => LoginPage(),
+      '/feedPage': (context) => FeedPage(),
       '/searchNews': (context) => SearchNews(),
       '/accountPage': (context) => MyAccount(),
       '/friendPage': (context) => FriendPage(),
       '/requestPage': (context) => RequestPage(),
-      '/home': (context) => HomeScreen(),
+      '/home': (context) => NewsScreen(),
     },
   ));
 }

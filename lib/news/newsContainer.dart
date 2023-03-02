@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:socialize/views/detailView.dart';
+import 'package:socialize/news/detailView.dart';
 
 class NewsContainer extends StatelessWidget {
   String imgUrl;
@@ -15,7 +15,7 @@ class NewsContainer extends StatelessWidget {
     required this.newsContent,
     required this.newsUrl,
   });
-
+  bool mode=false;
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -27,7 +27,7 @@ class NewsContainer extends StatelessWidget {
           FadeInImage.assetNetwork(
             placeholder: "images/breaking-news.png",
             image: imgUrl,
-            height: 400,
+            height: 300,
             width: MediaQuery.of(context).size.width,
             fit: BoxFit.cover,
           ),
@@ -39,7 +39,7 @@ class NewsContainer extends StatelessWidget {
                 children: <Widget>[
                   SizedBox(height: 20),
                   Text(
-                    newsHead.length < 90 ? newsHead : "${newsHead.substring(0, 90)}...",
+                    newsHead.length < 75 ? newsHead : "${newsHead.substring(0, 75)}...",
                     style: TextStyle(
                       fontSize: 23,
                       fontWeight: FontWeight.bold,
@@ -50,7 +50,7 @@ class NewsContainer extends StatelessWidget {
                     newsDescription,
                     style: TextStyle(
                       fontSize: 12,
-                      color: Colors.grey,
+                      color: mode ? Colors.black : Colors.white,
                     ),
                   ),
                   SizedBox(height: 20),

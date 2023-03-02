@@ -1,19 +1,37 @@
 import 'package:flutter/material.dart';
+import 'package:socialize/news/fetchNews.dart';
+import 'package:socialize/news/newsArt.dart';
+import 'package:socialize/news/newsContainer.dart';
 
-import '../news/newsPage.dart';
-import 'accountPage.dart';
-import 'addPost.dart';
-import 'feedPage.dart';
+import '../pages/accountPage.dart';
+import '../pages/addPost.dart';
+import '../pages/feedPage.dart';
+import '../pages/requestPage.dart';
 
-class RequestPage extends StatefulWidget {
-  const RequestPage({Key? key}) : super(key: key);
+class NewsScreen extends StatefulWidget {
+  const NewsScreen({Key? key}) : super(key: key);
 
   @override
-  State<RequestPage> createState() => _RequestPageState();
+  State<NewsScreen> createState() => _NewsScreenState();
 }
 
-class _RequestPageState extends State<RequestPage> {
+class _NewsScreenState extends State<NewsScreen> {
+  bool isLoading = true;
   bool mode = false;
+  late NewsArt newsArt;
+  GetNews() async{
+    newsArt = await FetchNews.fetchNews();
+    setState(() {
+      isLoading = false;
+    });
+  }
+
+  @override
+  void initState() {
+    GetNews();
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -34,7 +52,7 @@ class _RequestPageState extends State<RequestPage> {
             title: Padding(
               padding: const EdgeInsets.all(12.0),
               child: Text(
-                'Notifications',
+                'User1',
                 style: TextStyle(
                   fontWeight: FontWeight.bold,
                   color: mode ? Colors.white : Colors.black,
@@ -42,6 +60,14 @@ class _RequestPageState extends State<RequestPage> {
               ),
             ),
             actions: [
+              IconButton(
+                onPressed: () {},
+                icon: Icon(
+                  Icons.add_box_outlined,
+                  color: mode ? Colors.white : Colors.black,
+                  size: 25,
+                ),
+              ),
               IconButton(
                 onPressed: () {
                   setState(() {
@@ -57,17 +83,24 @@ class _RequestPageState extends State<RequestPage> {
           ),
         ),
       ),
-      body: Container(
-        color: mode ? Colors.grey[850] : Colors.white,
-        child: Padding(
-          padding: const EdgeInsets.all(15.0),
-          child: ListView(
-            children: <Widget>[
-              nameTextField(),
-            ],
-          ),
-        ),
-      ),
+      body: PageView.builder(
+        controller: PageController(initialPage: 0),
+        scrollDirection: Axis.vertical,
+        onPageChanged: (value){
+          setState(() {
+            isLoading = true;
+          });
+          GetNews();
+        },
+        itemBuilder: (context, index){
+          return isLoading ? Center(child: CircularProgressIndicator(),) : NewsContainer(
+            imgUrl: newsArt.imgUrl,
+            newsHead: newsArt.newsHead,
+            newsDescription: newsArt.newsDescription,
+            newsContent: newsArt.newsContent,
+            newsUrl: newsArt.newsUrl,
+          );
+      }),
       bottomNavigationBar: BottomAppBar(
         color: mode ? Colors.grey[800] : Colors.white,
         child: Padding(
@@ -95,7 +128,7 @@ class _RequestPageState extends State<RequestPage> {
                 },
                 icon: Icon(
                   Icons.search,
-                  color: mode ? Colors.white54 : Colors.grey[700],
+                  color: mode ? Colors.white : Colors.black,
                   size: 35,
                 ),
               ),
@@ -117,7 +150,7 @@ class _RequestPageState extends State<RequestPage> {
                 },
                 icon: Icon(
                   Icons.favorite_border,
-                  color: mode ? Colors.white : Colors.black,
+                  color: mode ? Colors.white54 : Colors.grey[700],
                   size: 35,
                 ),
               ),
@@ -134,36 +167,6 @@ class _RequestPageState extends State<RequestPage> {
               ),
             ],
           ),
-        ),
-      ),
-    );
-  }
-  Widget nameTextField(){
-    return TextFormField(
-      decoration: InputDecoration(
-        enabledBorder: OutlineInputBorder(
-          borderSide: BorderSide(
-            color: mode ? Colors.grey : Colors.black,
-            width: 2,
-          ),
-        ),
-        focusedBorder: OutlineInputBorder(
-          borderSide: BorderSide(
-            color: mode ? Colors.grey : Colors.black,
-            width: 2,
-          ),
-        ),
-        prefixIcon: Icon(
-          Icons.search,
-          color: mode ? Colors.grey : Colors.black,
-        ),
-        labelText: 'Search ',
-        hintText: 'Search ',
-        labelStyle: TextStyle(
-          color: mode ? Colors.grey : Colors.black,
-        ),
-        hintStyle: TextStyle(
-          color: mode ? Colors.grey : Colors.black,
         ),
       ),
     );

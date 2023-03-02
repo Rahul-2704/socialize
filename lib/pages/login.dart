@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-
+import 'package:socialize/pages/register.dart';
+import 'package:socialize/pages/feedPage.dart';
 class LoginPage extends StatefulWidget {
   const LoginPage({Key? key}) : super(key: key);
 
@@ -108,7 +109,10 @@ class _LoginPageState extends State<LoginPage> {
                 width: 350,
                 height: 60,
                 child: ElevatedButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.pushReplacement(context,
+                        MaterialPageRoute(builder: (BuildContext context) => FeedPage(),));
+                  },
                   child: Text(
                     'Log In',
                     style: TextStyle(
@@ -130,7 +134,9 @@ class _LoginPageState extends State<LoginPage> {
                   ),
                   TextButton(
                     onPressed: () {
-                      Navigator.pushNamed(context, '/register');
+                      // Navigator.pushNamed(context, '/register');
+                      Navigator.pushReplacement(context,
+                          MaterialPageRoute(builder: (BuildContext context) => RegisterPage(),));
                     },
                     child: Text(
                       'Sign In',

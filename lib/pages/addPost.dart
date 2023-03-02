@@ -1,19 +1,21 @@
 import 'package:flutter/material.dart';
+import 'package:socialize/pages/accountPage.dart';
+import 'package:socialize/pages/requestPage.dart';
+import 'package:socialize/news/newsPage.dart';
 
-import '../news/newsPage.dart';
-import 'accountPage.dart';
-import 'addPost.dart';
 import 'feedPage.dart';
 
-class RequestPage extends StatefulWidget {
-  const RequestPage({Key? key}) : super(key: key);
+class AddPost extends StatefulWidget {
+  const AddPost({Key? key}) : super(key: key);
 
   @override
-  State<RequestPage> createState() => _RequestPageState();
+  State<AddPost> createState() => _AddPostState();
 }
 
-class _RequestPageState extends State<RequestPage> {
+class _AddPostState extends State<AddPost> {
   bool mode = false;
+  bool request = true;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -32,9 +34,9 @@ class _RequestPageState extends State<RequestPage> {
             backgroundColor: mode ? Colors.black : Colors.white,
             elevation: 0,
             title: Padding(
-              padding: const EdgeInsets.all(12.0),
+              padding: const EdgeInsets.all(15.0),
               child: Text(
-                'Notifications',
+                'Socialize',
                 style: TextStyle(
                   fontWeight: FontWeight.bold,
                   color: mode ? Colors.white : Colors.black,
@@ -57,17 +59,18 @@ class _RequestPageState extends State<RequestPage> {
           ),
         ),
       ),
+      // appBar: AppBar(
+      //   backgroundColor: Colors.teal,
+      // ),
       body: Container(
-        color: mode ? Colors.grey[850] : Colors.white,
-        child: Padding(
-          padding: const EdgeInsets.all(15.0),
-          child: ListView(
-            children: <Widget>[
-              nameTextField(),
-            ],
+        decoration: BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage('images/indexBackground.jpg'),
+            fit: BoxFit.cover,
           ),
         ),
       ),
+
       bottomNavigationBar: BottomAppBar(
         color: mode ? Colors.grey[800] : Colors.white,
         child: Padding(
@@ -106,7 +109,7 @@ class _RequestPageState extends State<RequestPage> {
                 },
                 icon: Icon(
                   Icons.add,
-                  color: mode ? Colors.white54 : Colors.grey[700],
+                  color: mode ? Colors.white : Colors.black,
                   size: 35,
                 ),
               ),
@@ -117,7 +120,7 @@ class _RequestPageState extends State<RequestPage> {
                 },
                 icon: Icon(
                   Icons.favorite_border,
-                  color: mode ? Colors.white : Colors.black,
+                  color: mode ? Colors.white54 : Colors.grey[700],
                   size: 35,
                 ),
               ),
@@ -134,36 +137,6 @@ class _RequestPageState extends State<RequestPage> {
               ),
             ],
           ),
-        ),
-      ),
-    );
-  }
-  Widget nameTextField(){
-    return TextFormField(
-      decoration: InputDecoration(
-        enabledBorder: OutlineInputBorder(
-          borderSide: BorderSide(
-            color: mode ? Colors.grey : Colors.black,
-            width: 2,
-          ),
-        ),
-        focusedBorder: OutlineInputBorder(
-          borderSide: BorderSide(
-            color: mode ? Colors.grey : Colors.black,
-            width: 2,
-          ),
-        ),
-        prefixIcon: Icon(
-          Icons.search,
-          color: mode ? Colors.grey : Colors.black,
-        ),
-        labelText: 'Search ',
-        hintText: 'Search ',
-        labelStyle: TextStyle(
-          color: mode ? Colors.grey : Colors.black,
-        ),
-        hintStyle: TextStyle(
-          color: mode ? Colors.grey : Colors.black,
         ),
       ),
     );

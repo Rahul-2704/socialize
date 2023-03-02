@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:socialize/pages/scroll.dart';
 
+import 'feedPage.dart';
+
 class ChooseInterest extends StatefulWidget {
   const ChooseInterest({Key? key}) : super(key: key);
 
@@ -87,7 +89,7 @@ class _ChooseInterestState extends State<ChooseInterest> {
                   ),
                 ),
                 SizedBox(
-                  height: 640,
+                  height: 580,
                   child: Container(
                     child: ListView.builder(
                       itemCount: interests.length,
@@ -97,11 +99,30 @@ class _ChooseInterestState extends State<ChooseInterest> {
                     ),
                   ),
                 ),
+                Padding(
+                  padding: EdgeInsets.only(left: 230),
+                  child: TextButton(
+                    onPressed: (){
+                      Navigator.pushReplacement(context,
+                          MaterialPageRoute(builder: (BuildContext context) => FeedPage(),));
+                    },
+                    child: Text(
+                      'Skip>>',
+                      style: TextStyle(
+                        color: Colors.grey[650],
+                        fontSize: 15,
+                      ),
+                    ),
+                  ),
+                ),
                 SizedBox(
                   width: 350,
                   height: 50,
                   child: ElevatedButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      Navigator.pushReplacement(context,
+                          MaterialPageRoute(builder: (BuildContext context) => FeedPage(),));
+                    },
                     child: Text(
                       'Continue',
                       style: TextStyle(

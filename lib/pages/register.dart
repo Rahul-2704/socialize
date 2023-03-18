@@ -1,5 +1,7 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:socialize/pages/bioData.dart';
+
 class RegisterPage extends StatefulWidget {
   const RegisterPage({Key? key}) : super(key: key);
 
@@ -10,10 +12,26 @@ class RegisterPage extends StatefulWidget {
 class _RegisterPageState extends State<RegisterPage> {
   bool passwordVisible = true;
   bool passwordVisible1 = true;
-  late String _firstname,_lastname,_email,_dob;
-  TextEditingController _password = TextEditingController();
-  TextEditingController _confirmpassword = TextEditingController();
+  late String _firstname, _lastname, _email, _dob;
+  final _firstnameController = TextEditingController();
+  final _lastnameController = TextEditingController();
+  final _emailController = TextEditingController();
+  final _dobController = TextEditingController();
+  final _password = TextEditingController();
+  final _confirmpassword = TextEditingController();
   final GlobalKey<FormState> _fk = GlobalKey<FormState>();
+
+  @override
+  void dispose(){
+    _emailController.dispose();
+    _password.dispose();
+    super.dispose();
+  }
+
+  Future signUp() async{
+    await FirebaseAuth.instance.createUserWithEmailAndPassword(email: _emailController.text.trim(), password: _password.text.trim());
+  }
+
   void validateAndSave() {
     final FormState? form = _fk.currentState;
     if (form!.validate()) {
@@ -27,11 +45,11 @@ class _RegisterPageState extends State<RegisterPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // resizeToAvoidBottomInset : false,
       appBar: AppBar(
         backgroundColor: Colors.teal,
       ),
       body: Container(
+        height : MediaQuery.of(context).size.height,
         decoration: BoxDecoration(
           image: DecorationImage(
             image: AssetImage('images/indexBackground.jpg'),
@@ -43,9 +61,11 @@ class _RegisterPageState extends State<RegisterPage> {
             key: _fk,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: <Widget>[
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: <Widget>[
                     Container(
                       child: Padding(
@@ -77,14 +97,13 @@ class _RegisterPageState extends State<RegisterPage> {
                     ),
                   ),
                 ),
-                SizedBox(height: 20,),
+                SizedBox(height: 15,),
                 SizedBox(
                   width: 350,
                   height:80,
                   child: Padding(
                     padding: const EdgeInsets.all(1.0),
                     child: TextFormField(
-                      // decoration: buildInputDecoration(Icons.person,'First name'),
                       keyboardType: TextInputType.text,
                       decoration: InputDecoration(
                         enabledBorder: OutlineInputBorder(
@@ -93,7 +112,6 @@ class _RegisterPageState extends State<RegisterPage> {
                         filled: true,
                         fillColor: Colors.white,
                         hintText: 'First Name',
-                        // labelText: 'First Name',
                         prefixIcon: Padding(
                           padding: EdgeInsets.only(top: 10),
                           child: Icon(
@@ -103,7 +121,7 @@ class _RegisterPageState extends State<RegisterPage> {
                       ),
                       validator: (value) => value!.isEmpty ? 'First Name cannot be blank':null,
                       onSaved: (firstname){
-                        _firstname=firstname!;
+                        _firstname = firstname!;
                       },
                     ),
                   ),
@@ -115,7 +133,6 @@ class _RegisterPageState extends State<RegisterPage> {
                   child: Padding(
                     padding: const EdgeInsets.all(1.0),
                     child: TextFormField(
-                      // decoration: buildInputDecoration(Icons.person,'First name'),
                       keyboardType: TextInputType.text,
                       decoration: InputDecoration(
                           enabledBorder: OutlineInputBorder(
@@ -124,7 +141,6 @@ class _RegisterPageState extends State<RegisterPage> {
                           filled: true,
                           fillColor: Colors.white,
                           hintText: 'Last Name',
-                          // labelText: 'Last Name',
                           prefixIcon: Padding(
                             padding: EdgeInsets.only(top: 10),
                             child: Icon(
@@ -134,29 +150,12 @@ class _RegisterPageState extends State<RegisterPage> {
                       ),
                       validator: (value) => value!.isEmpty ? 'Last Name cannot be blank':null,
                       onSaved: (lastname){
-                        _lastname=lastname!;
+                        _lastname = lastname!;
                       },
                     ),
                   ),
                 ),
                 SizedBox(height: 3,),
-                // SizedBox(
-                //   width: 350,
-                //   height:60,
-                //   child: TextField(
-                //     decoration: InputDecoration(
-                //       enabledBorder: OutlineInputBorder(
-                //         borderRadius: BorderRadius.circular(10),
-                //       ),
-                //       filled: true,
-                //       fillColor: Colors.white,
-                //       hintText: 'Last Name',
-                //       labelText: 'Last Name',
-                //     ),
-                //   ),
-                // ),
-                // SizedBox(height: 10,),
-
                 SizedBox(
                   width: 350,
                   height:80,
@@ -171,7 +170,6 @@ class _RegisterPageState extends State<RegisterPage> {
                         filled: true,
                         fillColor: Colors.white,
                         hintText: 'DD/MM/YYYY',
-                        // labelText: 'Date of Birth',
                           prefixIcon: Padding(
                             padding: EdgeInsets.only(top: 1),
                             child: Icon(
@@ -181,7 +179,7 @@ class _RegisterPageState extends State<RegisterPage> {
                       ),
                       validator: (value) => value!.isEmpty ? 'Please enter date of birth':null,
                       onSaved: (dob){
-                        _dob=dob!;
+                        _dob = dob!;
                       },
                     ),
                   ),
@@ -193,6 +191,7 @@ class _RegisterPageState extends State<RegisterPage> {
                   child: Padding(
                     padding: const EdgeInsets.only(bottom: 5),
                     child: TextFormField(
+                      controller: _emailController,
                       decoration: InputDecoration(
                         enabledBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(10),
@@ -200,7 +199,6 @@ class _RegisterPageState extends State<RegisterPage> {
                         filled: true,
                         fillColor: Colors.white,
                         hintText: 'Email',
-                        //labelText: 'Email',
                           prefixIcon: Padding(
                             padding: EdgeInsets.only(top:1),
                             child: Icon(
@@ -240,7 +238,6 @@ class _RegisterPageState extends State<RegisterPage> {
                         filled: true,
                         fillColor: Colors.white,
                         hintText: 'Create Password',
-                        // labelText: 'Create Password',
                         suffixIcon: IconButton(
                           icon: Icon(passwordVisible ? Icons.visibility_off : Icons.visibility),
                           onPressed: () {
@@ -250,8 +247,7 @@ class _RegisterPageState extends State<RegisterPage> {
                           },
                         ),
                       ),
-                      validator: (value) =>  value!.isEmpty ? 'Enter Password':null,
-
+                      validator: (value) =>  value!.isEmpty ? 'Enter Password' : null,
                     ),
                   ),
                 ),
@@ -299,12 +295,10 @@ class _RegisterPageState extends State<RegisterPage> {
                   width: 350,
                   height: 50,
                   child: ElevatedButton(
-                    onPressed: validateAndSave,
-                    // onPressed:(){
-                    //   validateAndSave();
-                    //   Navigator.pushReplacement(context,
-                    //       MaterialPageRoute(builder: (BuildContext context) => BioData(),));
-                    // },
+                    onPressed: () {
+                      validateAndSave();
+                      signUp();
+                    },
                     child: Text(
                       'Sign Up',
                     ),

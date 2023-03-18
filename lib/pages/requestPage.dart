@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-
-import '../news/newsPage.dart';
-import 'accountPage.dart';
-import 'addPost.dart';
-import 'feedPage.dart';
+import 'package:socialize/news/newsPage.dart';
+import 'package:socialize/pages/accountPage.dart';
+import 'package:socialize/pages/addPost.dart';
+import 'package:socialize/pages/feedPage.dart';
+import 'globals.dart';
 
 class RequestPage extends StatefulWidget {
   const RequestPage({Key? key}) : super(key: key);
@@ -13,7 +13,6 @@ class RequestPage extends StatefulWidget {
 }
 
 class _RequestPageState extends State<RequestPage> {
-  bool mode = false;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -41,19 +40,6 @@ class _RequestPageState extends State<RequestPage> {
                 ),
               ),
             ),
-            actions: [
-              IconButton(
-                onPressed: () {
-                  setState(() {
-                    mode = !mode;
-                  });
-                },
-                icon: Icon(
-                  mode ? Icons.light_mode : Icons.dark_mode,
-                  color: mode ? Colors.white : Colors.black,
-                ),
-              ),
-            ],
           ),
         ),
       ),

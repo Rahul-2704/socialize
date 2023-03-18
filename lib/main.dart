@@ -10,14 +10,17 @@ import 'package:socialize/news/searchNews.dart';
 import 'package:socialize/pages/accountPage.dart';
 import 'package:socialize/news/newsPage.dart';
 import 'package:socialize/pages/feedPage.dart';
+import 'package:socialize/pages/globals.dart' as globals;
+import 'package:firebase_core/firebase_core.dart';
 
-void main() {
-  bool mode=false;
+void main() async{
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
+  globals.mode = false;
   runApp(MaterialApp(
     debugShowCheckedModeBanner: false,
     routes: {
       '/': (context) => IndexPage(),
-      // '/':(context) => IndexPage(),
       '/indexPage': (context) => IndexPage(),
       '/register': (context) => RegisterPage(),
       '/interest': (context) => ChooseInterest(),

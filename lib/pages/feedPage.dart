@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:socialize/pages/accountPage.dart';
 import 'package:socialize/pages/requestPage.dart';
 import 'package:socialize/news/newsPage.dart';
-
-import 'addPost.dart';
+import 'package:socialize/pages/addPost.dart';
+import 'globals.dart';
 
 class FeedPage extends StatefulWidget {
   const FeedPage({Key? key}) : super(key: key);
@@ -13,7 +13,6 @@ class FeedPage extends StatefulWidget {
 }
 
 class _FeedPageState extends State<FeedPage> {
-  bool mode = false;
   bool request = true;
 
   @override
@@ -43,19 +42,6 @@ class _FeedPageState extends State<FeedPage> {
                 ),
               ),
             ),
-            actions: [
-              IconButton(
-                onPressed: () {
-                  setState(() {
-                    mode = !mode;
-                  });
-                },
-                icon: Icon(
-                  mode ? Icons.light_mode : Icons.dark_mode,
-                  color: mode ? Colors.white : Colors.black,
-                ),
-              ),
-            ],
           ),
         ),
       ),

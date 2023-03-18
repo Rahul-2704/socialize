@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:socialize/news/fetchNews.dart';
 import 'package:socialize/news/newsArt.dart';
 import 'package:socialize/news/newsContainer.dart';
-
-import '../pages/accountPage.dart';
-import '../pages/addPost.dart';
-import '../pages/feedPage.dart';
-import '../pages/requestPage.dart';
+import 'package:socialize/pages/accountPage.dart';
+import 'package:socialize/pages/addPost.dart';
+import 'package:socialize/pages/feedPage.dart';
+import 'package:socialize/pages/requestPage.dart';
+import 'package:socialize/pages/globals.dart';
 
 class NewsScreen extends StatefulWidget {
   const NewsScreen({Key? key}) : super(key: key);
@@ -17,7 +17,6 @@ class NewsScreen extends StatefulWidget {
 
 class _NewsScreenState extends State<NewsScreen> {
   bool isLoading = true;
-  bool mode = false;
   late NewsArt newsArt;
   GetNews() async{
     newsArt = await FetchNews.fetchNews();
@@ -59,27 +58,6 @@ class _NewsScreenState extends State<NewsScreen> {
                 ),
               ),
             ),
-            actions: [
-              IconButton(
-                onPressed: () {},
-                icon: Icon(
-                  Icons.add_box_outlined,
-                  color: mode ? Colors.white : Colors.black,
-                  size: 25,
-                ),
-              ),
-              IconButton(
-                onPressed: () {
-                  setState(() {
-                    mode = !mode;
-                  });
-                },
-                icon: Icon(
-                  mode ? Icons.light_mode : Icons.dark_mode,
-                  color: mode ? Colors.white : Colors.black,
-                ),
-              ),
-            ],
           ),
         ),
       ),

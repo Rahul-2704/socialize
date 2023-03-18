@@ -137,9 +137,9 @@ class _BioDataState extends State<BioData> {
         children: <Widget>[
           CircleAvatar(
             radius: 80,
-            backgroundImage: // _imageFile == null ?
-            AssetImage('images/profilePicture.png')
-            // : FileImage(File(_imageFile.path)),
+            // backgroundImage: _imageFile == null ?
+            // Image.asset('images/profilePicture.png').image
+            //  : null,
           ),
           Positioned(
             bottom: 20,
@@ -186,7 +186,7 @@ class _BioDataState extends State<BioData> {
             children: <Widget>[
               TextButton.icon(
                 onPressed: () {
-                  takePhoto(ImageSource.camera);
+                  // takePhoto(ImageSource.camera);
                 },
                 label: Text('Camera', style: TextStyle(fontSize: 20,),),
                 icon: Icon(
@@ -196,7 +196,7 @@ class _BioDataState extends State<BioData> {
               ),
               TextButton.icon(
                 onPressed: () {
-                  takePhoto(ImageSource.gallery);
+                  // takePhoto(ImageSource.gallery);
                 },
                 label: Text('Gallery', style: TextStyle(fontSize: 20,),),
                 icon: Icon(
@@ -211,12 +211,12 @@ class _BioDataState extends State<BioData> {
     );
   }
 
-  void takePhoto(ImageSource source) async{
-    final pickedFile = await picker.getImage(
-      source: source,
-    );
-    setState(() {
-      _imageFile = pickedFile!;
-    });
-  }
+  // void takePhoto(ImageSource source) async{
+  //   final pickedFile = await picker.getImage(
+  //     source: source,
+  //   );
+  //   setState(() {
+  //     _imageFile = pickedFile!;
+  //   });
+  // }
 }

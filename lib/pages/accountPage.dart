@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:socialize/pages/feedPage.dart';
 import 'package:socialize/pages/requestPage.dart';
-
-import '../news/newsPage.dart';
-import 'addPost.dart';
+import 'package:socialize/news/newsPage.dart';
+import 'package:socialize/pages/addPost.dart';
+import 'package:socialize/pages/globals.dart';
 
 class MyAccount extends StatefulWidget {
   const MyAccount({Key? key}) : super(key: key);
@@ -12,7 +12,6 @@ class MyAccount extends StatefulWidget {
 }
 
 class _MyAccountState extends State<MyAccount> {
-  bool mode = false;
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(

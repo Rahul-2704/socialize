@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:socialize/pages/scroll.dart';
-
-import 'feedPage.dart';
+import 'package:socialize/pages/feedPage.dart';
 
 class ChooseInterest extends StatefulWidget {
   const ChooseInterest({Key? key}) : super(key: key);

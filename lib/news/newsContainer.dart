@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:socialize/news/detailView.dart';
+import 'package:socialize/pages/globals.dart';
 
 class NewsContainer extends StatelessWidget {
   String imgUrl;
@@ -15,10 +16,12 @@ class NewsContainer extends StatelessWidget {
     required this.newsContent,
     required this.newsUrl,
   });
-  bool mode=false;
   @override
   Widget build(BuildContext context) {
     return Container(
+      decoration: BoxDecoration(
+        color: mode ? Colors.grey[900] : Colors.white,
+      ),
       height: MediaQuery.of(context).size.height,
       width: MediaQuery.of(context).size.width,
       child: Column(
@@ -43,6 +46,7 @@ class NewsContainer extends StatelessWidget {
                     style: TextStyle(
                       fontSize: 23,
                       fontWeight: FontWeight.bold,
+                      color: mode ? Colors.white : Colors.black,
                     ),
                   ),
                   SizedBox(height: 20),
@@ -50,7 +54,7 @@ class NewsContainer extends StatelessWidget {
                     newsDescription,
                     style: TextStyle(
                       fontSize: 12,
-                      color: mode ? Colors.black : Colors.white,
+                      color: mode ? Colors.white : Colors.black,
                     ),
                   ),
                   SizedBox(height: 20),
@@ -60,6 +64,7 @@ class NewsContainer extends StatelessWidget {
                     : newsContent,
                     style: TextStyle(
                       fontSize: 16,
+                      color: mode ? Colors.white : Colors.black,
                     ),
                   ),
                 ],

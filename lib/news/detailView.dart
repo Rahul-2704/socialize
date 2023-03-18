@@ -16,7 +16,6 @@ class DetailViewScreen extends StatefulWidget {
 class _DetailViewScreenState extends State<DetailViewScreen> {
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     setState(() {
       widget.newsUrl = widget.newsUrl.contains("http:") ? widget.newsUrl.replaceAll("http:", "https:") : widget.newsUrl;

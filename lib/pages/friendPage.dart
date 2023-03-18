@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'globals.dart';
 
 class FriendPage extends StatefulWidget {
   const FriendPage({Key? key}) : super(key: key);
@@ -7,7 +8,6 @@ class FriendPage extends StatefulWidget {
 }
 
 class _FriendPage extends State<FriendPage> {
-  bool mode = false;
   bool request = true;
 
   @override

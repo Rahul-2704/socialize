@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "159615172163",
+    "project_id": "mini-project-4707e",
+    "storage_bucket": "mini-project-4707e.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:159615172163:android:3e89b8bf83ddb58f959ef6",
+        "android_client_info": {
+          "package_name": "com.example.socialize"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "159615172163-p7ojlqqs3feru94797ce5mihdoru4o5r.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBQTbOp4z3mMKqEVE_xEwu5aPGXHGJSsLY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "159615172163-p7ojlqqs3feru94797ce5mihdoru4o5r.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,6 +1,14 @@
+
+import 'dart:io';
+import 'dart:typed_data';
+
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:socialize/pages/interest.dart';
+import 'package:firebase_storage/firebase_storage.dart';
+import '../utils/utils.dart';
 
 class BioData extends StatefulWidget {
   const BioData({Key? key}) : super(key: key);
@@ -11,6 +19,9 @@ class BioData extends StatefulWidget {
 class _BioDataState extends State<BioData> {
   late PickedFile _imageFile;
   final ImagePicker picker = ImagePicker();
+  Uint8List? _image;
+  final TextEditingController _usernameController=TextEditingController();
+  final TextEditingController _bioController=TextEditingController();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -60,7 +71,12 @@ class _BioDataState extends State<BioData> {
                 height: 45,
                 width: 350,
                 child: ElevatedButton(
-                  onPressed: () {
+                  onPressed: () async{
+                    FirebaseFirestore _firestore=FirebaseFirestore.instance;
+                    FirebaseAuth _auth=FirebaseAuth.instance;
+                    CollectionReference users=FirebaseFirestore.instance.collection("users");
+                    await users.add(_bioController.text.trim());
+                    // _firestore.collection("users").add(_usernameController.text()).
                     Navigator.pushReplacement(context,
                         MaterialPageRoute(builder: (BuildContext context) => ChooseInterest(),));
                   },
@@ -84,6 +100,7 @@ class _BioDataState extends State<BioData> {
 
   Widget nameTextField(){
     return TextFormField(
+      controller: _usernameController,
       decoration: InputDecoration(
         border: OutlineInputBorder(
           borderSide: BorderSide(
@@ -110,6 +127,7 @@ class _BioDataState extends State<BioData> {
 
   Widget aboutTextField(){
     return TextFormField(
+      controller: _bioController,
       maxLines: 5,
       decoration: InputDecoration(
         border: OutlineInputBorder(
@@ -135,11 +153,18 @@ class _BioDataState extends State<BioData> {
     return Center(
       child: Stack(
         children: <Widget>[
-          CircleAvatar(
+          _image!=null? CircleAvatar(
+            radius: 80,
+            backgroundImage: MemoryImage(_image!),
+          )
+          :const CircleAvatar(
             radius: 80,
             // backgroundImage: _imageFile == null ?
             // Image.asset('images/profilePicture.png').image
             //  : null,
+            backgroundImage: NetworkImage(
+              'https://www.google.com/url?sa=i&url=https%3A%2F%2Fwww.shutterstock.com%2Fsearch%2Fprofile&psig=AOvVaw3GC9aaNm4gY-2DyeeKnuWK&ust=1679510263674000&source=images&cd=vfe&ved=0CBAQjRxqFwoTCJj-jbfV7f0CFQAAAAAdAAAAABAE'
+            ),
           ),
           Positioned(
             bottom: 20,
@@ -185,8 +210,8 @@ class _BioDataState extends State<BioData> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
               TextButton.icon(
-                onPressed: () {
-                  // takePhoto(ImageSource.camera);
+                onPressed: () async{
+                  final XFile? image = await picker.pickImage(source: ImageSource.gallery);
                 },
                 label: Text('Camera', style: TextStyle(fontSize: 20,),),
                 icon: Icon(
@@ -196,7 +221,7 @@ class _BioDataState extends State<BioData> {
               ),
               TextButton.icon(
                 onPressed: () {
-                  // takePhoto(ImageSource.gallery);
+
                 },
                 label: Text('Gallery', style: TextStyle(fontSize: 20,),),
                 icon: Icon(
@@ -211,12 +236,4 @@ class _BioDataState extends State<BioData> {
     );
   }
 
-  // void takePhoto(ImageSource source) async{
-  //   final pickedFile = await picker.getImage(
-  //     source: source,
-  //   );
-  //   setState(() {
-  //     _imageFile = pickedFile!;
-  //   });
-  // }
 }

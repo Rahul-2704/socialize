@@ -1,6 +1,8 @@
+   import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:socialize/pages/bioData.dart';
+import 'package:socialize/resources/auth_methods.dart';
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({Key? key}) : super(key: key);
@@ -19,19 +21,13 @@ class _RegisterPageState extends State<RegisterPage> {
   final _dobController = TextEditingController();
   final _password = TextEditingController();
   final _confirmpassword = TextEditingController();
-  final GlobalKey<FormState> _fk = GlobalKey<FormState>();
-
+   final GlobalKey<FormState> _fk = GlobalKey<FormState>();
   @override
   void dispose(){
     _emailController.dispose();
     _password.dispose();
     super.dispose();
   }
-
-  Future signUp() async{
-    await FirebaseAuth.instance.createUserWithEmailAndPassword(email: _emailController.text.trim(), password: _password.text.trim());
-  }
-
   void validateAndSave() {
     final FormState? form = _fk.currentState;
     if (form!.validate()) {
@@ -104,6 +100,7 @@ class _RegisterPageState extends State<RegisterPage> {
                   child: Padding(
                     padding: const EdgeInsets.all(1.0),
                     child: TextFormField(
+                      controller:_firstnameController,
                       keyboardType: TextInputType.text,
                       decoration: InputDecoration(
                         enabledBorder: OutlineInputBorder(
@@ -133,6 +130,7 @@ class _RegisterPageState extends State<RegisterPage> {
                   child: Padding(
                     padding: const EdgeInsets.all(1.0),
                     child: TextFormField(
+                      controller: _lastnameController,
                       keyboardType: TextInputType.text,
                       decoration: InputDecoration(
                           enabledBorder: OutlineInputBorder(
@@ -162,6 +160,7 @@ class _RegisterPageState extends State<RegisterPage> {
                   child: Padding(
                     padding: const EdgeInsets.all(1.0),
                     child: TextFormField(
+                      controller: _dobController,
                       keyboardType: TextInputType.text,
                       decoration: InputDecoration(
                         enabledBorder: OutlineInputBorder(
@@ -295,9 +294,18 @@ class _RegisterPageState extends State<RegisterPage> {
                   width: 350,
                   height: 50,
                   child: ElevatedButton(
-                    onPressed: () {
+                    onPressed: () async{
                       validateAndSave();
-                      signUp();
+                      String res=await Authmethods().signupUser(
+                          firstName:_firstnameController.text.trim(),
+                          lastName:_lastnameController.text.trim(),
+                          email:_emailController.text.trim(),
+                          password:_password.text.trim(),
+                          followers: [],
+                          following: [],
+                          photoUrl: '',
+                          );
+                      print(res);
                     },
                     child: Text(
                       'Sign Up',

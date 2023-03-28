@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:socialize/pages/accountPage.dart';
+import 'package:socialize/pages/bioData.dart';
 import 'package:socialize/pages/register.dart';
 import 'package:socialize/pages/feedPage.dart';
-
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:socialize/resources/auth_methods.dart';
+import 'package:socialize/utils/utils.dart';
 class LoginPage extends StatefulWidget {
   const LoginPage({Key? key}) : super(key: key);
 
@@ -18,12 +22,42 @@ class _LoginPageState extends State<LoginPage> {
     final FormState? form = _fkLogin.currentState;
     if (form!.validate()) {
       print('Form is valid');
-      Navigator.pushReplacement(context,
-          MaterialPageRoute(builder: (BuildContext context) => FeedPage(),));
+      // Navigator.pushReplacement(context,
+      //     MaterialPageRoute(builder: (BuildContext context) => FeedPage(),));
     } else {
       print('Form is invalid');
     }
   }
+  final _emailController=TextEditingController();
+  final _passwordController=TextEditingController();
+  bool _isLoading=false;
+  void loginUser() async{
+    setState(() {
+      _isLoading=true;
+    });
+    String res=await Authmethods().login(
+        email: _emailController.text.trim(),
+        password:_passwordController.text.trim(),
+    );
+    if(res=="success"){
+      //
+     Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context)=>const FeedPage()));
+    }
+    else{
+     showSnackBar(res, context);
+    }
+    setState(() {
+      _isLoading=false;
+    });
+  }
+  @override
+    void dispose() {
+    // Add code before the super
+    _emailController.dispose();
+    _passwordController.dispose();
+    super.dispose();
+    }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -75,6 +109,7 @@ class _LoginPageState extends State<LoginPage> {
                   child: Padding(
                     padding: const EdgeInsets.only(bottom: 5),
                     child: TextFormField(
+                      controller: _emailController,
                       decoration: InputDecoration(
                         enabledBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(10),
@@ -103,7 +138,7 @@ class _LoginPageState extends State<LoginPage> {
                   child: Padding(
                     padding: const EdgeInsets.only(top: 1.0),
                     child: TextFormField(
-                      controller: _passwordLogin,
+                      controller: _passwordController,
                       keyboardType: TextInputType.text,
                       obscureText: passwordVisible,
                       enableSuggestions: false,
@@ -112,6 +147,7 @@ class _LoginPageState extends State<LoginPage> {
                         enabledBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(10),
                         ),
+
                         prefixIcon: Padding(
                           padding: EdgeInsets.only(top:1),
                           child: Icon(
@@ -152,7 +188,10 @@ class _LoginPageState extends State<LoginPage> {
                   width: 350,
                   height: 60,
                   child: ElevatedButton(
-                    onPressed: validateAndSaveLogin,
+                    onPressed:(){
+                      validateAndSaveLogin();
+                      loginUser();
+                    },
                     child: Text(
                       'Log In',
                       style: TextStyle(
@@ -173,10 +212,21 @@ class _LoginPageState extends State<LoginPage> {
                       ),
                     ),
                     TextButton(
-                      onPressed: () {
-                        Navigator.pushReplacement(context,
-                            MaterialPageRoute(builder: (BuildContext context) => RegisterPage(),));
-                      },
+                      onPressed: (){
+                       Navigator.pushReplacement(context,
+                              MaterialPageRoute(
+                                builder: (BuildContext context) =>
+                                    RegisterPage(),));
+                       /* StreamBuilder<User?>(
+                          stream: FirebaseAuth.instance.authStateChanges(),
+                          builder:(context,snapshot){
+                            if(snapshot.hasData){
+                              return BioData();
+                            }
+                            return LoginPage();
+                          }*/
+
+                        },
                       child: Text(
                         'Sign In',
                         style: TextStyle(

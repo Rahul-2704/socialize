@@ -1,9 +1,15 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:socialize/pages/accountPage.dart';
 import 'package:socialize/pages/requestPage.dart';
 import 'package:socialize/news/newsPage.dart';
 import 'package:socialize/pages/addPost.dart';
+import 'package:socialize/providers/userProvider.dart';
+import 'package:socialize/widgets/post_card.dart';
 import 'globals.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:socialize/models/user.dart' as model;
 
 class FeedPage extends StatefulWidget {
   const FeedPage({Key? key}) : super(key: key);
@@ -13,8 +19,25 @@ class FeedPage extends StatefulWidget {
 }
 
 class _FeedPageState extends State<FeedPage> {
-  bool request = true;
 
+  bool request = true;
+  String username="";
+  final FirebaseAuth _auth=FirebaseAuth.instance;
+  @override
+  void initState(){
+    getUsername();
+    super.initState();
+  }
+  void getUsername() async{
+    DocumentSnapshot snap=await FirebaseFirestore.instance
+        .collection('users')
+        .doc(FirebaseAuth.instance.currentUser!.uid)
+        .get();
+    setState(() {
+      username=(snap.data() as Map<String,dynamic>)['first name'];
+    });
+    print(username);
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -42,19 +65,23 @@ class _FeedPageState extends State<FeedPage> {
                 ),
               ),
             ),
+            actions:[
+              IconButton(
+                  onPressed: (){},
+                  icon:const Icon(
+                    Icons.messenger_outline,
+                    color: Colors.black,
+                  )
+              )
+            ],
           ),
         ),
       ),
       // appBar: AppBar(
       //   backgroundColor: Colors.teal,
       // ),
-    body: Container(
-        decoration: BoxDecoration(
-        image: DecorationImage(
-        image: AssetImage('images/indexBackground.jpg'),
-        fit: BoxFit.cover,
-        ),
-        ),
+    body:const PostCard(
+
     ),
 
       bottomNavigationBar: BottomAppBar(

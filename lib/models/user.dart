@@ -8,22 +8,27 @@ class User {
   final String firstname;
   final List followers;
   final List following;
+  //final String bio;
   final String password;
 
   const User(
-      {required this.firstname,
+      {
+        required this.firstname,
         required this.uid,
+        //required this.bio,
         required this.lastname,
         required this.photoUrl,
         required this.email,
         required this.followers,
         required this.password,
-        required this.following});
+        required this.following
+      });
 
   static User fromSnap(DocumentSnapshot snap) {
     var snapshot = snap.data() as Map<String, dynamic>;
 
     return User(
+     // bio: snapshot["bio"],
       firstname: snapshot["firstname"],
       lastname: snapshot["lastname"],
       uid: snapshot["uid"],

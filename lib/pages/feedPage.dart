@@ -38,6 +38,7 @@ class _FeedPageState extends State<FeedPage> {
     });
     print(username);
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -80,8 +81,21 @@ class _FeedPageState extends State<FeedPage> {
       // appBar: AppBar(
       //   backgroundColor: Colors.teal,
       // ),
-    body:const PostCard(
-
+    body:StreamBuilder(
+      stream: FirebaseFirestore.instance.collection("posts").snapshots(),
+      builder: (context,AsyncSnapshot<QuerySnapshot<Map<String,dynamic>>> snapshot){
+        if(snapshot.connectionState==ConnectionState.waiting){
+          return const Center(
+            child: CircularProgressIndicator(),
+          );
+        }
+        return ListView.builder(
+          itemCount: snapshot.data!.docs.length,
+          itemBuilder:(context,index)=>PostCard(
+           snap:snapshot.data?.docs[index].data(),
+          ),
+        );
+      },
     ),
 
       bottomNavigationBar: BottomAppBar(

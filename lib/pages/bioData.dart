@@ -1,11 +1,14 @@
 import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:socialize/models/user.dart' as model;
 import 'package:socialize/pages/interest.dart';
 import 'package:firebase_storage/firebase_storage.dart';
-
+import 'package:firebase_storage/firebase_storage.dart';
 class BioData extends StatefulWidget {
   const BioData({Key? key}) : super(key: key);
   @override
@@ -67,11 +70,19 @@ class _BioDataState extends State<BioData> {
                 width: 350,
                 child: ElevatedButton(
                   onPressed: () async{
-                    FirebaseFirestore _firestore = FirebaseFirestore.instance;
-                    FirebaseAuth _auth = FirebaseAuth.instance;
-                    CollectionReference users = FirebaseFirestore.instance.collection("users");
-                    await users.add(_bioController.text.trim());
-                    // _firestore.collection("users").add(_usernameController.text()).
+                    FirebaseAuth currentUser=(await FirebaseAuth.instance.currentUser) as FirebaseAuth;
+                  // FirebaseFirestore.instance.collection("users").doc(FirebaseAuth.instance.currentUser!.uid).update(
+                  // {
+                  //   merge:true,
+                  //   "bio":_bioController.text.trim(),}
+                  // );
+                    FirebaseFirestore.instance.collection('users')
+                        .doc(FirebaseAuth.instance.currentUser!.uid)
+                        .set({
+                       'bio':_bioController.text.trim(),
+                    },SetOptions(merge: true)).then((value){
+                      //Do your stuff.
+                    });
                     Navigator.pushReplacement(context,
                         MaterialPageRoute(builder: (BuildContext context) => ChooseInterest(),));
                   },
@@ -210,13 +221,24 @@ class _BioDataState extends State<BioData> {
             children: <Widget>[
               TextButton.icon(
                 onPressed: () async{
+                  FirebaseStorage storage=FirebaseStorage.instance;
                   final XFile? image = await picker.pickImage(source: ImageSource.camera);
                   if(image != null){
                     setState(() {
                       _image = image.path;
                     });
                     Navigator.pop(context);
+                    final Directory systemTempDir = Directory.systemTemp;                           // getting tempory directory
+
+                    final byteData = await rootBundle.load(_image!);                                    // loading image using rootBundle
+                    final file = File('${image.path}/$image.jpeg');
+
+                    await file.writeAsBytes(byteData.buffer
+                        .asUint8List(byteData.offsetInBytes, byteData.lengthInBytes));
                   }
+                //  TaskSnapshot taskSnapshot =
+                 // await storage.ref('$image.path/$_image').putFile(file);
+
                 },
                 label: Text('Camera', style: TextStyle(fontSize: 20,),),
                 icon: Icon(

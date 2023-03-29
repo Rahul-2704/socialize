@@ -3,7 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:socialize/pages/bioData.dart';
 import 'package:socialize/resources/auth_methods.dart';
-
+import 'package:socialize/pages/bioData.dart';
 class RegisterPage extends StatefulWidget {
   const RegisterPage({Key? key}) : super(key: key);
 

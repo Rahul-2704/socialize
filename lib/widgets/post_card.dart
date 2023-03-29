@@ -1,9 +1,14 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+import 'package:socialize/utils/colors.dart';
 
 class PostCard extends StatelessWidget{
-  const PostCard({Key?key}):super(key:key);
+  final snap;
+  const PostCard({Key?key,
+    required this.snap,
+  }):super(key:key);
 
   Widget build(BuildContext context){
     //Header section
@@ -23,7 +28,7 @@ class PostCard extends StatelessWidget{
                 CircleAvatar(
                   radius: 16,
                   backgroundImage: NetworkImage(
-                    'https://www.google.com/imgres?imgurl=https%3A%2F%2Fi.pinimg.com%2Foriginals%2F03%2F10%2F66%2F0310664ebc776d10a0b26a4ca41f4b73.png&tbnid=jpAjQN-S4nyRPM&vet=12ahUKEwjq4av32f79AhX61HMBHXQkCPoQMygAegUIARC1AQ..i&imgrefurl=https%3A%2F%2Fwww.pinterest.com%2Fpin%2F311381761734282257%2F&docid=0sr8GtWRx2c9JM&w=800&h=600&q=random%20insta%20post&ved=2ahUKEwjq4av32f79AhX61HMBHXQkCPoQMygAegUIARC1AQ'
+                  snap['profImage'],
                   ),
                 ),
                Expanded(
@@ -35,7 +40,7 @@ class PostCard extends StatelessWidget{
                        mainAxisSize: MainAxisSize.min,
                        crossAxisAlignment: CrossAxisAlignment.start,
                        children: [
-                         Text('username',style: TextStyle(
+                         Text(snap['username'],style: TextStyle(
                            fontWeight: FontWeight.bold,
                          ),)
                        ],
@@ -75,7 +80,8 @@ class PostCard extends StatelessWidget{
           SizedBox(
             height: MediaQuery.of(context).size.height*0.35,
             width: MediaQuery.of(context).size.width*0.95,
-            child: Image.network('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTYtCDxq2JnxZk5XUvsn6dNrvlPQaYqvfBqIaPMOxsB&s',
+            child: Image.network(
+               snap['postUrl'],
               fit:BoxFit.cover,
             ),
           ),
@@ -125,7 +131,7 @@ class PostCard extends StatelessWidget{
                 DefaultTextStyle(
                   style:Theme.of(context).textTheme.titleSmall!.copyWith(fontWeight: FontWeight.w800),
                 child:Text(
-                  '1000 likes',
+                  '${snap['likes'].length} likes',
                   style:Theme.of(context).textTheme.bodyMedium,
                 ),
                 ),
@@ -139,11 +145,11 @@ class PostCard extends StatelessWidget{
                       style: const TextStyle(color:Colors.black) ,
                       children: [
                         TextSpan(
-                        text:"username",
+                        text:snap['username'],
                         style:const TextStyle(fontWeight: FontWeight.bold,),
                         ),
                         TextSpan(
-                          text:" Hey this is some description to be placed",),
+                          text:' ${snap['description']}',),
                       ]
                     ),
                   ) ,
@@ -155,11 +161,19 @@ class PostCard extends StatelessWidget{
                   child: Text("View all 200 comments",
                   style: TextStyle(
                     fontSize: 16,
-                    color: Colors.black38,
+                    color:Colors.black38,
                   ),
                   ),
                 ),
                 ),
+                Container(
+                  padding: const EdgeInsets.symmetric(vertical: 4),
+                  child: Text(
+                    DateFormat.yMMMd().format(snap['datePublished'].toDate(),
+    ),
+                    style:const TextStyle(fontSize: 16,color: secondaryColor),
+                  ),
+                )
               ],
             ),
           )

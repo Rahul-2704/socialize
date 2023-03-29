@@ -8,6 +8,7 @@ import 'package:socialize/pages/feedPage.dart';
 import 'package:socialize/pages/globals.dart';
 import 'package:socialize/providers/userProvider.dart';
 import 'package:socialize/resources/firestore_methods.dart';
+import 'package:socialize/utils/colors.dart';
 import 'package:socialize/utils/utils.dart';
 import 'dart:typed_data';
 import 'package:socialize/models/user.dart' as model;
@@ -116,7 +117,7 @@ class _AddPostScreenState extends State<AddPostScreen> {
           ),
           child: AppBar(
             automaticallyImplyLeading: false,
-            backgroundColor: mode ? Colors.black : Colors.white,
+            backgroundColor: mode ? Colors.black :mobileBackgroundColor,
             leading:IconButton(
               icon:const Icon(Icons.arrow_back),
               color: Colors.black,

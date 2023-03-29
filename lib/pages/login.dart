@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:socialize/pages/accountPage.dart';
 import 'package:socialize/pages/bioData.dart';
+import 'package:socialize/pages/forgotPassword.dart';
 import 'package:socialize/pages/register.dart';
 import 'package:socialize/pages/feedPage.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -65,7 +66,8 @@ class _LoginPageState extends State<LoginPage> {
         backgroundColor: Colors.teal,
       ),
       body: Container(
-          height : MediaQuery.of(context).size.height,
+        alignment: Alignment.center,
+        height : MediaQuery.of(context).size.height,
         decoration: BoxDecoration(
           image: DecorationImage(
             image: AssetImage('images/indexBackground.jpg'),
@@ -103,140 +105,152 @@ class _LoginPageState extends State<LoginPage> {
                   ],
                 ),
                 SizedBox(height: 20,),
-                SizedBox(
-                  width: 350,
-                  height:70,
-                  child: Padding(
-                    padding: const EdgeInsets.only(bottom: 5),
-                    child: TextFormField(
-                      controller: _emailController,
-                      decoration: InputDecoration(
-                        enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        filled: true,
-                        fillColor: Colors.white,
-                        hintText: 'Email',
-                        prefixIcon: Padding(
-                          padding: EdgeInsets.only(top:1),
-                          child: Icon(
-                            Icons.email,
+                Column(
+                  children: [
+                    SizedBox(
+                      width: 350,
+                      height:70,
+                      child: Padding(
+                        padding: const EdgeInsets.only(bottom: 5),
+                        child: TextFormField(
+                          controller: _emailController,
+                          decoration: InputDecoration(
+                            enabledBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            filled: true,
+                            fillColor: Colors.white,
+                            hintText: 'Email',
+                            prefixIcon: Padding(
+                              padding: EdgeInsets.only(top:1),
+                              child: Icon(
+                                Icons.email,
+                              ),
+                            ),
                           ),
-                        ),
-                      ),
-                      validator: (value) =>  !RegExp("^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+[a-z]").hasMatch(value!)? 'Enter a valid email':null,
-                      onSaved: (email){
-                        _emailLogin = email!;
-                      },
-                    ),
-                  ),
-                ),
-                SizedBox(height: 20,),
-                SizedBox(
-                  width: 350,
-                  height:70,
-                  child: Padding(
-                    padding: const EdgeInsets.only(top: 1.0),
-                    child: TextFormField(
-                      controller: _passwordController,
-                      keyboardType: TextInputType.text,
-                      obscureText: passwordVisible,
-                      enableSuggestions: false,
-                      autocorrect: false,
-                      decoration: InputDecoration(
-                        enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-
-                        prefixIcon: Padding(
-                          padding: EdgeInsets.only(top:1),
-                          child: Icon(
-                            Icons.lock,
-                          ),
-                        ),
-                        filled: true,
-                        fillColor: Colors.white,
-                        hintText: 'Create Password',
-                        suffixIcon: IconButton(
-                          icon: Icon(passwordVisible ? Icons.visibility_off : Icons.visibility),
-                          onPressed: () {
-                            setState(() {
-                              passwordVisible = !passwordVisible;
-                            });
+                          validator: (value) =>  !RegExp("^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+[a-z]").hasMatch(value!)? 'Enter a valid email':null,
+                          onSaved: (email){
+                            _emailLogin = email!;
                           },
                         ),
                       ),
-                      validator: (value) =>  value!.isEmpty ? 'Enter Password' : null,
                     ),
-                  ),
-                ),
-                Padding(
-                  padding: EdgeInsets.only(left: 230),
-                  child: TextButton(
-                    onPressed: () {},
-                    child: Text(
-                      'Forgot Password',
-                      style: TextStyle(
-                        color: Colors.teal[500],
-                        fontSize: 15,
-                      ),
-                    ),
-                  ),
-                ),
-                SizedBox(height: 5),
-                SizedBox(
-                  width: 350,
-                  height: 60,
-                  child: ElevatedButton(
-                    onPressed:(){
-                      validateAndSaveLogin();
-                      loginUser();
-                    },
-                    child: Text(
-                      'Log In',
-                      style: TextStyle(
-                        fontSize: 20,
-                      ),
-                    ),
-                    style: ButtonStyle(
-                      backgroundColor: MaterialStateProperty.all(Colors.teal[400]),
-                    ),
-                  ),
-                ),
-                Row(
-                  children: <Widget>[
-                    Text(
-                      'Does not have account?',
-                      style: TextStyle(
-                        fontSize: 18,
-                      ),
-                    ),
-                    TextButton(
-                      onPressed: (){
-                       Navigator.pushReplacement(context,
-                              MaterialPageRoute(
-                                builder: (BuildContext context) =>
-                                    RegisterPage(),));
-                       /* StreamBuilder<User?>(
-                          stream: FirebaseAuth.instance.authStateChanges(),
-                          builder:(context,snapshot){
-                            if(snapshot.hasData){
-                              return BioData();
-                            }
-                            return LoginPage();
-                          }*/
+                    SizedBox(height: 20,),
+                    SizedBox(
+                      width: 350,
+                      height:70,
+                      child: Padding(
+                        padding: const EdgeInsets.only(top: 1.0),
+                        child: TextFormField(
+                          controller: _passwordController,
+                          keyboardType: TextInputType.text,
+                          obscureText: passwordVisible,
+                          enableSuggestions: false,
+                          autocorrect: false,
+                          decoration: InputDecoration(
+                            enabledBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10),
+                            ),
 
-                        },
-                      child: Text(
-                        'Sign In',
-                        style: TextStyle(
-                          color: Colors.teal[500],
-                          fontSize: 20,
+                            prefixIcon: Padding(
+                              padding: EdgeInsets.only(top:1),
+                              child: Icon(
+                                Icons.lock,
+                              ),
+                            ),
+                            filled: true,
+                            fillColor: Colors.white,
+                            hintText: 'Enter Password',
+                            suffixIcon: IconButton(
+                              icon: Icon(passwordVisible ? Icons.visibility_off : Icons.visibility),
+                              onPressed: () {
+                                setState(() {
+                                  passwordVisible = !passwordVisible;
+                                });
+                              },
+                            ),
+                          ),
+                          validator: (value) =>  value!.isEmpty ? 'Enter Password' : null,
                         ),
                       ),
                     ),
+                    Row(
+                      children: [
+                        SizedBox(width: 240,),
+                        TextButton(
+                          onPressed: () {
+                            Navigator.pushReplacement(context,
+                                MaterialPageRoute(
+                                  builder: (BuildContext context) =>
+                                      ForgotPassword(),
+                            ));
+                          },
+                          child: Text(
+                            'Forgot Password',
+                            style: TextStyle(
+                              color: Colors.teal[500],
+                              fontSize: 15,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: 5),
+                    SizedBox(
+                      width: 350,
+                      height: 60,
+                      child: ElevatedButton(
+                        onPressed:(){
+                          validateAndSaveLogin();
+                          loginUser();
+                        },
+                        child: Text(
+                          'Log In',
+                          style: TextStyle(
+                            fontSize: 20,
+                          ),
+                        ),
+                        style: ButtonStyle(
+                          backgroundColor: MaterialStateProperty.all(Colors.teal[400]),
+                        ),
+                      ),
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        Text(
+                          'Does not have account?',
+                          style: TextStyle(
+                            fontSize: 18,
+                          ),
+                        ),
+                        TextButton(
+                          onPressed: (){
+                           Navigator.pushReplacement(context,
+                                  MaterialPageRoute(
+                                    builder: (BuildContext context) =>
+                                        RegisterPage(),));
+                           /* StreamBuilder<User?>(
+                              stream: FirebaseAuth.instance.authStateChanges(),
+                              builder:(context,snapshot){
+                                if(snapshot.hasData){
+                                  return BioData();
+                                }
+                                return LoginPage();
+                              }*/
+
+                            },
+                          child: Text(
+                            'Sign In',
+                            style: TextStyle(
+                              color: Colors.teal[500],
+                              fontSize: 20,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
                   ],
-                  mainAxisAlignment: MainAxisAlignment.center,
                 ),
               ],
             ),

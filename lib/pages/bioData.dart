@@ -1,14 +1,10 @@
-
 import 'dart:io';
-import 'dart:typed_data';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:socialize/pages/interest.dart';
 import 'package:firebase_storage/firebase_storage.dart';
-import '../utils/utils.dart';
 
 class BioData extends StatefulWidget {
   const BioData({Key? key}) : super(key: key);
@@ -17,9 +13,8 @@ class BioData extends StatefulWidget {
 }
 
 class _BioDataState extends State<BioData> {
-  late PickedFile _imageFile;
   final ImagePicker picker = ImagePicker();
-  Uint8List? _image;
+  String? _image;
   final TextEditingController _usernameController=TextEditingController();
   final TextEditingController _bioController=TextEditingController();
   @override
@@ -72,9 +67,9 @@ class _BioDataState extends State<BioData> {
                 width: 350,
                 child: ElevatedButton(
                   onPressed: () async{
-                    FirebaseFirestore _firestore=FirebaseFirestore.instance;
-                    FirebaseAuth _auth=FirebaseAuth.instance;
-                    CollectionReference users=FirebaseFirestore.instance.collection("users");
+                    FirebaseFirestore _firestore = FirebaseFirestore.instance;
+                    FirebaseAuth _auth = FirebaseAuth.instance;
+                    CollectionReference users = FirebaseFirestore.instance.collection("users");
                     await users.add(_bioController.text.trim());
                     // _firestore.collection("users").add(_usernameController.text()).
                     Navigator.pushReplacement(context,
@@ -152,18 +147,22 @@ class _BioDataState extends State<BioData> {
   Widget imageProfile(){
     return Center(
       child: Stack(
-        children: <Widget>[
-          _image!=null? CircleAvatar(
+        children: [
+          _image != null ?
+          CircleAvatar(
             radius: 80,
-            backgroundImage: MemoryImage(_image!),
+            child: Image.file(
+              File(_image!),
+              width: MediaQuery.of(context).size.height * 0.2,
+              height: MediaQuery.of(context).size.height * 0.2,
+              fit: BoxFit.cover,
+            ),
           )
-          :const CircleAvatar(
+          :
+          CircleAvatar(
             radius: 80,
-            // backgroundImage: _imageFile == null ?
-            // Image.asset('images/profilePicture.png').image
-            //  : null,
-            backgroundImage: NetworkImage(
-              'https://www.google.com/url?sa=i&url=https%3A%2F%2Fwww.shutterstock.com%2Fsearch%2Fprofile&psig=AOvVaw3GC9aaNm4gY-2DyeeKnuWK&ust=1679510263674000&source=images&cd=vfe&ved=0CBAQjRxqFwoTCJj-jbfV7f0CFQAAAAAdAAAAABAE'
+            child: Image.asset(
+              'images/profilePicture.png'
             ),
           ),
           Positioned(
@@ -172,8 +171,8 @@ class _BioDataState extends State<BioData> {
             child: InkWell(
               onTap: () {
                 showModalBottomSheet(
-                  context: context,
-                  builder: ((builder) => bottomSheet()),
+                context: context,
+                builder: ((builder) => bottomSheet()),
                 );
               },
               child: Icon(
@@ -211,7 +210,13 @@ class _BioDataState extends State<BioData> {
             children: <Widget>[
               TextButton.icon(
                 onPressed: () async{
-                  final XFile? image = await picker.pickImage(source: ImageSource.gallery);
+                  final XFile? image = await picker.pickImage(source: ImageSource.camera);
+                  if(image != null){
+                    setState(() {
+                      _image = image.path;
+                    });
+                    Navigator.pop(context);
+                  }
                 },
                 label: Text('Camera', style: TextStyle(fontSize: 20,),),
                 icon: Icon(
@@ -220,8 +225,14 @@ class _BioDataState extends State<BioData> {
                 ),
               ),
               TextButton.icon(
-                onPressed: () {
-
+                onPressed: () async {
+                  final XFile? image = await picker.pickImage(source: ImageSource.gallery);
+                  if(image != null){
+                    setState(() {
+                      _image = image.path;
+                    });
+                    Navigator.pop(context);
+                  }
                 },
                 label: Text('Gallery', style: TextStyle(fontSize: 20,),),
                 icon: Icon(

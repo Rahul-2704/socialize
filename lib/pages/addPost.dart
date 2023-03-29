@@ -12,16 +12,16 @@ import 'package:socialize/utils/utils.dart';
 import 'dart:typed_data';
 import 'package:socialize/models/user.dart' as model;
 import 'package:firebase_auth/firebase_auth.dart';
-
 import '../utils/utils.dart';
-class AddPost extends StatefulWidget {
-  const AddPost({Key? key}) : super(key: key);
+
+class AddPostScreen extends StatefulWidget {
+  const AddPostScreen({Key? key}) : super(key: key);
 
   @override
-  State<AddPost> createState() => _AddPostState();
+  State<AddPostScreen> createState() => _AddPostScreenState();
 }
 
-class _AddPostState extends State<AddPost> {
+class _AddPostScreenState extends State<AddPostScreen> {
   bool request = true;
   Uint8List?  _file;
   final TextEditingController _descriptionController=TextEditingController();
@@ -240,7 +240,7 @@ class _AddPostState extends State<AddPost> {
               IconButton(
                 onPressed: () {
                   Navigator.pushReplacement(context,
-                      MaterialPageRoute(builder: (BuildContext context) => AddPost(),));
+                      MaterialPageRoute(builder: (BuildContext context) => AddPostScreen(),));
                 },
                 icon: Icon(
                   Icons.add,
@@ -277,3 +277,9 @@ class _AddPostState extends State<AddPost> {
     );
   }
 }
+
+
+
+
+
+

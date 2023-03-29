@@ -13,6 +13,7 @@ import 'package:socialize/news/newsPage.dart';
 import 'package:socialize/pages/feedPage.dart';
 import 'package:socialize/pages/globals.dart' as globals;
 import 'package:firebase_core/firebase_core.dart';
+
 import 'package:socialize/providers/userProvider.dart';
 
 void main() async{
@@ -28,7 +29,7 @@ void main() async{
       child:MaterialApp(
     debugShowCheckedModeBanner: false,
     routes: {
-      '/': (context) => IndexPage(),
+      '/': (context) => BioData(),
       '/indexPage': (context) => IndexPage(),
       '/register': (context) => RegisterPage(),
       '/interest': (context) => ChooseInterest(),

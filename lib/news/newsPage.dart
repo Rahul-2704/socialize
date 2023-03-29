@@ -113,7 +113,7 @@ class _NewsScreenState extends State<NewsScreen> {
               IconButton(
                 onPressed: () {
                   Navigator.pushReplacement(context,
-                      MaterialPageRoute(builder: (BuildContext context) => AddPost(),));
+                      MaterialPageRoute(builder: (BuildContext context) => AddPostScreen(),));
                 },
                 icon: Icon(
                   Icons.add,

@@ -20,7 +20,7 @@ class Post{
     required this.postUrl,
     required this.profImage,
 });
-  Map<String,dynamic> toJson()=>{
+  Map<String, dynamic> toJson() => {
     "description":description,
     "uid":uid,
     "username":username,

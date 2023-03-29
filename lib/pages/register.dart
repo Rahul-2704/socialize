@@ -1,4 +1,4 @@
-   import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:socialize/pages/bioData.dart';
@@ -285,7 +285,7 @@ class _RegisterPageState extends State<RegisterPage> {
                           },
                         ),
                       ),
-                      validator: (value) =>  _confirmpassword.text!=_password.text ? 'Re-enter Password':null,
+                      validator: (value) =>  _confirmpassword.text != _password.text ? 'Re-enter Password' : null,
                     ),
                   ),
                 ),
@@ -297,13 +297,13 @@ class _RegisterPageState extends State<RegisterPage> {
                     onPressed: () async{
                       validateAndSave();
                       String res=await Authmethods().signupUser(
-                          firstName:_firstnameController.text.trim(),
-                          lastName:_lastnameController.text.trim(),
-                          email:_emailController.text.trim(),
-                          password:_password.text.trim(),
-                          followers: [],
-                          following: [],
-                          photoUrl: '',
+                            firstName:_firstnameController.text.trim(),
+                            lastName:_lastnameController.text.trim(),
+                            email:_emailController.text.trim(),
+                            password:_password.text.trim(),
+                            followers: [],
+                            following: [],
+                            photoUrl: '',
                           );
                       print(res);
                     },

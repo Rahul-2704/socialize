@@ -22,6 +22,8 @@ class Authmethods{
     required List followers,
     required List following,
     required String photoUrl,
+    required String bio,
+    required String username,
 })async{
     String res='Some error occurred';
     try{

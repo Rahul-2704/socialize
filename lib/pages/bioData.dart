@@ -70,18 +70,27 @@ class _BioDataState extends State<BioData> {
                 width: 350,
                 child: ElevatedButton(
                   onPressed: () async{
-                    FirebaseAuth currentUser=(await FirebaseAuth.instance.currentUser) as FirebaseAuth;
+                  //   print(_bioController.text.trim());
+                  //   FirebaseAuth currentUser=(await FirebaseAuth.instance.currentUser) as FirebaseAuth;
                   // FirebaseFirestore.instance.collection("users").doc(FirebaseAuth.instance.currentUser!.uid).update(
-                  // {
-                  //   merge:true,
+                  //    { merge:true,
                   //   "bio":_bioController.text.trim(),}
-                  // );
-                    FirebaseFirestore.instance.collection('users')
-                        .doc(FirebaseAuth.instance.currentUser!.uid)
-                        .set({
-                       'bio':_bioController.text.trim(),
-                    },SetOptions(merge: true)).then((value){
-                      //Do your stuff.
+                  //  );
+                  //   var firebaseUser =  FirebaseAuth.instance.currentUser;
+                   final firestoreInstance = FirebaseFirestore.instance;
+                  //
+                  //   firestoreInstance.collection("users").doc(FirebaseAuth.instance.currentUser!.uid).set(
+                  //   {
+                  //   "bio" :_bioController.text.trim(),
+                  //   },SetOptions(merge: true)).then((_){
+                  //   print(_bioController.text.trim());
+                  //   });
+                    var firebaseUser = FirebaseAuth.instance.currentUser;
+                    firestoreInstance
+                        .collection("users")
+                        .doc(firebaseUser!.uid)
+                        .set({"bio": _bioController.text.trim(),"username":_usernameController.text.trim()},SetOptions(merge: true)).then((_) {
+                        print("success!");
                     });
                     Navigator.pushReplacement(context,
                         MaterialPageRoute(builder: (BuildContext context) => ChooseInterest(),));

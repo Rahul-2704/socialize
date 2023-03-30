@@ -304,6 +304,8 @@ class _RegisterPageState extends State<RegisterPage> {
                             followers: [],
                             following: [],
                             photoUrl: '',
+                            bio:'',
+                           username:'',
                           );
                       print(res);
                     },

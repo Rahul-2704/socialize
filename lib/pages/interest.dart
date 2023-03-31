@@ -63,80 +63,82 @@ class _ChooseInterestState extends State<ChooseInterest> {
           ],
         ),
       ),
-      body: Container(
-        decoration: BoxDecoration(
-          image: DecorationImage(
-            image: AssetImage('images/indexBackground.jpg'),
-              fit: BoxFit.cover,
+      body: SingleChildScrollView(
+        child: Container(
+          decoration: BoxDecoration(
+            image: DecorationImage(
+              image: AssetImage('images/indexBackground.jpg'),
+                fit: BoxFit.cover,
+              ),
             ),
-          ),
-          child: Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                SizedBox(
-                  width: 350,
-                  child: Text(
-                    'Choose your interests',
-                    style: TextStyle(
-                      color: Colors.grey[800],
-                      letterSpacing: 1.5,
-                      fontFamily: 'Dosis',
-                      fontWeight: FontWeight.bold,
-                      fontSize: 40,
-                    ),
-                  ),
-                ),
-                SizedBox(
-                  height: 580,
-                  child: Container(
-                    child: ListView.builder(
-                      itemCount: interests.length,
-                      itemBuilder: (BuildContext context,int index) {
-                        return ContactItem(interests[index].name, interests[index].isSelected,index,);
-                      }
-                    ),
-                  ),
-                ),
-                Padding(
-                  padding: EdgeInsets.only(left: 230),
-                  child: TextButton(
-                    onPressed: (){
-                      Navigator.pushReplacement(context,
-                          MaterialPageRoute(builder: (BuildContext context) => FeedPage(),));
-                    },
+            child: Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  SizedBox(
+                    width: 350,
                     child: Text(
-                      'Skip>>',
+                      'Choose your interests',
                       style: TextStyle(
-                        color: Colors.grey[650],
-                        fontSize: 15,
+                        color: Colors.grey[800],
+                        letterSpacing: 1.5,
+                        fontFamily: 'Dosis',
+                        fontWeight: FontWeight.bold,
+                        fontSize: 40,
                       ),
                     ),
                   ),
-                ),
-                SizedBox(
-                  width: 350,
-                  height: 50,
-                  child: ElevatedButton(
-                    onPressed: () {
-                      Navigator.pushReplacement(context,
-                          MaterialPageRoute(builder: (BuildContext context) => FeedPage(),));
-                    },
-                    child: Text(
-                      'Continue',
-                      style: TextStyle(
-                        fontSize: 20,
+                  SizedBox(
+                    height: 580,
+                    child: Container(
+                      child: ListView.builder(
+                        itemCount: interests.length,
+                        itemBuilder: (BuildContext context,int index) {
+                          return ContactItem(interests[index].name, interests[index].isSelected,index,);
+                        }
                       ),
                     ),
-                    style: ButtonStyle(
-                      backgroundColor: MaterialStateProperty.all(Colors.teal[400]),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.only(left: 230),
+                    child: TextButton(
+                      onPressed: (){
+                        Navigator.pushReplacement(context,
+                            MaterialPageRoute(builder: (BuildContext context) => FeedPage(),));
+                      },
+                      child: Text(
+                        'Skip>>',
+                        style: TextStyle(
+                          color: Colors.grey[650],
+                          fontSize: 15,
+                        ),
+                      ),
                     ),
                   ),
-                ),
-              ],
+                  SizedBox(
+                    width: 350,
+                    height: 50,
+                    child: ElevatedButton(
+                      onPressed: () {
+                        Navigator.pushReplacement(context,
+                            MaterialPageRoute(builder: (BuildContext context) => FeedPage(),));
+                      },
+                      child: Text(
+                        'Continue',
+                        style: TextStyle(
+                          fontSize: 20,
+                        ),
+                      ),
+                      style: ButtonStyle(
+                        backgroundColor: MaterialStateProperty.all(Colors.teal[400]),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
-        ),
+      ),
       );
     }
 

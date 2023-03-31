@@ -3,7 +3,7 @@ import 'package:socialize/news/fetchNews.dart';
 import 'package:socialize/news/newsArt.dart';
 import 'package:socialize/news/newsContainer.dart';
 import 'package:socialize/pages/accountPage.dart';
-import 'package:socialize/pages/addPost.dart';
+import 'package:socialize/pages/post.dart';
 import 'package:socialize/pages/feedPage.dart';
 import 'package:socialize/pages/requestPage.dart';
 import 'package:socialize/pages/globals.dart';
@@ -113,7 +113,7 @@ class _NewsScreenState extends State<NewsScreen> {
               IconButton(
                 onPressed: () {
                   Navigator.pushReplacement(context,
-                      MaterialPageRoute(builder: (BuildContext context) => AddPostScreen(),));
+                      MaterialPageRoute(builder: (BuildContext context) => TempScreen(),));
                 },
                 icon: Icon(
                   Icons.add,

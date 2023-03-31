@@ -1,9 +1,16 @@
+import 'dart:developer';
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:socialize/pages/addPost.dart';
 import 'package:socialize/pages/feedPage.dart';
 import 'package:socialize/pages/requestPage.dart';
 import 'package:socialize/news/newsPage.dart';
-import 'package:socialize/pages/addPost.dart';
+import 'package:socialize/pages/post.dart';
 import 'package:socialize/pages/globals.dart';
+
+import '../api/apis.dart';
 
 class MyAccount extends StatefulWidget {
   const MyAccount({Key? key}) : super(key: key);
@@ -12,6 +19,7 @@ class MyAccount extends StatefulWidget {
 }
 
 class _MyAccountState extends State<MyAccount> {
+  String ?  _image;
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
@@ -43,7 +51,13 @@ class _MyAccountState extends State<MyAccount> {
               ),
               actions: [
                 IconButton(
-                  onPressed: () {},
+                  onPressed: () async {
+                     // _showBottomSheet();
+                    // await if(_image!=null){
+                       Navigator.push(context,
+                          MaterialPageRoute(builder: (BuildContext context) => AddPost(),));
+                    // }
+                  },
                   icon: Icon(
                     Icons.add_box_outlined,
                     color: mode ? Colors.white : Colors.black,
@@ -256,7 +270,7 @@ class _MyAccountState extends State<MyAccount> {
                 IconButton(
                   onPressed: () {
                     Navigator.pushReplacement(context,
-                        MaterialPageRoute(builder: (BuildContext context) => AddPostScreen(),));
+                        MaterialPageRoute(builder: (BuildContext context) => TempScreen(),));
                   },
                   icon: Icon(
                     Icons.add,
@@ -292,5 +306,70 @@ class _MyAccountState extends State<MyAccount> {
         ),
       ),
     );
+  }
+  void _showBottomSheet() {
+    showModalBottomSheet(
+        context: context,
+        shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(20), topRight: Radius.circular(20))),
+        builder: (_) {
+          return ListView(
+            shrinkWrap: true,
+            padding:
+            EdgeInsets.only(top: MediaQuery.of(context).size.height * .03, bottom: MediaQuery.of(context).size.height * .05),
+            children: [
+              const Text('Pick Profile Picture',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500)
+              ),
+              SizedBox(height: MediaQuery.of(context).size.height * .02),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.white,
+                          shape: const CircleBorder(),
+                          fixedSize: Size(MediaQuery.of(context).size.width * .3, MediaQuery.of(context).size.height * .15)),
+                      onPressed: () async {
+                        final ImagePicker picker = ImagePicker();
+                        final XFile? image = await picker.pickImage(
+                            source: ImageSource.gallery, imageQuality: 80);
+                        if (image != null) {
+                          log('Image Path: ${image.path}');
+                          setState(() {
+                            _image = image.path;
+                          });
+
+                          APIs.updatePost(File(_image!));
+                          Navigator.pop(context);
+                        }
+                      },
+                      child: Image.asset('images/add_image.png')),
+                  ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.white,
+                          shape: const CircleBorder(),
+                          fixedSize: Size(MediaQuery.of(context).size.width * .3, MediaQuery.of(context).size.height * .15)),
+                      onPressed: () async {
+                        final ImagePicker picker = ImagePicker();
+                        final XFile? image = await picker.pickImage(
+                            source: ImageSource.camera, imageQuality: 80);
+                        if (image != null) {
+                          log('Image Path: ${image.path}');
+                          setState(() {
+                            _image = image.path;
+                          });
+                          APIs.updatePost(File(_image!));
+                          Navigator.pop(context);
+                        }
+                      },
+                      child: Image.asset('images/camera.png')),
+                ],
+              )
+            ],
+          );
+        });
   }
 }

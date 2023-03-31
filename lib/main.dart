@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:socialize/pages/login.dart';
 import 'package:socialize/pages/friendPage.dart';
 import 'package:socialize/pages/indexPage.dart';
-import 'package:socialize/pages/login.dart';
+// import 'package:socialize/pages/login.dart';
 import 'package:socialize/pages/register.dart';
 import 'package:socialize/pages/bioData.dart';
 import 'package:socialize/pages/interest.dart';
@@ -13,7 +14,6 @@ import 'package:socialize/news/newsPage.dart';
 import 'package:socialize/pages/feedPage.dart';
 import 'package:socialize/pages/globals.dart' as globals;
 import 'package:firebase_core/firebase_core.dart';
-
 import 'package:socialize/providers/userProvider.dart';
 
 void main() async{
@@ -29,12 +29,12 @@ void main() async{
       child:MaterialApp(
     debugShowCheckedModeBanner: false,
     routes: {
-      '/': (context) =>RegisterPage(),
+      '/': (context) => LoginPage(),
       '/indexPage': (context) => IndexPage(),
       '/register': (context) => RegisterPage(),
       '/interest': (context) => ChooseInterest(),
       '/bioData': (context) => BioData(),
-      '/login': (context) => LoginPage(),
+      // '/login': (context) => LoginPage(),
       '/feedPage': (context) => FeedPage(),
       '/searchNews': (context) => SearchNews(),
       '/accountPage': (context) => MyAccount(),

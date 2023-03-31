@@ -1,286 +1,216 @@
+import 'dart:developer';
+import 'dart:io';
+import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
+import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:provider/provider.dart';
-import 'package:socialize/pages/accountPage.dart';
-import 'package:socialize/pages/requestPage.dart';
-import 'package:socialize/news/newsPage.dart';
-import 'package:socialize/pages/feedPage.dart';
-import 'package:socialize/pages/globals.dart';
-import 'package:socialize/providers/userProvider.dart';
-import 'package:socialize/resources/firestore_methods.dart';
-import 'package:socialize/utils/colors.dart';
-import 'package:socialize/utils/utils.dart';
-import 'dart:typed_data';
-import 'package:socialize/models/user.dart' as model;
-import 'package:firebase_auth/firebase_auth.dart';
-import '../utils/utils.dart';
+import '../api/apis.dart';
+import '../api/dialogs.dart';
 
-class AddPostScreen extends StatefulWidget {
-  const AddPostScreen({Key? key}) : super(key: key);
+
+class AddPost extends StatefulWidget {
+  const AddPost({Key? key}) : super(key: key);
 
   @override
-  State<AddPostScreen> createState() => _AddPostScreenState();
+  State<AddPost> createState() => _AddPostState();
 }
 
-class _AddPostScreenState extends State<AddPostScreen> {
-  bool request = true;
-  Uint8List?  _file;
-  final TextEditingController _descriptionController=TextEditingController();
-  void dispose(){
-    super.dispose();
-    _descriptionController.dispose();
-  }
-  _selectImage(BuildContext context) async{
-    return showDialog(context: context, builder: (context){
-      return SimpleDialog(
-        title: const Text('Create a Post'),
-        children: [
-          SimpleDialogOption(
-            padding: const EdgeInsets.all(20),
-            child: const Text('Take a Photo'),
-            onPressed: () async{
-              Navigator.of(context).pop();
-              Uint8List? file=await pickImage(ImageSource.camera,);
-              setState(() {
-                _file=file;
-              });
-            },
-          ),
-          SimpleDialogOption(
-            padding: const EdgeInsets.all(20),
-            child: const Text('Choose from Gallery'),
-            onPressed: () async{
-              Navigator.of(context).pop();
-              Uint8List? file=await pickImage(ImageSource.gallery,);
-              setState(() {
-                _file=file;
-              });
-            },
-          ),
-          SimpleDialogOption(
-            padding: const EdgeInsets.all(20),
-            child: const Text('Cancel'),
-            onPressed: () async{
-              Navigator.of(context).pop();
-            },
-          ),
-        ],
-      );
-    });
-  }
-  void postImage(String uid,
-      String username,
-      String profImage,)
-  async{
-    try{
-      String res=await FirestoreMethods().uploadPost(
-        _descriptionController.text,
-        _file!,
-        uid,
-        username,
-        profImage,
-      );
-      if(res=='success'){
-        showSnackBar('Posted', context);
-      }
-      else{
-        showSnackBar(res, context);
-      }
-    }catch(err){
-      showSnackBar(err.toString(), context);
-    }
-
-  }
+class _AddPostState extends State<AddPost> {
+  String ? _image;
+  final _formKey = GlobalKey<FormState>();
   @override
   Widget build(BuildContext context) {
-    final UserProvider userProvider = Provider.of<UserProvider>(context);
-    //final model.User user=Provider.of<UserProvider>(context).getUser;
-    return _file==null
-        ?Center(
-        child: Material(
-        child: IconButton(
-          icon: Icon(Icons.upload),
-          onPressed: ()=>_selectImage(context),
-        ),
-      ),
-    ):
-    Scaffold(
-      appBar: PreferredSize(
-        preferredSize: const Size.fromHeight(50),
-        child: Container(
-          decoration: const BoxDecoration(
-            border: Border(
-              bottom: BorderSide(
-                color: Colors.grey,
-              ),
-            ),
-          ),
-          child: AppBar(
-            automaticallyImplyLeading: false,
-            backgroundColor: mode ? Colors.black :mobileBackgroundColor,
-            leading:IconButton(
-              icon:const Icon(Icons.arrow_back),
-              color: Colors.black,
-              onPressed: (){},
-            ),
-            elevation: 0,
-            title: Padding(
-              padding: const EdgeInsets.all(15.0),
-              child: Text(
-                'New Post',
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  color: mode ? Colors.white : Colors.black,
-                ),
-              ),
-            ),
-            centerTitle: false,
-            actions: [
-              TextButton(
-                onPressed: ()=>postImage(
-                 userProvider.getUser.uid,
-                  userProvider.getUser.firstname,
-                  userProvider.getUser.photoUrl,
-        ),
-                child: const Text(
-                  'Post',
-                  style: TextStyle(
-                    color: Colors.blueAccent,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 16,
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-      // appBar: AppBar(
-      //   backgroundColor: Colors.teal,
-      // ),
-      body: Column(
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Padding(
-                padding:EdgeInsets.all(14.0),
-                child: CircleAvatar(
-                  backgroundImage: NetworkImage(
-                    userProvider.getUser.photoUrl,
-                  ),
-                ),
-              ),
-              SizedBox(
-                width: MediaQuery.of(context).size.width*0.4,
-                child:TextField(
-                  controller: _descriptionController,
-                  decoration:const InputDecoration(
-                    hintText: 'Write a caption...',
-                    border: InputBorder.none,
-                  ),
-                  maxLines: 8,
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(14.0),
-                child:SizedBox(
-                  height: 45,
-                  width: 45,
-                  child: AspectRatio(
-                    aspectRatio: 487/451,
-                    child:Container(
-                      decoration:BoxDecoration(
-                          image: DecorationImage(
-                            image:MemoryImage(_file!),
-                            fit:BoxFit.fill,
-                            alignment: FractionalOffset.topCenter,
+    return GestureDetector(
+      onTap: () => FocusScope.of(context).unfocus(),
+      child: Scaffold(
+        body: Container(
+          child: SingleChildScrollView(
+            child: Center(
+              child: SafeArea(
+                child: Column(
+                  children: [
+                    SizedBox(
+                      height: 20,
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 20),
+                      child: Row(
+                        children: [
+                          CircleAvatar(
+                            backgroundColor: Colors.black,
+                            radius: 30,
                           ),
+                          SizedBox(
+                            width: MediaQuery.of(context).size.width * 0.05,
+                          ),
+                          Text(
+                            'Name',
+                            style: TextStyle(
+                              fontSize: 20,
+                            ),
+                          ),
+                        ],
                       ),
                     ),
-                  ),
+
+                    SizedBox(
+                      height: 15,
+                    ),
+
+                      Form(
+                        key: _formKey,
+                        child: Column(
+                          children: [
+                            ElevatedButton(
+                              onPressed: (){
+                                _showBottomSheet();
+                              },
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.white,
+                                elevation: 0,
+                              ),
+                              child: _image != null ? ClipRRect(
+                                  child: Image.file(File(_image!),
+                                      width: MediaQuery.of(context).size.height * .42,
+                                      height: MediaQuery.of(context).size.height * .42,
+                                      fit: BoxFit.cover)
+                              )
+                              : Image(
+                                  image: AssetImage('images/profilePicture.png'),
+                                ),
+                            ),
+                        SizedBox(height: 20,),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 15),
+                          child: TextFormField(
+                            maxLines: 2,
+                            decoration: InputDecoration(
+                              border: OutlineInputBorder(
+                                  borderSide: BorderSide(
+                                    color: Colors.teal,
+                                    width: 2,
+                                  ),
+                              ),
+                              focusedBorder: OutlineInputBorder(
+                                  borderSide: BorderSide(
+                                    color: Colors.black,
+                                    width: 1,
+                                  ),
+                              ),
+                              labelText: 'Enter Caption',
+                              hintText: 'Caption',
+                              hintStyle: TextStyle(
+                                  color: Colors.black,
+                              ),
+                              labelStyle: TextStyle(
+                                  color: Colors.black,
+                              ),
+                            ),
+                          ),
+                        ),
+                    SizedBox(height: 20,),
+                          ],
+                        ),
+                      ),
+                    SizedBox(
+                      width: MediaQuery.of(context).size.width*0.92,
+                      height: MediaQuery.of(context).size.height*0.07,
+                      child: ElevatedButton(
+                        style: ButtonStyle(
+                          backgroundColor: MaterialStateProperty.all(Colors.cyan),
+                        ),
+                          onPressed: (){
+                            if (_formKey.currentState!.validate()){
+                              _formKey.currentState!.save();
+                              APIs.updatePost(File(_image!)).then((value) {
+                                Dialogs.showSnackBar(context,"Post Done Successfully!");
+                              });
+                            }
+                          },
+
+                          child: Text(
+                            'Post',
+                            style: TextStyle(
+                              fontSize: 18,
+                            ),
+                          )
+                      ),
+                    ),
+                  ],
                 ),
               ),
-              const Divider(),
-            ],
-          )
-        ],
-      ),
-      bottomNavigationBar: BottomAppBar(
-        color: mode ? Colors.grey[800] : Colors.white,
-        child: Padding(
-          padding: const EdgeInsets.only(bottom: 10,),
-          child: Row(
-            verticalDirection: VerticalDirection.down,
-            crossAxisAlignment: CrossAxisAlignment.end,
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: <Widget>[
-              IconButton(
-                onPressed: () {
-                  Navigator.pushReplacement(context,
-                      MaterialPageRoute(builder: (BuildContext context) => FeedPage(),));
-                },
-                icon: Icon(
-                  Icons.home_outlined,
-                  color: mode ? Colors.white54 : Colors.grey[700],
-                  size: 35,
-                ),
-              ),
-              IconButton(
-                onPressed: () {
-                  Navigator.pushReplacement(context,
-                      MaterialPageRoute(builder: (BuildContext context) => NewsScreen(),));
-                },
-                icon: Icon(
-                  Icons.search,
-                  color: mode ? Colors.white54 : Colors.grey[700],
-                  size: 35,
-                ),
-              ),
-              IconButton(
-                onPressed: () {
-                  Navigator.pushReplacement(context,
-                      MaterialPageRoute(builder: (BuildContext context) => AddPostScreen(),));
-                },
-                icon: Icon(
-                  Icons.add,
-                  color: mode ? Colors.white : Colors.black,
-                  size: 35,
-                ),
-              ),
-              IconButton(
-                onPressed: () {
-                  Navigator.pushReplacement(context,
-                      MaterialPageRoute(builder: (BuildContext context) => RequestPage(),));
-                },
-                icon: Icon(
-                  Icons.favorite_border,
-                  color: mode ? Colors.white54 : Colors.grey[700],
-                  size: 35,
-                ),
-              ),
-              IconButton(
-                onPressed: () {
-                  Navigator.pushReplacement(context,
-                      MaterialPageRoute(builder: (BuildContext context) => MyAccount(),));
-                },
-                icon: Icon(
-                  Icons.person_outline_outlined,
-                  color: mode ? Colors.white54 : Colors.grey[700],
-                  size: 35,
-                ),
-              ),
-            ],
+            ),
           ),
         ),
       ),
     );
+
+  }
+  void _showBottomSheet() {
+    showModalBottomSheet(
+        context: context,
+        shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(20), topRight: Radius.circular(20))),
+        builder: (_) {
+          return ListView(
+            shrinkWrap: true,
+            padding:
+            EdgeInsets.only(top: MediaQuery.of(context).size.height * .03, bottom: MediaQuery.of(context).size.height * .05),
+            children: [
+              const Text('Pick Profile Picture',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500)
+              ),
+              SizedBox(height: MediaQuery.of(context).size.height * .02),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.white,
+                          shape: const CircleBorder(),
+                          fixedSize: Size(MediaQuery.of(context).size.width * .3, MediaQuery.of(context).size.height * .15)),
+                      onPressed: () async {
+                        final ImagePicker picker = ImagePicker();
+                        final XFile? image = await picker.pickImage(
+                            source: ImageSource.gallery, imageQuality: 80);
+                        if (image != null) {
+                          log('Image Path: ${image.path}');
+                          setState(() {
+                            _image = image.path;
+                          });
+
+                          APIs.updatePost(File(_image!));
+                          Navigator.pop(context);
+                        }
+                      },
+                      child: Image.asset('images/add_image.png')),
+                  ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.white,
+                          shape: const CircleBorder(),
+                          fixedSize: Size(MediaQuery.of(context).size.width * .3, MediaQuery.of(context).size.height * .15)),
+                      onPressed: () async {
+                        final ImagePicker picker = ImagePicker();
+                        final XFile? image = await picker.pickImage(
+                            source: ImageSource.camera, imageQuality: 80);
+                        if (image != null) {
+                          log('Image Path: ${image.path}');
+                          setState(() {
+                            _image = image.path;
+                          });
+                          APIs.updatePost(File(_image!));
+                          Navigator.pop(context);
+                        }
+                      },
+                      child: Image.asset('images/camera.png')),
+                ],
+              )
+            ],
+          );
+        });
   }
 }
-
-
-
-
-
-

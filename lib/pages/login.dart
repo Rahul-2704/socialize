@@ -6,7 +6,6 @@ import 'package:socialize/pages/register.dart';
 import 'package:socialize/pages/feedPage.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:socialize/resources/auth_methods.dart';
-import 'package:socialize/utils/utils.dart';
 class LoginPage extends StatefulWidget {
   const LoginPage({Key? key}) : super(key: key);
 
@@ -19,6 +18,7 @@ class _LoginPageState extends State<LoginPage> {
   late String _emailLogin;
   TextEditingController _passwordLogin = TextEditingController();
   final GlobalKey<FormState> _fkLogin = GlobalKey<FormState>();
+
   void validateAndSaveLogin() {
     final FormState? form = _fkLogin.currentState;
     if (form!.validate()) {
@@ -45,7 +45,7 @@ class _LoginPageState extends State<LoginPage> {
      Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context)=>const FeedPage()));
     }
     else{
-     showSnackBar(res, context);
+     // showSnackBar(res, context);
     }
     setState(() {
       _isLoading=false;
@@ -68,12 +68,7 @@ class _LoginPageState extends State<LoginPage> {
       body: Container(
         alignment: Alignment.center,
         height : MediaQuery.of(context).size.height,
-        decoration: BoxDecoration(
-          image: DecorationImage(
-            image: AssetImage('images/indexBackground.jpg'),
-            fit: BoxFit.cover,
-          ),
-        ),
+
         child: SingleChildScrollView(
           child: Form(
             key: _fkLogin,

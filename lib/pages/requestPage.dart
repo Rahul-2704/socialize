@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:socialize/news/newsPage.dart';
 import 'package:socialize/pages/accountPage.dart';
-import 'package:socialize/pages/addPost.dart';
+import 'package:socialize/pages/post.dart';
 import 'package:socialize/pages/feedPage.dart';
 import 'globals.dart';
 
@@ -88,7 +88,7 @@ class _RequestPageState extends State<RequestPage> {
               IconButton(
                 onPressed: () {
                   Navigator.pushReplacement(context,
-                      MaterialPageRoute(builder: (BuildContext context) => AddPostScreen(),));
+                      MaterialPageRoute(builder: (BuildContext context) => TempScreen(),));
                 },
                 icon: Icon(
                   Icons.add,

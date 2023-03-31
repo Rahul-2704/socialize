@@ -1,18 +1,24 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:socialize/models/user.dart' as model;
+import '../models/post.dart';
+
 class Authmethods{
   final FirebaseAuth _auth=FirebaseAuth.instance;
   final FirebaseFirestore _firestore=FirebaseFirestore.instance;
 
-  Future<model.User> getUserDetails() async{
+  Future<model.UserAccount> getUserDetails() async{
+
     User? currentUser=_auth.currentUser;
+    // PostPhoto? currentPost=_auth.currentPost;
+
     DocumentSnapshot snap=await _firestore.collection("users")
         .doc(currentUser!.uid).get();
-    return model.User.fromSnap(snap);
+    return model.UserAccount.fromJson(json as Map<String, dynamic>);
   }
   Future<String> signupUser({
     required String firstName,
@@ -24,6 +30,8 @@ class Authmethods{
     required String photoUrl,
     required String bio,
     required String username,
+    required String caption,
+    required String image,
 })async{
     String res='Some error occurred';
     try{
@@ -31,9 +39,13 @@ class Authmethods{
         //register the user
        UserCredential cred= await _auth.createUserWithEmailAndPassword(email: email, password: password);
       //add user to our database
-       model.User user=model.User(
+       model.UserAccount user=model.UserAccount(
          firstname: firstName,
          lastname: lastName,
+         username: username,
+         image: image,
+         bio : bio,
+         caption: caption,
          uid: cred.user!.uid,
          password: password,
          email: email,

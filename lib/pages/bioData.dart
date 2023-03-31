@@ -229,26 +229,24 @@ class _BioDataState extends State<BioData> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
               TextButton.icon(
-                onPressed: () async{
-                  FirebaseStorage storage=FirebaseStorage.instance;
-                  final XFile? image = await picker.pickImage(source: ImageSource.camera);
-                  if(image != null){
-                    setState(() {
-                      _image = image.path;
-                    });
-                    Navigator.pop(context);
-                    final Directory systemTempDir = Directory.systemTemp;                           // getting tempory directory
+                  onPressed: () async{
+                    FirebaseStorage storage=FirebaseStorage.instance;
+                    final XFile? image = await picker.pickImage(source: ImageSource.camera);
+                    if(image != null){
+                      setState(() {
+                        _image = image.path;
+                      });
+                      Navigator.pop(context);
+                      final Directory systemTempDir = Directory.systemTemp;                           // getting tempory directory
+                      final byteData = await rootBundle.load(_image!);                                    // loading image using rootBundle
+                      final file = File('${image.path}/$image.jpeg');
 
-                    final byteData = await rootBundle.load(_image!);                                    // loading image using rootBundle
-                    final file = File('${image.path}/$image.jpeg');
-
-                    await file.writeAsBytes(byteData.buffer
-                        .asUint8List(byteData.offsetInBytes, byteData.lengthInBytes));
-                  }
-                //  TaskSnapshot taskSnapshot =
-                 // await storage.ref('$image.path/$_image').putFile(file);
-
-                },
+                      await file.writeAsBytes(byteData.buffer
+                          .asUint8List(byteData.offsetInBytes, byteData.lengthInBytes));
+                    }
+                  //  TaskSnapshot taskSnapshot =
+                   // await storage.ref('$image.path/$_image').putFile(file);
+                  },
                 label: Text('Camera', style: TextStyle(fontSize: 20,),),
                 icon: Icon(
                   Icons.camera,
@@ -257,7 +255,7 @@ class _BioDataState extends State<BioData> {
               ),
               TextButton.icon(
                 onPressed: () async {
-                  final XFile? image = await picker.pickImage(source: ImageSource.gallery);
+                  final XFile? image = await ImagePicker().pickImage(source: ImageSource.gallery);
                   if(image != null){
                     setState(() {
                       _image = image.path;

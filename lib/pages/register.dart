@@ -305,7 +305,9 @@ class _RegisterPageState extends State<RegisterPage> {
                             following: [],
                             photoUrl: '',
                             bio:'',
-                           username:'',
+                            username:'',
+                            caption: '',
+                            image: 'images/profilePicture.png',
                           );
                       print(res);
                     },

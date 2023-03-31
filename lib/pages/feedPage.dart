@@ -4,7 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:socialize/pages/accountPage.dart';
 import 'package:socialize/pages/requestPage.dart';
 import 'package:socialize/news/newsPage.dart';
-import 'package:socialize/pages/addPost.dart';
+import 'package:socialize/pages/post.dart';
 import 'package:socialize/providers/userProvider.dart';
 import 'package:socialize/widgets/post_card.dart';
 import 'globals.dart';
@@ -132,7 +132,7 @@ class _FeedPageState extends State<FeedPage> {
               IconButton(
                 onPressed: () {
                   Navigator.pushReplacement(context,
-                      MaterialPageRoute(builder: (BuildContext context) => AddPostScreen(),));
+                      MaterialPageRoute(builder: (BuildContext context) => TempScreen(),));
                 },
                 icon: Icon(
                   Icons.add,

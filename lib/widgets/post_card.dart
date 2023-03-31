@@ -1,8 +1,6 @@
 import 'dart:ui';
-
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:socialize/utils/colors.dart';
 
 class PostCard extends StatelessWidget{
   final snap;
@@ -171,7 +169,7 @@ class PostCard extends StatelessWidget{
                   child: Text(
                     DateFormat.yMMMd().format(snap['datePublished'].toDate(),
     ),
-                    style:const TextStyle(fontSize: 16,color: secondaryColor),
+                    style:const TextStyle(fontSize: 16),
                   ),
                 )
               ],

@@ -3,7 +3,6 @@ import 'package:provider/provider.dart';
 import 'package:socialize/pages/login.dart';
 import 'package:socialize/pages/friendPage.dart';
 import 'package:socialize/pages/indexPage.dart';
-// import 'package:socialize/pages/login.dart';
 import 'package:socialize/pages/register.dart';
 import 'package:socialize/pages/bioData.dart';
 import 'package:socialize/pages/interest.dart';

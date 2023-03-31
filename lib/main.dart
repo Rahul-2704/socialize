@@ -29,7 +29,7 @@ void main() async{
       child:MaterialApp(
     debugShowCheckedModeBanner: false,
     routes: {
-      '/': (context) =>RegisterPage(),
+      '/': (context) =>LoginPage(),
       '/indexPage': (context) => IndexPage(),
       '/register': (context) => RegisterPage(),
       '/interest': (context) => ChooseInterest(),

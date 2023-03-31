@@ -1,4 +1,4 @@
-import 'dart:io';
+import 'dart:io' as i;
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
@@ -9,6 +9,7 @@ import 'package:socialize/models/user.dart' as model;
 import 'package:socialize/pages/interest.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:socialize/resources/auth_methods.dart';
 class BioData extends StatefulWidget {
   const BioData({Key? key}) : super(key: key);
   @override
@@ -70,27 +71,14 @@ class _BioDataState extends State<BioData> {
                 width: 350,
                 child: ElevatedButton(
                   onPressed: () async{
-                  //   print(_bioController.text.trim());
-                  //   FirebaseAuth currentUser=(await FirebaseAuth.instance.currentUser) as FirebaseAuth;
-                  // FirebaseFirestore.instance.collection("users").doc(FirebaseAuth.instance.currentUser!.uid).update(
-                  //    { merge:true,
-                  //   "bio":_bioController.text.trim(),}
-                  //  );
-                  //   var firebaseUser =  FirebaseAuth.instance.currentUser;
-                   final firestoreInstance = FirebaseFirestore.instance;
-                  //
-                  //   firestoreInstance.collection("users").doc(FirebaseAuth.instance.currentUser!.uid).set(
-                  //   {
-                  //   "bio" :_bioController.text.trim(),
-                  //   },SetOptions(merge: true)).then((_){
-                  //   print(_bioController.text.trim());
-                  //   });
-                    var firebaseUser = FirebaseAuth.instance.currentUser;
-                    firestoreInstance
-                        .collection("users")
-                        .doc(firebaseUser!.uid)
-                        .set({"bio": _bioController.text.trim(),"username":_usernameController.text.trim()},SetOptions(merge: true)).then((_) {
-                        print("success!");
+                    final firestoreInstance = FirebaseFirestore.instance;
+                    FirebaseAuth _auth=FirebaseAuth.instance;
+                    firestoreInstance.collection("users").doc(_auth.currentUser!.uid).set(
+                        {
+                          "username" : _usernameController.text.trim(),
+                          "bio":_bioController.text.trim(),
+                        },SetOptions(merge: true)).then((_){
+                      print("success!");
                     });
                     Navigator.pushReplacement(context,
                         MaterialPageRoute(builder: (BuildContext context) => ChooseInterest(),));
@@ -172,7 +160,7 @@ class _BioDataState extends State<BioData> {
           CircleAvatar(
             radius: 80,
             child: Image.file(
-              File(_image!),
+              i.File(_image!),
               width: MediaQuery.of(context).size.height * 0.2,
               height: MediaQuery.of(context).size.height * 0.2,
               fit: BoxFit.cover,
@@ -232,23 +220,19 @@ class _BioDataState extends State<BioData> {
                 onPressed: () async{
                   FirebaseStorage storage=FirebaseStorage.instance;
                   final XFile? image = await picker.pickImage(source: ImageSource.camera);
-                  if(image != null){
+                  if(image != null) {
                     setState(() {
                       _image = image.path;
                     });
                     Navigator.pop(context);
-                    final Directory systemTempDir = Directory.systemTemp;                           // getting tempory directory
-
-                    final byteData = await rootBundle.load(_image!);                                    // loading image using rootBundle
-                    final file = File('${image.path}/$image.jpeg');
-
-                    await file.writeAsBytes(byteData.buffer
-                        .asUint8List(byteData.offsetInBytes, byteData.lengthInBytes));
+                    String imageName = "${FirebaseAuth.instance.currentUser!.uid}";
+                    FirebaseStorage.instance
+                        .ref()
+                        .child("photos")
+                        .child(imageName)
+                        .putFile(i.File(image.path));
                   }
-                //  TaskSnapshot taskSnapshot =
-                 // await storage.ref('$image.path/$_image').putFile(file);
-
-                },
+                  },
                 label: Text('Camera', style: TextStyle(fontSize: 20,),),
                 icon: Icon(
                   Icons.camera,

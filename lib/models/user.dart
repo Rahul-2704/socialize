@@ -3,14 +3,13 @@ class UserAccount {
     required this.firstname,
     required this.lastname,
     required this.email,
-    required this.uid,
+    required this.id,
     required this.bio,
     required this.password,
     required this.username,
     required this.following,
     required this.followers,
     required this.photoUrl,
-    required this.image,
     required this.caption,
   });
   late String firstname;
@@ -19,22 +18,20 @@ class UserAccount {
   late String bio;
   late List following;
   late List followers;
-  late String uid;
+  late String id;
   late String password;
   late String photoUrl;
-  late String image;
   late String caption;
   late String email;
 
   UserAccount.fromJson(Map<String, dynamic> json) {
     photoUrl = json['photoUrl'] ?? '';
-    image = json['image'] ?? '';
     caption = json['cation'] ?? '';
     followers = json['bio'] ?? '';
-    username = json['username'] ?? '';
+    username = json['username'];
     following = json['following'] ?? '';
     followers = json['followers'] ?? '';
-    uid = json['uid'] ?? '';
+    id = json['id'] ?? '';
     email = json['email'] ?? '';
     password = json['password'] ?? '';
     firstname = json['firstname'] ?? '';
@@ -44,13 +41,12 @@ class UserAccount {
   Map<String, dynamic> toJson() {
     final data = <String, dynamic>{};
     data['photoUrl'] = photoUrl;
-    data['image'] = image;
     data['followers'] = followers;
     data['firstname'] = firstname;
     data['lastname'] = lastname;
     data['password'] = password;
     data['username'] = username;
-    data['uid'] = uid;
+    data['id'] = id;
     data['caption'] = caption;
     data['email'] = email;
     data['bio'] = bio;

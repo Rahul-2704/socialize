@@ -1,4 +1,4 @@
-import 'dart:io';
+import 'dart:io' as i;
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
@@ -9,6 +9,7 @@ import 'package:socialize/models/user.dart' as model;
 import 'package:socialize/pages/interest.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:socialize/resources/auth_methods.dart';
 class BioData extends StatefulWidget {
   const BioData({Key? key}) : super(key: key);
   @override
@@ -17,9 +18,21 @@ class BioData extends StatefulWidget {
 
 class _BioDataState extends State<BioData> {
   final ImagePicker picker = ImagePicker();
+  late String _username;
+  final GlobalKey<FormState> _bioK = GlobalKey<FormState>();
   String? _image;
   final TextEditingController _usernameController=TextEditingController();
   final TextEditingController _bioController=TextEditingController();
+  void validateAndSave() {
+    final FormState? form = _bioK.currentState;
+    if (form!.validate()) {
+      print('Form is valid');
+      Navigator.pushReplacement(context,
+          MaterialPageRoute(builder: (BuildContext context) => ChooseInterest(),));
+    } else {
+      print('Form is invalid');
+    }
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -70,30 +83,16 @@ class _BioDataState extends State<BioData> {
                 width: 350,
                 child: ElevatedButton(
                   onPressed: () async{
-                  //   print(_bioController.text.trim());
-                  //   FirebaseAuth currentUser=(await FirebaseAuth.instance.currentUser) as FirebaseAuth;
-                  // FirebaseFirestore.instance.collection("users").doc(FirebaseAuth.instance.currentUser!.uid).update(
-                  //    { merge:true,
-                  //   "bio":_bioController.text.trim(),}
-                  //  );
-                  //   var firebaseUser =  FirebaseAuth.instance.currentUser;
-                   final firestoreInstance = FirebaseFirestore.instance;
-                  //
-                  //   firestoreInstance.collection("users").doc(FirebaseAuth.instance.currentUser!.uid).set(
-                  //   {
-                  //   "bio" :_bioController.text.trim(),
-                  //   },SetOptions(merge: true)).then((_){
-                  //   print(_bioController.text.trim());
-                  //   });
-                    var firebaseUser = FirebaseAuth.instance.currentUser;
-                    firestoreInstance
-                        .collection("users")
-                        .doc(firebaseUser!.uid)
-                        .set({"bio": _bioController.text.trim(),"username":_usernameController.text.trim()},SetOptions(merge: true)).then((_) {
-                        print("success!");
+                    final firestoreInstance = FirebaseFirestore.instance;
+                    FirebaseAuth _auth=FirebaseAuth.instance;
+                    firestoreInstance.collection("users").doc(_auth.currentUser!.uid).set(
+                        {
+                          "username" : _usernameController.text.trim(),
+                          "bio":_bioController.text.trim(),
+                        },SetOptions(merge: true)).then((_){
+                      print("success!");
                     });
-                    Navigator.pushReplacement(context,
-                        MaterialPageRoute(builder: (BuildContext context) => ChooseInterest(),));
+                  validateAndSave();
                   },
                   child: Text(
                     'Submit',
@@ -114,28 +113,35 @@ class _BioDataState extends State<BioData> {
   }
 
   Widget nameTextField(){
-    return TextFormField(
-      controller: _usernameController,
-      decoration: InputDecoration(
-        border: OutlineInputBorder(
-          borderSide: BorderSide(
-            color: Colors.teal,
-            width: 2,
+    return Form(
+      key:_bioK,
+      child: TextFormField(
+        controller: _usernameController,
+        decoration: InputDecoration(
+          border: OutlineInputBorder(
+            borderSide: BorderSide(
+              color: Colors.teal,
+              width: 2,
+            ),
           ),
-        ),
-        focusedBorder: OutlineInputBorder(
-          borderSide: BorderSide(
-            color: Colors.orange,
-            width: 2,
+          focusedBorder: OutlineInputBorder(
+            borderSide: BorderSide(
+              color: Colors.orange,
+              width: 2,
+            ),
           ),
+          prefixIcon: Icon(
+            Icons.person,
+            color: Colors.green,
+          ),
+          labelText: 'Username',
+          hintText: 'Username',
+          helperText: 'Enter a valid Username',
         ),
-        prefixIcon: Icon(
-          Icons.person,
-          color: Colors.green,
-        ),
-        labelText: 'Username',
-        hintText: 'Username',
-        helperText: 'Enter a valid Username',
+        validator: (value) => value!.isEmpty ? 'Please enter a username':null,
+        onSaved: (username){
+          _username = username!;
+        },
       ),
     );
   }
@@ -172,7 +178,7 @@ class _BioDataState extends State<BioData> {
           CircleAvatar(
             radius: 80,
             child: Image.file(
-              File(_image!),
+              i.File(_image!),
               width: MediaQuery.of(context).size.height * 0.2,
               height: MediaQuery.of(context).size.height * 0.2,
               fit: BoxFit.cover,
@@ -229,23 +235,32 @@ class _BioDataState extends State<BioData> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
               TextButton.icon(
-                  onPressed: () async{
-                    FirebaseStorage storage=FirebaseStorage.instance;
-                    final XFile? image = await picker.pickImage(source: ImageSource.camera);
-                    if(image != null){
-                      setState(() {
-                        _image = image.path;
-                      });
-                      Navigator.pop(context);
-                      final Directory systemTempDir = Directory.systemTemp;                           // getting tempory directory
-                      final byteData = await rootBundle.load(_image!);                                    // loading image using rootBundle
-                      final file = File('${image.path}/$image.jpeg');
-
-                      await file.writeAsBytes(byteData.buffer
-                          .asUint8List(byteData.offsetInBytes, byteData.lengthInBytes));
-                    }
-                  //  TaskSnapshot taskSnapshot =
-                   // await storage.ref('$image.path/$_image').putFile(file);
+                onPressed: () async{
+                  FirebaseStorage storage=FirebaseStorage.instance;
+                  final XFile? image = await picker.pickImage(source: ImageSource.camera);
+                  if(image != null) {
+                    setState(() {
+                      _image = image.path;
+                    });
+                    Navigator.pop(context);
+                    String? downloadLink;
+                    String imageName = "${FirebaseAuth.instance.currentUser!.uid}";
+                    UploadTask uploadTask=FirebaseStorage.instance
+                        .ref()
+                        .child("photos")
+                        .child(imageName)
+                        .putFile(i.File(image.path));
+                    TaskSnapshot downloadURL = (await uploadTask);
+                    String url = await downloadURL.ref.getDownloadURL();
+                    final firestoreInstance = FirebaseFirestore.instance;
+                    FirebaseAuth _auth=FirebaseAuth.instance;
+                    firestoreInstance.collection("users").doc(_auth.currentUser!.uid).set(
+                        {
+                          "photoUrl":url,
+                        },SetOptions(merge: true)).then((_){
+                      print(url);
+                    });
+                  }
                   },
                 label: Text('Camera', style: TextStyle(fontSize: 20,),),
                 icon: Icon(
@@ -255,13 +270,19 @@ class _BioDataState extends State<BioData> {
               ),
               TextButton.icon(
                 onPressed: () async {
-                  final XFile? image = await ImagePicker().pickImage(source: ImageSource.gallery);
+                  final XFile? image = await picker.pickImage(source: ImageSource.gallery);
                   if(image != null){
                     setState(() {
                       _image = image.path;
                     });
                     Navigator.pop(context);
-                  }
+                String imageName = "${FirebaseAuth.instance.currentUser!.uid}";
+                FirebaseStorage.instance
+                    .ref()
+                    .child("photos")
+                    .child(imageName)
+                    .putFile(i.File(image.path));
+                }
                 },
                 label: Text('Gallery', style: TextStyle(fontSize: 20,),),
                 icon: Icon(

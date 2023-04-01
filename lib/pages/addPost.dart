@@ -20,6 +20,7 @@ class AddPost extends StatefulWidget {
 class _AddPostState extends State<AddPost> {
   String ? _image;
   final _formKey = GlobalKey<FormState>();
+  final TextEditingController _captionController=TextEditingController();
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -85,6 +86,7 @@ class _AddPostState extends State<AddPost> {
                         Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 15),
                           child: TextFormField(
+                            controller: _captionController,
                             maxLines: 2,
                             decoration: InputDecoration(
                               border: OutlineInputBorder(
@@ -124,7 +126,7 @@ class _AddPostState extends State<AddPost> {
                           onPressed: (){
                             if (_formKey.currentState!.validate()){
                               _formKey.currentState!.save();
-                              APIs.updatePost(File(_image!)).then((value) {
+                              APIs.updatePost(File(_image!),_captionController.text.trim()).then((value) {
                                 Dialogs.showSnackBar(context,"Post Done Successfully!");
                               });
                             }
@@ -182,8 +184,6 @@ class _AddPostState extends State<AddPost> {
                           setState(() {
                             _image = image.path;
                           });
-
-                          APIs.updatePost(File(_image!));
                           Navigator.pop(context);
                         }
                       },
@@ -202,7 +202,6 @@ class _AddPostState extends State<AddPost> {
                           setState(() {
                             _image = image.path;
                           });
-                          APIs.updatePost(File(_image!));
                           Navigator.pop(context);
                         }
                       },

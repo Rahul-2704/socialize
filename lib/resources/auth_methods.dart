@@ -31,7 +31,6 @@ class Authmethods{
     required String bio,
     required String username,
     required String caption,
-    required String image,
 })async{
     String res='Some error occurred';
     try{
@@ -43,10 +42,9 @@ class Authmethods{
          firstname: firstName,
          lastname: lastName,
          username: username,
-         image: image,
          bio : bio,
          caption: caption,
-         uid: cred.user!.uid,
+         id: cred.user!.uid,
          password: password,
          email: email,
          following: following,

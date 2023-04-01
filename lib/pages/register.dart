@@ -303,11 +303,10 @@ class _RegisterPageState extends State<RegisterPage> {
                             password:_password.text.trim(),
                             followers: [],
                             following: [],
-                            photoUrl: '',
+                            photoUrl:'images/profilePicture.png',
                             bio:'',
                             username:'',
                             caption: '',
-                            image: 'images/profilePicture.png',
                           );
                       print(res);
                     },

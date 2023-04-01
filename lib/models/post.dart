@@ -2,28 +2,28 @@ class PostPhoto {
   PostPhoto({
     required this.image,
     required this.caption,
-    required this.likes,
-    required this.comments,
+   required this.date,
     required this.name,
-    required this.uid,
-    required this.date,
+    required this.id,
+    required this.time,
+    required this.comment
   });
   late String image;
   late String caption;
-  late int likes;
-  late String comments;
-  late String name;
-  late String uid;
   late String date;
+  late String name;
+  late String id;
+  late String time;
+  late String comment;
 
   PostPhoto.fromJson(Map<String, dynamic> json) {
     image = json['image'] ?? '';
     caption = json['caption'] ?? '';
-    uid = json['uid'] ?? '';
-    likes = json['likes'] ?? '';
-    name = json['name'] ?? '';
-    comments = json['comments'] ?? '';
+    id = json['id'] ?? '';
     date = json['date'] ?? '';
+    name = json['name'] ?? '';
+    time = json['time'] ?? '';
+    comment=json['comment']??'';
   }
 
   Map<String, dynamic> toJson() {
@@ -31,10 +31,10 @@ class PostPhoto {
     data['image'] = image;
     data['caption'] = caption;
     data['name'] = name;
-    data['uid'] = uid;
-    data['likes'] = likes;
-    data['comments'] = comments;
+    data['id'] = id;
     data['date'] = date;
+    data['time'] =time;
+    data['comment']=comment;
 
     return data;
   }

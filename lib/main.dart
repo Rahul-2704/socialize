@@ -14,6 +14,7 @@ import 'package:socialize/pages/feedPage.dart';
 import 'package:socialize/pages/globals.dart' as globals;
 import 'package:firebase_core/firebase_core.dart';
 import 'package:socialize/providers/userProvider.dart';
+import 'package:socialize/widgets/post_card.dart';
 
 void main() async{
   WidgetsFlutterBinding.ensureInitialized();
@@ -28,7 +29,7 @@ void main() async{
       child:MaterialApp(
     debugShowCheckedModeBanner: false,
     routes: {
-      '/': (context) => LoginPage(),
+      '/': (context) =>LoginPage(),
       '/indexPage': (context) => IndexPage(),
       '/register': (context) => RegisterPage(),
       '/interest': (context) => ChooseInterest(),

@@ -8,6 +8,7 @@ import 'package:socialize/pages/post.dart';
 import 'package:socialize/providers/userProvider.dart';
 import 'package:socialize/widgets/post_card.dart';
 import 'globals.dart';
+import 'package:socialize/api/apis.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:socialize/models/user.dart' as model;
 
@@ -21,25 +22,9 @@ class FeedPage extends StatefulWidget {
 class _FeedPageState extends State<FeedPage> {
 
   bool request = true;
-  String username="";
   final FirebaseAuth _auth=FirebaseAuth.instance;
   @override
-  void initState(){
-    getUsername();
-    super.initState();
-  }
-  void getUsername() async{
-    DocumentSnapshot snap=await FirebaseFirestore.instance
-        .collection('users')
-        .doc(FirebaseAuth.instance.currentUser!.uid)
-        .get();
-    setState(() {
-      username=(snap.data() as Map<String,dynamic>)['first name'];
-    });
-    print(username);
-  }
 
-  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: PreferredSize(
@@ -82,7 +67,7 @@ class _FeedPageState extends State<FeedPage> {
       //   backgroundColor: Colors.teal,
       // ),
     body:StreamBuilder(
-      stream: FirebaseFirestore.instance.collection("posts").snapshots(),
+      stream: FirebaseFirestore.instance.collection("userPost/${APIs.user.uid}/post").snapshots(),
       builder: (context,AsyncSnapshot<QuerySnapshot<Map<String,dynamic>>> snapshot){
         if(snapshot.connectionState==ConnectionState.waiting){
           return const Center(

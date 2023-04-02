@@ -3,79 +3,81 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:socialize/pages/interest.dart';
-import 'package:firebase_storage/firebase_storage.dart';
+import 'package:socialize/models/user.dart';
 import '../api/apis.dart';
 import '../api/dialogs.dart';
+import 'globals.dart';
 
-class BioData extends StatefulWidget {
-  const BioData({Key? key}) : super(key: key);
+class UpdateProfile extends StatefulWidget {
+  const UpdateProfile({Key?key}):super(key: key);
   @override
-  State<BioData> createState() => _BioDataState();
+  State<UpdateProfile> createState() => _UpdateProfileState();
 }
 
-class _BioDataState extends State<BioData> {
+class _UpdateProfileState extends State<UpdateProfile> {
   final ImagePicker picker = ImagePicker();
   late String _username;
   final GlobalKey<FormState> _bioK = GlobalKey<FormState>();
   String? _image;
-  final TextEditingController _usernameController=TextEditingController();
-  final TextEditingController _bioController=TextEditingController();
-  void validateAndSave() {
-    final FormState? form = _bioK.currentState;
-    if (form!.validate()) {
-      print('Form is valid');
-      Navigator.pushReplacement(context,
-          MaterialPageRoute(builder: (BuildContext context) => ChooseInterest(),));
-    } else {
-      print('Form is invalid');
-    }
+  final TextEditingController _usernameController = TextEditingController();
+  final TextEditingController _bioController = TextEditingController();
+  bool isLoading = true;
+  late String username = '';
+  late String pfp = '';
+  late String bio = '';
+  @override
+  void initState() {
+    super.initState();
+    FirebaseFirestore.instance.collection("users").
+    doc(FirebaseAuth.instance.currentUser!.uid)
+        .get().then((value) {
+      username = value.data()!["username"];
+      pfp = value.data()!["photoUrl"];
+      bio = value.data()!["bio"];
+      setState(() {
+        isLoading = false;
+      });
+    });
   }
+
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () => FocusScope.of(context).unfocus(),
       child: Scaffold(
-        appBar: AppBar(
-          centerTitle: true,
-          automaticallyImplyLeading: false,
-          backgroundColor: Colors.teal,
-          title: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              Container(
-                child: Padding(
-                  padding: const EdgeInsets.only(top: 5),
-                  child: Image(
-                    height: 40,
-                    image: AssetImage('images/logo.png'),
-                  ),
+        appBar: PreferredSize(
+          preferredSize: Size.fromHeight(50),
+          child: Container(
+            decoration: BoxDecoration(
+              border: Border(
+                bottom: BorderSide(
+                  color: Colors.grey,
                 ),
               ),
-              Text(
-                'Socialize',
+            ),
+            child: AppBar(
+              leading: BackButton(
+                color: mode ? Colors.white : Colors.black,
+              ),
+              backgroundColor: mode ? Colors.black : Colors.white,
+              elevation: 1,
+              title: Text(
+                'Update Profile',
                 style: TextStyle(
-                  fontFamily: 'Lobster',
-                  fontSize: 50,
                   fontWeight: FontWeight.bold,
+                  color: mode ? Colors.white : Colors.black,
                 ),
               ),
-            ],
+            ),
           ),
         ),
         body: Container(
-          decoration: BoxDecoration(
-            image: DecorationImage(
-              image: AssetImage('images/indexBackground.jpg'),
-              fit: BoxFit.cover,
-            ),
-          ),
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
             child: ListView(
               children: <Widget>[
                 imageProfile(),
-                SizedBox(height: 20,),
+                SizedBox(height: 30,),
                 nameTextField(),
                 SizedBox(height: 20,),
                 aboutTextField(),
@@ -84,38 +86,19 @@ class _BioDataState extends State<BioData> {
                   height: 45,
                   width: 350,
                   child: ElevatedButton(
-                    onPressed: () async{
-                      validateAndSave();
+                    onPressed: () {
+                      APIs.profileUpdate(i.File(_image!)).then((value) {
+                        Dialogs.showSnackBar(context, 'Profile Updated Successfully!');
+                      });
                       final firestoreInstance = FirebaseFirestore.instance;
                       FirebaseAuth _auth=FirebaseAuth.instance;
                       firestoreInstance.collection("users").doc(_auth.currentUser!.uid).set(
                           {
                             "username" : _usernameController.text.trim(),
-                            "bio":_bioController.text.trim(),
+                            "bio" : _bioController.text.trim(),
                           },SetOptions(merge: true)).then((_){
                         print("success!");
                       });
-                      String? downloadLink;
-                      String imageName = "${FirebaseAuth.instance.currentUser!.uid}";
-                      UploadTask uploadTask=FirebaseStorage.instance
-                          .ref()
-                          .child("photos")
-                          .child(imageName)
-                          .putFile(i.File(_image!));
-                      TaskSnapshot downloadURL = (await uploadTask);
-                      String url = await downloadURL.ref.getDownloadURL();
-                      firestoreInstance.collection("users").doc(_auth.currentUser!.uid).set(
-                          {
-                            "photoUrl":url,
-                          },SetOptions(merge: true)).then((_){
-                        Dialogs.showSnackBar(context,"Bio Updated Successfully!");
-                      });
-                      Navigator.pushReplacement(context,
-                          MaterialPageRoute(
-                            builder: (BuildContext context) =>
-                                ChooseInterest(),
-                          )
-                      );
                     },
                     child: Text(
                       'Submit',
@@ -138,7 +121,6 @@ class _BioDataState extends State<BioData> {
 
   Widget nameTextField(){
     return Form(
-      key:_bioK,
       child: TextFormField(
         controller: _usernameController,
         decoration: InputDecoration(
@@ -157,11 +139,9 @@ class _BioDataState extends State<BioData> {
             Icons.person,
             color: Colors.green,
           ),
-          labelText: 'Username',
-          hintText: 'Username',
-          helperText: 'Enter a valid Username',
+          hintText: username,
+          helperText: 'Username'
         ),
-        validator: (value) => value!.isEmpty ? 'Please enter a username' : null,
         onSaved: (username){
           _username = username!;
         },
@@ -185,9 +165,8 @@ class _BioDataState extends State<BioData> {
             width: 2,
           ),
         ),
-        labelText: 'About',
-        hintText: 'Bio',
-        helperText: 'Write about yourself',
+        hintText: bio,
+        helperText: 'About',
       ),
     );
   }
@@ -207,13 +186,12 @@ class _BioDataState extends State<BioData> {
             ),
           )
           :
-          ClipRRect(
-            borderRadius: BorderRadius.circular(MediaQuery.of(context).size.height * 0.1),
-            child: Image.asset(
-              'images/profilePicture.png',
-              width: MediaQuery.of(context).size.height * 0.2,
-              height: MediaQuery.of(context).size.height * 0.2,
-              fit: BoxFit.cover,
+          isLoading ? Center(child: CircularProgressIndicator())
+          :
+          CircleAvatar(
+            radius: 80,
+            backgroundImage: NetworkImage(
+              pfp,
             ),
           ),
           Positioned(
@@ -222,13 +200,13 @@ class _BioDataState extends State<BioData> {
             child: InkWell(
               onTap: () {
                 showModalBottomSheet(
-                context: context,
-                builder: ((builder) => bottomSheet()),
+                  context: context,
+                  builder: ((builder) => bottomSheet()),
                 );
               },
               child: Icon(
-                Icons.camera_alt,
-                color: Colors.teal,
+                Icons.edit,
+                color: Colors.white,
                 size: 30,
               ),
             ),
@@ -249,7 +227,7 @@ class _BioDataState extends State<BioData> {
       child: Column(
         children: <Widget>[
           Text(
-            'Choose Profile Photo',
+            'Select Profile Photo',
             style: TextStyle(
               fontSize: 23,
               fontWeight: FontWeight.w400,
@@ -261,7 +239,6 @@ class _BioDataState extends State<BioData> {
             children: <Widget>[
               TextButton.icon(
                 onPressed: () async{
-                  FirebaseStorage storage = FirebaseStorage.instance;
                   final XFile? image = await picker.pickImage(source: ImageSource.camera);
                   if(image != null) {
                     setState(() {
@@ -269,7 +246,7 @@ class _BioDataState extends State<BioData> {
                     });
                     Navigator.pop(context);
                   }
-                  },
+                },
                 label: Text('Camera', style: TextStyle(fontSize: 20,),),
                 icon: Icon(
                   Icons.camera,
@@ -287,7 +264,12 @@ class _BioDataState extends State<BioData> {
                     Navigator.pop(context);
                   }
                 },
-                label: Text('Gallery', style: TextStyle(fontSize: 20,),),
+                label: Text(
+                  'Gallery',
+                  style: TextStyle(
+                    fontSize: 20,
+                  ),
+                ),
                 icon: Icon(
                   Icons.image,
                   size: 27,
@@ -299,5 +281,4 @@ class _BioDataState extends State<BioData> {
       ),
     );
   }
-
 }

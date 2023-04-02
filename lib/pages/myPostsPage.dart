@@ -1,26 +1,21 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:socialize/pages/accountPage.dart';
 import 'package:socialize/pages/requestPage.dart';
 import 'package:socialize/news/newsPage.dart';
 import 'package:socialize/pages/post.dart';
-import 'package:socialize/providers/userProvider.dart';
-import 'package:socialize/widgets/post_card.dart';
 import 'globals.dart';
 import 'package:socialize/api/apis.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:socialize/models/user.dart' as model;
+import 'package:socialize/pages/myPostsPost_Card.dart';
 
-class FeedPage extends StatefulWidget {
-  const FeedPage({Key? key}) : super(key: key);
+class MyPostsPage extends StatefulWidget {
+  const MyPostsPage({Key? key}) : super(key: key);
 
   @override
-  State<FeedPage> createState() => _FeedPageState();
+  State<MyPostsPage> createState() => _MyPostsPageState();
 }
 
-class _FeedPageState extends State<FeedPage> {
-
+class _MyPostsPageState extends State<MyPostsPage> {
   bool request = true;
   @override
 
@@ -37,28 +32,18 @@ class _FeedPageState extends State<FeedPage> {
             ),
           ),
           child: AppBar(
-            automaticallyImplyLeading: false,
+            leading: BackButton(
+              color: mode ? Colors.white : Colors.black,
+            ),
             backgroundColor: mode ? Colors.black : Colors.white,
-            elevation: 0,
-            title: Padding(
-              padding: const EdgeInsets.all(15.0),
-              child: Text(
-                'Socialize',
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  color: mode ? Colors.white : Colors.black,
-                ),
+            elevation: 1,
+            title: Text(
+              'Posts',
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                color: mode ? Colors.white : Colors.black,
               ),
             ),
-            actions:[
-              IconButton(
-                  onPressed: (){},
-                  icon:const Icon(
-                    Icons.messenger_outline,
-                    color: Colors.black,
-                  )
-              )
-            ],
           ),
         ),
       ),
@@ -72,8 +57,8 @@ class _FeedPageState extends State<FeedPage> {
           }
           return ListView.builder(
             itemCount: snapshot.data!.docs.length,
-            itemBuilder:(context,index) => PostCard(
-             snap:snapshot.data?.docs[index].data(),
+            itemBuilder:(context,index) => MyPostCard(
+              snap:snapshot.data?.docs[index].data(),
             ),
           );
         },
@@ -91,7 +76,7 @@ class _FeedPageState extends State<FeedPage> {
               IconButton(
                 onPressed: () {
                   Navigator.pushReplacement(context,
-                      MaterialPageRoute(builder: (BuildContext context) => FeedPage(),));
+                      MaterialPageRoute(builder: (BuildContext context) => MyPostsPage(),));
                 },
                 icon: Icon(
                   Icons.home_outlined,

@@ -7,7 +7,7 @@ class Dialogs{
         .showSnackBar(
         SnackBar(
           content: Text(msg),
-          backgroundColor: Colors.blue.withOpacity(0.8),
+          backgroundColor: Colors.green.withOpacity(1),
           behavior: SnackBarBehavior.floating,
         )
     );

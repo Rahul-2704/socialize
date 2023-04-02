@@ -1,10 +1,8 @@
 import 'dart:developer';
 import 'dart:io';
-import 'package:firebase_storage/firebase_storage.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
-import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
 import '../api/apis.dart';
 import '../api/dialogs.dart';
@@ -21,6 +19,23 @@ class _AddPostState extends State<AddPost> {
   String ? _image;
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _captionController=TextEditingController();
+  bool isLoading1 = true;
+  late String username = '';
+  late String pfp='';
+
+  @override
+  void initState() {
+    FirebaseFirestore.instance.collection("users").
+    doc(FirebaseAuth.instance.currentUser!.uid)
+        .get().then((value) {
+      username = value.data()!["username"];
+      pfp = value.data()!["photoUrl"];
+      setState(() {
+        isLoading1 = false;
+      });
+    });
+    super.initState();
+  }
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -39,17 +54,22 @@ class _AddPostState extends State<AddPost> {
                       padding: const EdgeInsets.symmetric(horizontal: 20),
                       child: Row(
                         children: [
+                          isLoading1 ? CircularProgressIndicator():
                           CircleAvatar(
-                            backgroundColor: Colors.black,
                             radius: 30,
+                            backgroundImage: NetworkImage(
+                              pfp,
+                            ),
                           ),
                           SizedBox(
                             width: MediaQuery.of(context).size.width * 0.05,
                           ),
                           Text(
-                            'Name',
+                            username,
                             style: TextStyle(
-                              fontSize: 20,
+                              fontSize: 25,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.black87,
                             ),
                           ),
                         ],
@@ -59,7 +79,6 @@ class _AddPostState extends State<AddPost> {
                     SizedBox(
                       height: 15,
                     ),
-
                       Form(
                         key: _formKey,
                         child: Column(
@@ -112,7 +131,7 @@ class _AddPostState extends State<AddPost> {
                             ),
                           ),
                         ),
-                    SizedBox(height: 20,),
+                        SizedBox(height: 20,),
                           ],
                         ),
                       ),
@@ -126,7 +145,7 @@ class _AddPostState extends State<AddPost> {
                           onPressed: (){
                             if (_formKey.currentState!.validate()){
                               _formKey.currentState!.save();
-                              APIs.updatePost(File(_image!),_captionController.text.trim()).then((value) {
+                              APIs.updatePost(File(_image!), _captionController.text.trim()).then((value) {
                                 Dialogs.showSnackBar(context,"Post Done Successfully!");
                               });
                             }

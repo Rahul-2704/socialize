@@ -13,6 +13,7 @@ import 'package:socialize/news/newsPage.dart';
 import 'package:socialize/pages/feedPage.dart';
 import 'package:socialize/pages/globals.dart' as globals;
 import 'package:firebase_core/firebase_core.dart';
+import 'package:socialize/pages/updateProfile.dart';
 import 'package:socialize/providers/userProvider.dart';
 import 'package:socialize/widgets/post_card.dart';
 
@@ -22,27 +23,26 @@ void main() async{
   globals.mode = false;
   runApp(
     MultiProvider(
-    providers: [
-      ChangeNotifierProvider(create:(_)=>UserProvider(),
-  ),
-  ],
+      providers: [
+        ChangeNotifierProvider(create:(_) => UserProvider()),
+      ],
       child:MaterialApp(
-    debugShowCheckedModeBanner: false,
-    routes: {
-      '/': (context) =>LoginPage(),
-      '/indexPage': (context) => IndexPage(),
-      '/register': (context) => RegisterPage(),
-      '/interest': (context) => ChooseInterest(),
-      '/bioData': (context) => BioData(),
-      // '/login': (context) => LoginPage(),
-      '/feedPage': (context) => FeedPage(),
-      '/searchNews': (context) => SearchNews(),
-      '/accountPage': (context) => MyAccount(),
-      '/friendPage': (context) => FriendPage(),
-      '/requestPage': (context) => RequestPage(),
-      '/home': (context) => NewsScreen(),
-    },
-  )
-  )
+        debugShowCheckedModeBanner: false,
+        routes: {
+          '/': (context) => LoginPage(),
+          '/indexPage': (context) => IndexPage(),
+          '/register': (context) => RegisterPage(),
+          '/interest': (context) => ChooseInterest(),
+          '/bioData': (context) => BioData(),
+          '/login': (context) => LoginPage(),
+          '/feedPage': (context) => FeedPage(),
+          '/searchNews': (context) => SearchNews(),
+          '/accountPage': (context) => MyAccount(),
+          '/friendPage': (context) => FriendPage(),
+          '/requestPage': (context) => RequestPage(),
+          '/home': (context) => NewsScreen(),
+        },
+      )
+    )
   );
 }

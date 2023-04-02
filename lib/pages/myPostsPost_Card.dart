@@ -4,17 +4,17 @@ import 'package:flutter/material.dart';
 import 'package:socialize/api/apis.dart';
 import 'package:socialize/widgets/comment_screen.dart';
 
-class PostCard extends StatefulWidget{
+class MyPostCard extends StatefulWidget{
   final snap;
-  const PostCard({Key?key,
+  const MyPostCard({Key?key,
     required this.snap,
   }):super(key:key);
 
   @override
-  State<PostCard> createState() => _PostCardState();
+  State<MyPostCard> createState() => _MyPostCardState();
 }
 
-class _PostCardState extends State<PostCard> {
+class _MyPostCardState extends State<MyPostCard> {
   bool isLoading1 = true;
   bool isLoading2 = true;
   late String id='';
@@ -28,8 +28,8 @@ class _PostCardState extends State<PostCard> {
     FirebaseFirestore.instance.collection("users").
     doc(FirebaseAuth.instance.currentUser!.uid)
         .get().then((value){
-      username = value.data()!["username"];
-      pfp = value.data()!["photoUrl"];
+      username=value.data()!["username"];
+      pfp=value.data()!["photoUrl"];
       setState(() {
         isLoading1 = false;
       });
@@ -42,9 +42,9 @@ class _PostCardState extends State<PostCard> {
     snapshots.then((value1){
       final listOfPhotos = value1.docs;
       listOfPhotos.forEach((value) {
-        feedImage = value.data()["image"];
-        caption = value.data()['caption'];
-        date = value.data()['date'];
+        feedImage=value.data()["image"];
+        caption=value.data()['caption'];
+        date=value.data()['date'];
       });
       setState(() {
         isLoading2 = false;

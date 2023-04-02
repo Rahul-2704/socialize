@@ -41,11 +41,9 @@ class _LoginPageState extends State<LoginPage> {
         password:_passwordController.text.trim(),
     );
     if(res=="success"){
-      //
      Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context)=>const FeedPage()));
     }
     else{
-     // showSnackBar(res, context);
     }
     setState(() {
       _isLoading=false;
@@ -196,6 +194,7 @@ class _LoginPageState extends State<LoginPage> {
                       height: 60,
                       child: ElevatedButton(
                         onPressed:(){
+                          dummyEnter();
                           validateAndSaveLogin();
                           loginUser();
                         },
@@ -225,15 +224,6 @@ class _LoginPageState extends State<LoginPage> {
                                   MaterialPageRoute(
                                     builder: (BuildContext context) =>
                                         RegisterPage(),));
-                           /* StreamBuilder<User?>(
-                              stream: FirebaseAuth.instance.authStateChanges(),
-                              builder:(context,snapshot){
-                                if(snapshot.hasData){
-                                  return BioData();
-                                }
-                                return LoginPage();
-                              }*/
-
                             },
                           child: Text(
                             'Sign In',
@@ -253,5 +243,10 @@ class _LoginPageState extends State<LoginPage> {
         ),
       ),
     );
+  }
+
+  void dummyEnter() {
+    _emailController.text = "kpasad9@gmail.com";
+    _passwordController.text = "kunal_9";
   }
 }

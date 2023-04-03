@@ -1,5 +1,5 @@
 // import 'dart:typed_data';
-// import 'package:socialize/models/post.dart';
+// import 'package:socialize/models/temp.dart';
 // import 'package:socialize/resources/auth_methods.dart' as model;
 // import 'package:cloud_firestore/cloud_firestore.dart';
 // import 'package:flutter/material.dart';

@@ -17,12 +17,12 @@ class MyPostCard extends StatefulWidget{
 class _MyPostCardState extends State<MyPostCard> {
   bool isLoading1 = true;
   bool isLoading2 = true;
-  late String id='';
+  late String id = '';
   late String username = '';
-  late String pfp='';
-  late String feedImage='';
-  late String caption='';
-  late String date='';
+  late String pfp = '';
+  late String feedImage = '';
+  late String caption = '';
+  late String date = '';
   @override
   void initState() {
     FirebaseFirestore.instance.collection("users").
@@ -42,9 +42,9 @@ class _MyPostCardState extends State<MyPostCard> {
     snapshots.then((value1){
       final listOfPhotos = value1.docs;
       listOfPhotos.forEach((value) {
-        feedImage=value.data()["image"];
-        caption=value.data()['caption'];
-        date=value.data()['date'];
+        feedImage = value.data()["image"];
+        caption = value.data()['caption'];
+        date = value.data()['date'];
       });
       setState(() {
         isLoading2 = false;
@@ -54,7 +54,6 @@ class _MyPostCardState extends State<MyPostCard> {
   }
 
   Widget build(BuildContext context){
-
     return Container(
         padding: const EdgeInsets.symmetric(
           vertical: 2,
@@ -129,7 +128,7 @@ class _MyPostCardState extends State<MyPostCard> {
               height: MediaQuery.of(context).size.height*0.33,
               width: MediaQuery.of(context).size.width*0.93,
               child: isLoading2 ? Center(child: CircularProgressIndicator()): Image.network(
-                feedImage,
+                widget.snap['image'],
                 fit:BoxFit.cover,
               ),
             ),
@@ -202,13 +201,13 @@ class _MyPostCardState extends State<MyPostCard> {
                           style: const TextStyle(color:Colors.black) ,
                           children: [
                             TextSpan(
-                              text:username,
+                              text: username,
                               style:const TextStyle(fontWeight: FontWeight.bold,
                                 color: Colors.black,
                               ),
                             ),
                             TextSpan(
-                              text:caption,
+                              text: widget.snap['caption'],
                             ),
                           ]
                       ),

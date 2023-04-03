@@ -1,16 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:socialize/pages/accountPage.dart';
 import 'package:socialize/pages/requestPage.dart';
 import 'package:socialize/news/newsPage.dart';
-import 'package:socialize/pages/post.dart';
-import 'package:socialize/providers/userProvider.dart';
+import 'package:socialize/pages/temp.dart';
 import 'package:socialize/widgets/post_card.dart';
 import 'globals.dart';
 import 'package:socialize/api/apis.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:socialize/models/user.dart' as model;
 
 class FeedPage extends StatefulWidget {
   const FeedPage({Key? key}) : super(key: key);
@@ -20,10 +16,8 @@ class FeedPage extends StatefulWidget {
 }
 
 class _FeedPageState extends State<FeedPage> {
-
   bool request = true;
   @override
-
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: PreferredSize(

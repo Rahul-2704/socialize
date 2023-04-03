@@ -3,10 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:socialize/pages/accountPage.dart';
 import 'package:socialize/pages/requestPage.dart';
 import 'package:socialize/news/newsPage.dart';
-import 'package:socialize/pages/post.dart';
+import 'package:socialize/pages/temp.dart';
 import 'globals.dart';
 import 'package:socialize/api/apis.dart';
-import 'package:socialize/pages/myPostsPost_Card.dart';
+import 'package:socialize/widgets/myPostsPost_Card.dart';
 
 class MyPostsPage extends StatefulWidget {
   const MyPostsPage({Key? key}) : super(key: key);
@@ -80,7 +80,7 @@ class _MyPostsPageState extends State<MyPostsPage> {
                 },
                 icon: Icon(
                   Icons.home_outlined,
-                  color: mode ? Colors.white : Colors.black,
+                  color: mode ? Colors.white54 : Colors.grey[700],
                   size: 35,
                 ),
               ),
@@ -124,7 +124,7 @@ class _MyPostsPageState extends State<MyPostsPage> {
                 },
                 icon: Icon(
                   Icons.person_outline_outlined,
-                  color: mode ? Colors.white54 : Colors.grey[700],
+                  color: mode ? Colors.white : Colors.black,
                   size: 35,
                 ),
               ),

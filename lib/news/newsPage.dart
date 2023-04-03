@@ -3,7 +3,7 @@ import 'package:socialize/news/fetchNews.dart';
 import 'package:socialize/news/newsArt.dart';
 import 'package:socialize/news/newsContainer.dart';
 import 'package:socialize/pages/accountPage.dart';
-import 'package:socialize/pages/post.dart';
+import 'package:socialize/pages/temp.dart';
 import 'package:socialize/pages/feedPage.dart';
 import 'package:socialize/pages/requestPage.dart';
 import 'package:socialize/pages/globals.dart';

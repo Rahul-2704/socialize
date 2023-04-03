@@ -2,18 +2,18 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:socialize/pages/addPost.dart';
-import 'package:socialize/pages/bioData.dart';
 import 'package:socialize/pages/feedPage.dart';
 import 'package:socialize/pages/myPostsPage.dart';
 import 'package:socialize/pages/requestPage.dart';
 import 'package:socialize/news/newsPage.dart';
-import 'package:socialize/pages/post.dart';
+import 'package:socialize/pages/temp.dart';
 import 'package:socialize/pages/globals.dart';
 import 'package:socialize/api/apis.dart';
 import 'package:socialize/pages/updateProfile.dart';
 
 class MyAccount extends StatefulWidget {
-  const MyAccount({Key? key}) : super(key: key);
+  final snap;
+  const MyAccount({Key? key, this.snap}) : super(key: key);
   @override
   State<MyAccount> createState() => _MyAccountState();
 }
@@ -24,8 +24,8 @@ class _MyAccountState extends State<MyAccount> with SingleTickerProviderStateMix
   bool isLoading1 = true;
   bool isLoading2 = true;
   late String username = '';
-  late String pfp='';
-  late String feedImage='';
+  late String pfp = '';
+  late String feedImage = '';
 
   @override
   void initState() {

@@ -17,12 +17,13 @@ class PostCard extends StatefulWidget{
 class _PostCardState extends State<PostCard> {
   bool isLoading1 = true;
   bool isLoading2 = true;
-  late String id='';
+  late String id = '';
   late String username = '';
-  late String pfp='';
-  late String feedImage='';
-  late String caption='';
-  late String date='';
+  late String pfp = '';
+  late String feedImage = '';
+  late String caption = '';
+  late String date = '';
+
   @override
   void initState() {
     FirebaseFirestore.instance.collection("users").
@@ -45,6 +46,7 @@ class _PostCardState extends State<PostCard> {
         feedImage = value.data()["image"];
         caption = value.data()['caption'];
         date = value.data()['date'];
+        print(feedImage);
       });
       setState(() {
         isLoading2 = false;
@@ -123,13 +125,24 @@ class _PostCardState extends State<PostCard> {
                   ),
                 ],
               ),
-              //Image section
             ),
             SizedBox(
               height: MediaQuery.of(context).size.height*0.33,
               width: MediaQuery.of(context).size.width*0.93,
-              child: isLoading2 ? Center(child: CircularProgressIndicator()): Image.network(
-                feedImage,
+              child: isLoading2 ? Center(child: CircularProgressIndicator())
+              :
+              Image.network(
+                widget.snap['image'],
+                errorBuilder: (context, error, stackTrace) {
+                  return Container(
+                    color: Colors.grey,
+                    alignment: Alignment.center,
+                    child: const Text(
+                      'Whoops!',
+                      style: TextStyle(fontSize: 30),
+                    ),
+                  );
+                },
                 fit:BoxFit.cover,
               ),
             ),
@@ -152,8 +165,12 @@ class _PostCardState extends State<PostCard> {
                     }
                 ),
                 IconButton(
-                  onPressed:() async=>await Navigator.of(context).push(MaterialPageRoute(builder:(context)=> CommentScreen(me:APIs.me),
-                  ),
+                  onPressed:() => Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder:(context) => CommentScreen(
+                          me:APIs.me
+                      ),
+                    ),
                   ),
                   icon:const Icon(
                     Icons.comment_outlined,
@@ -176,7 +193,6 @@ class _PostCardState extends State<PostCard> {
                 ),
               ],
             ),
-            //Description and comments
             Container(
               padding: const EdgeInsets.symmetric(
                 horizontal: 16,
@@ -202,13 +218,13 @@ class _PostCardState extends State<PostCard> {
                           style: const TextStyle(color:Colors.black) ,
                           children: [
                             TextSpan(
-                              text:username,
+                              text : username,
                               style:const TextStyle(fontWeight: FontWeight.bold,
                                 color: Colors.black,
                               ),
                             ),
                             TextSpan(
-                              text:caption,
+                              text: widget.snap['caption'],
                             ),
                           ]
                       ),
@@ -230,7 +246,7 @@ class _PostCardState extends State<PostCard> {
                   Container(
                     padding: const EdgeInsets.symmetric(vertical: 4),
                     child: Text(
-                      date,
+                      widget.snap['date'],
                       style:const TextStyle(fontSize: 16),
                     ),
                   )

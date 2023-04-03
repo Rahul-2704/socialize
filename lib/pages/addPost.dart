@@ -4,8 +4,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import '../api/apis.dart';
-import '../api/dialogs.dart';
+import 'package:socialize/api/apis.dart';
+import 'package:socialize/api/dialogs.dart';
 
 
 class AddPost extends StatefulWidget {
@@ -75,7 +75,6 @@ class _AddPostState extends State<AddPost> {
                         ],
                       ),
                     ),
-
                     SizedBox(
                       height: 15,
                     ),
@@ -97,9 +96,10 @@ class _AddPostState extends State<AddPost> {
                                       height: MediaQuery.of(context).size.height * .42,
                                       fit: BoxFit.cover)
                               )
-                              : Image(
-                                  image: AssetImage('images/profilePicture.png'),
-                                ),
+                              :
+                              Image(
+                                image: AssetImage('images/profilePicture.png'),
+                              ),
                             ),
                         SizedBox(height: 20,),
                         Padding(

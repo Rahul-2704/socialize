@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:socialize/models/comment.dart';
+import 'package:uuid/uuid.dart';
 import '../models/post.dart';
 import 'package:socialize/models/user.dart';
 import 'package:intl/intl.dart';
@@ -50,18 +51,19 @@ class APIs {
   }
 
   static Future<void> updatePost(File file, String caption) async {
+    var uuid = Uuid();
+    var pid = uuid.v1();
     String? username;
     FirebaseFirestore.instance.collection("users").
     doc(user.uid)
         .get().then((value) {
       username = value.data()!["username"];
     });
-    final momentOfPost = DateTime.now().toString();
     final ext = file.path
         .split('.')
         .last;
     log('Extension: $ext');
-    final ref = storage.ref().child('post_pictures/${user.uid}.$ext');
+    final ref = storage.ref().child('PostOfUsers/${user.uid}/${pid}.$ext');
     await ref
         .putFile(file, SettableMetadata(contentType: 'image/$ext'))
         .then((p0) {
@@ -80,7 +82,7 @@ class APIs {
         .collection('userPost')
         .doc(user.uid)
         .collection('post')
-        .doc(momentOfPost)
+        .doc(pid)
         .set(
       userPost.toJson(),
     );

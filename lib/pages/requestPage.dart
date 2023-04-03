@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:socialize/news/newsPage.dart';
 import 'package:socialize/pages/accountPage.dart';
-import 'package:socialize/pages/post.dart';
+import 'package:socialize/pages/temp.dart';
 import 'package:socialize/pages/feedPage.dart';
 import 'globals.dart';
 

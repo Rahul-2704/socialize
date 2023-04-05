@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:socialize/api/apis.dart';
 import 'package:socialize/api/dialogs.dart';
+import 'package:socialize/pages/accountPage.dart';
 
 
 class AddPost extends StatefulWidget {
@@ -142,12 +143,18 @@ class _AddPostState extends State<AddPost> {
                         style: ButtonStyle(
                           backgroundColor: MaterialStateProperty.all(Colors.cyan),
                         ),
-                          onPressed: (){
+                          onPressed: () async {
                             if (_formKey.currentState!.validate()){
                               _formKey.currentState!.save();
-                              APIs.addPost(File(_image!), _captionController.text.trim()).then((value) {
+                              await APIs.addPost(File(_image!), _captionController.text.trim()).then((value) {
                                 Dialogs.showSnackBar(context,"Post Done Successfully!");
                               });
+                              Navigator.pushReplacement(
+                                context, MaterialPageRoute(
+                                  builder: (BuildContext context) =>
+                                    MyAccount(id: FirebaseAuth.instance.currentUser!.uid),
+                                )
+                              );
                             }
                           },
 

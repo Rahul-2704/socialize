@@ -4,7 +4,6 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
-import 'package:socialize/models/comment.dart';
 import 'package:uuid/uuid.dart';
 import 'package:socialize/models/post.dart';
 import 'package:socialize/models/user.dart';
@@ -12,11 +11,11 @@ import 'package:intl/intl.dart';
 import 'package:socialize/models/user.dart' as model;
 
 class AuthMethods{
-  final FirebaseAuth _auth=FirebaseAuth.instance;
-  final FirebaseFirestore _firestore=FirebaseFirestore.instance;
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   Future<model.UserAccount> getUserDetails() async{
-    User? currentUser=_auth.currentUser;
+    User? currentUser = _auth.currentUser;
     DocumentSnapshot snap = await _firestore.collection("users")
         .doc(currentUser!.uid).get();
     return model.UserAccount.fromJson(json as Map<String, dynamic>);
@@ -159,108 +158,64 @@ class APIs {
       );
   }
 
-  static Future<String> likePost(String postId, String uid, List likes) async {
-    String res = "Some error occurred";
+  static Future<void> likePost(String postId, String id, List likes) async {
     try {
-      if (likes.contains(uid)) {
+      if (likes.contains(FirebaseAuth.instance.currentUser?.uid)) {
         await FirebaseFirestore.instance.collection("userPost")
-            .doc(FirebaseAuth.instance.currentUser!.uid)
+            .doc(id)
             .collection("post")
             .doc(postId)
             .update({
-          "likes": FieldValue.arrayRemove([uid]),
+          "likes": FieldValue.arrayRemove([FirebaseAuth.instance.currentUser?.uid]),
         }
         );
         await FirebaseFirestore.instance.collection("posts")
             .doc(postId)
             .update({
-          "likes": FieldValue.arrayRemove([uid]),
+          "likes": FieldValue.arrayRemove([FirebaseAuth.instance.currentUser?.uid]),
         });
       }
       else {
         await FirebaseFirestore.instance.collection("userPost")
-          .doc(FirebaseAuth.instance.currentUser!.uid)
-          .collection("post")
-          .doc(postId)
-          .update({
-            "likes": FieldValue.arrayUnion([uid]),
-          }
+            .doc(id)
+            .collection("post")
+            .doc(postId)
+            .update({
+          "likes": FieldValue.arrayUnion([FirebaseAuth.instance.currentUser?.uid]),
+        }
         );
         await FirebaseFirestore.instance.collection("posts")
             .doc(postId)
             .update({
-          "likes": FieldValue.arrayUnion([uid]),
+          "likes": FieldValue.arrayUnion([FirebaseAuth.instance.currentUser?.uid]),
         });
       }
-      res = 'success';
     }
     catch (e) {
       print(e.toString());
     }
-    return res;
   }
 
-  // static Future<void> likePost(String postId, String id, List likes) async {
-  //   try {
-  //     if (likes.contains(FirebaseAuth.instance.currentUser?.uid)) {
-  //       await FirebaseFirestore.instance.collection("userPost")
-  //           .doc(id)
-  //           .collection("post")
-  //           .doc(postId)
-  //           .update({
-  //         "likes": FieldValue.arrayRemove([FirebaseAuth.instance.currentUser?.uid]),
-  //       }
-  //       );
-  //       await FirebaseFirestore.instance.collection("posts")
-  //           .doc(postId)
-  //           .update({
-  //         "likes": FieldValue.arrayRemove([FirebaseAuth.instance.currentUser?.uid]),
-  //       });
-  //     }
-  //     else {
-  //       await FirebaseFirestore.instance.collection("userPost")
-  //           .doc(id)
-  //           .collection("post")
-  //           .doc(postId)
-  //           .update({
-  //         "likes": FieldValue.arrayUnion([FirebaseAuth.instance.currentUser?.uid]),
-  //       }
-  //       );
-  //       await FirebaseFirestore.instance.collection("posts")
-  //           .doc(postId)
-  //           .update({
-  //         "likes": FieldValue.arrayUnion([FirebaseAuth.instance.currentUser?.uid]),
-  //       });
-  //     }
-  //   }
-  //   catch (e) {
-  //     print(e.toString());
-  //   }
-  // }
-
-  static Future<void> postComment(UserAccount commentor,String comment)async{
-    String? username;
-    FirebaseFirestore.instance.collection("users").
-    doc(user.uid)
-        .get().then((value) {
-      username = value.data()!["username"];
-    });
-    final date = DateTime.now().toString();
-    final Comment comments =Comment(
-      id: user.uid,
-      username: username!,
-      time: DateFormat.jm().format(DateTime.now()),
-      comment:comment,
-    );
-    await firestore
-        .collection('userPost')
-        .doc(user.uid)
-        .collection('post')
-        .doc(date)
-        .collection("comments")
-        .doc(commentor.id)
-        .set(
-        comments.toJson(),
-    );
+  static Future<void> postComment(String postId, String text, String id, String username, String profUrl) async {
+    try {
+      if (text.isNotEmpty) {
+        String commentId = const Uuid().v1();
+        await FirebaseFirestore.instance.collection("posts").doc(postId)
+            .collection("comments").doc(commentId).set({
+          "profUrl" : profUrl,
+          "username" : username,
+          "id" : id,
+          "commentId" : commentId,
+          "datePublished" :DateFormat.MMMMEEEEd().format(DateTime.now()),
+        });
+      }
+      else{
+        print("Text is empty");
+      }
+    } catch (e) {
+      print(
+        e.toString(),
+      );
+    }
   }
 }

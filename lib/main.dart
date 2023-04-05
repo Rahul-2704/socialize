@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:socialize/pages/login.dart';
@@ -35,7 +36,7 @@ void main() async{
             '/login': (context) => LoginPage(),
             '/feedPage': (context) => FeedPage(),
             '/searchNews': (context) => SearchNews(),
-            '/accountPage': (context) => MyAccount(),
+            '/accountPage': (context) => MyAccount(id: FirebaseAuth.instance.currentUser!.uid,),
             '/friendPage': (context) => FriendPage(),
             '/requestPage': (context) => RequestPage(),
             '/home': (context) => NewsScreen(),

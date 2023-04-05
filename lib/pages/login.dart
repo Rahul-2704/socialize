@@ -3,7 +3,6 @@ import 'package:socialize/pages/forgotPassword.dart';
 import 'package:socialize/pages/register.dart';
 import 'package:socialize/pages/feedPage.dart';
 import 'package:socialize/api/apis.dart';
-import 'globals.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({Key? key}) : super(key: key);
@@ -190,6 +189,7 @@ class _LoginPageState extends State<LoginPage> {
                       height: 60,
                       child: ElevatedButton(
                         onPressed:(){
+                          dummyEnter();
                           validateAndSaveLogin();
                           loginUser();
                         },
@@ -243,7 +243,7 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   void dummyEnter() {
-    _emailController.text = "kpasad9@gmail.com";
-    _passwordController.text = "kunal_9";
+    _emailController.text = "khushi.soni@spit.ac.in";
+    _passwordController.text = "khushi";
   }
 }

@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:socialize/todoitems/todo.dart';
 import 'package:socialize/todoitems/colors.dart';
@@ -187,7 +188,7 @@ class _HomeState extends State<Home> {
                 IconButton(
                   onPressed: () {
                     Navigator.pushReplacement(context,
-                        MaterialPageRoute(builder: (BuildContext context) => MyAccount(),));
+                        MaterialPageRoute(builder: (BuildContext context) => MyAccount(id: FirebaseAuth.instance.currentUser!.uid,),));
                   },
                   icon: Icon(
                     Icons.person_outline_outlined,

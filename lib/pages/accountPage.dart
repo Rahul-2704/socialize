@@ -3,17 +3,17 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:socialize/pages/addPost.dart';
 import 'package:socialize/pages/feedPage.dart';
-import 'package:socialize/pages/myPostsPage.dart';
 import 'package:socialize/pages/requestPage.dart';
 import 'package:socialize/news/newsPage.dart';
 import 'package:socialize/pages/todolist.dart';
 import 'package:socialize/pages/globals.dart';
 import 'package:socialize/api/apis.dart';
 import 'package:socialize/pages/updateProfile.dart';
+import 'package:socialize/pages/myPostsPage.dart';
 
 class MyAccount extends StatefulWidget {
-  final snap;
-  const MyAccount({Key? key, this.snap}) : super(key: key);
+  final String id;
+  const MyAccount({Key? key, required this.id}) : super(key: key);
   @override
   State<MyAccount> createState() => _MyAccountState();
 }
@@ -21,45 +21,49 @@ class MyAccount extends StatefulWidget {
 class _MyAccountState extends State<MyAccount> with SingleTickerProviderStateMixin {
   late TabController tabController;
   ScrollController scrollController = ScrollController();
-  bool isLoading1 = true;
-  bool isLoading2 = true;
-  late String username = '';
-  late String pfp = '';
-  late String feedImage = '';
+  bool isLoading = false;
+  var userData = {};
+  int postLen = 0;
+
+  getData() async {
+    setState(() {
+      isLoading = true;
+    });
+    try {
+      var userSnap = await FirebaseFirestore.instance
+          .collection('users')
+          .doc(widget.id)
+          .get();
+
+      var postSnap = await FirebaseFirestore.instance
+          .collection('posts')
+          .where('id', isEqualTo: widget.id)
+          .get();
+      postLen = postSnap.docs.length;
+      userData = userSnap.data()!;
+    } catch (e) {
+      print(e);
+    }
+    setState(() {
+      isLoading = false;
+    });
+  }
 
   @override
   void initState() {
-    FirebaseFirestore.instance.collection("users").
-    doc(FirebaseAuth.instance.currentUser!.uid)
-        .get().then((value){
-      username = value.data()!["username"];
-      pfp = value.data()!["photoUrl"];
-      setState(() {
-        isLoading1 = false;
-      });
-    });
-
-    var snapshots = FirebaseFirestore.instance
-      .collection('userPost')
-      .doc(FirebaseAuth.instance.currentUser!.uid)
-      .collection('post').get();
-    snapshots.then((value1){
-      final listOfPhotos = value1.docs;
-      listOfPhotos.forEach((value) {
-        feedImage = value.data()["image"];
-      });
-      setState(() {
-        isLoading2 = false;
-      });
-    });
-
+    getData();
     tabController = TabController(length: 2, vsync: this);
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    return DefaultTabController(
+    return isLoading ?
+    const Center(
+      child: CircularProgressIndicator(),
+    )
+        :
+    DefaultTabController(
       length: 2,
       child: Scaffold(
         appBar: PreferredSize(
@@ -79,7 +83,7 @@ class _MyAccountState extends State<MyAccount> with SingleTickerProviderStateMix
               title: Padding(
                 padding: const EdgeInsets.all(12.0),
                 child: Text(
-                  username,
+                  userData['username'],
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
                     color: mode ? Colors.white : Colors.black,
@@ -89,10 +93,11 @@ class _MyAccountState extends State<MyAccount> with SingleTickerProviderStateMix
               actions: [
                 IconButton(
                   onPressed: () async {
-                     Navigator.push(context,
-                        MaterialPageRoute(builder: (BuildContext context) => AddPost(),
+                    Navigator.push(context,
+                        MaterialPageRoute(
+                          builder: (BuildContext context) => AddPost(),
                         )
-                     );
+                    );
                   },
                   icon: Icon(
                     Icons.add_box_outlined,
@@ -116,251 +121,270 @@ class _MyAccountState extends State<MyAccount> with SingleTickerProviderStateMix
           ),
         ),
         body: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 5),
-          child: Column(
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: <Widget>[
-                  Column(
+            padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 5),
+            child: Column(
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: <Widget>[
-                      isLoading1 ? Center(child: CircularProgressIndicator()):
-                      CircleAvatar(
-                        radius: 45,
-                        backgroundImage: NetworkImage(
-                          pfp,
-                        ),
-                      ),
-                      Text(
-                        username,
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 20,
-                          color: mode ? Colors.white : Colors.black,
-                        ),
-                      ),
-                    ],
-                  ),
-                  Column(
-                    children: <Widget>[
-                      StreamBuilder(
-                          stream: FirebaseFirestore.instance.collection("userPost/${APIs.user.uid}/post").snapshots(),
-                          builder: (context, AsyncSnapshot<QuerySnapshot<Map<String,dynamic>>> snapshot) {
-                            if(snapshot.connectionState == ConnectionState.waiting){
-                              return const Center(
-                                child: CircularProgressIndicator(),
-                              );
-                            }
-                          return Text(
-                            snapshot.data!.docs.length.toString(),
+                      Column(
+                        children: <Widget>[
+                          CircleAvatar(
+                            radius: 45,
+                            backgroundImage: NetworkImage(
+                              userData['photoUrl'],
+                            ),
+                          ),
+                          Text(
+                            userData['username'],
                             style: TextStyle(
                               fontWeight: FontWeight.bold,
-                              fontSize: 25,
+                              fontSize: 20,
                               color: mode ? Colors.white : Colors.black,
                             ),
-                          );
-                        }
-                      ),
-                      Text(
-                        'Posts',
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 20,
-                          color: mode ? Colors.white : Colors.black,
-                        ),
-                      ),
-                    ],
-                  ),
-                  TextButton(
-                    onPressed: (){},
-                    child: Column(
-                      children: [
-                        Text(
-                          '500',
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 25,
-                            color: mode ? Colors.white : Colors.black,
                           ),
-                        ),
-                        Text(
-                          'Friends',
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 20,
-                            color: mode ? Colors.white : Colors.black,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-              Container(
-                child: Row(
-                  children: <Widget>[
-                    Expanded(
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: GestureDetector(
-                          onTap: () {
-                            Navigator.push(context,
-                                MaterialPageRoute(builder: (BuildContext context) => UpdateProfile(),
-                                )
-                            );
-                          },
-                          child: Container(
-                            child: Center(
-                              child: Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Text(
-                                  'Edit Profile',
+                        ],
+                      ),
+                      Column(
+                        children: <Widget>[
+                          StreamBuilder(
+                              stream: FirebaseFirestore.instance.collection(
+                                  "userPost/${APIs.user.uid}/post").snapshots(),
+                              builder: (context, AsyncSnapshot<QuerySnapshot<
+                                  Map<String, dynamic>>> snapshot) {
+                                if (snapshot.connectionState ==
+                                    ConnectionState.waiting) {
+                                  return const Center(
+                                    child: CircularProgressIndicator(),
+                                  );
+                                }
+                                return Text(
+                                  postLen.toString(),
                                   style: TextStyle(
-                                    fontSize: 20,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 25,
                                     color: mode ? Colors.white : Colors.black,
                                   ),
-                                ),
+                                );
+                              }
+                          ),
+                          Text(
+                            'Posts',
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 20,
+                              color: mode ? Colors.white : Colors.black,
+                            ),
+                          ),
+                        ],
+                      ),
+                      TextButton(
+                        onPressed: () {},
+                        child: Column(
+                          children: [
+                            Text(
+                              '500',
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 25,
+                                color: mode ? Colors.white : Colors.black,
                               ),
                             ),
-                            decoration: BoxDecoration(
-                              border: Border.all(color: mode ? Colors.white : Colors.grey,),
-                              borderRadius: BorderRadius.circular(5),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                    Expanded(
-                      child: Padding(
-                        padding: const EdgeInsets.all(12.0),
-                        child: Container(
-                          child: Center(
-                            child: Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Text(
-                                'Share Profile',
-                                style: TextStyle(
-                                  fontSize: 20,
-                                  color: mode ? Colors.white : Colors.black,
-                                ),
+                            Text(
+                              'Friends',
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 20,
+                                color: mode ? Colors.white : Colors.black,
                               ),
                             ),
-                          ),
-                          decoration: BoxDecoration(
-                            border: Border.all(color: mode ? Colors.white : Colors.grey,),
-                            borderRadius: BorderRadius.circular(5),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              Column(
-                children: [
-                  TabBar(
-                    controller: tabController,
-                    indicatorColor: mode ? Colors.grey : Colors.black,
-                    indicatorWeight: 3,
-                    tabs: [
-                      Tab(
-                        icon: Icon(
-                          Icons.grid_on_sharp,
-                          color: mode ? Colors.white : Colors.black,
-                          size: 25,
-                        ),
-                      ),
-                      Tab(
-                        icon: Icon(
-                          Icons.person_pin_outlined,
-                          color: mode ? Colors.white : Colors.black,
-                          size: 28,
+                          ],
                         ),
                       ),
                     ],
                   ),
                   Container(
-                    decoration: BoxDecoration(
-                      border: Border(
-                        bottom: BorderSide(
-                          color: Colors.grey,
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-              SizedBox(height: 2,),
-              StreamBuilder(
-                stream: FirebaseFirestore.instance.collection("userPost/${APIs.user.uid}/post").snapshots(),
-                  builder: (context,AsyncSnapshot<QuerySnapshot<Map<String,dynamic>>> snapshot){
-                    if(snapshot.connectionState == ConnectionState.waiting){
-                      return const Center(
-                        child: CircularProgressIndicator(),
-                      );
-                    }
-                  return Expanded(
-                    child: TabBarView(
-                      controller: tabController,
-                      children: [
-                        snapshot.data!.docs.length == 0
-                        ?
-                        Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 105,vertical: 100),
-                        child: Text(
-                          'No posts available!',
-                          style: TextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        )
-                        :
-                        GridView.count(
-                          controller: scrollController,
-                          crossAxisCount: 2,
-                          children: [
-                            for (int i = 0; i < snapshot.data!.docs.length; i++)
-                              GestureDetector(
-                                onTap: () {
-                                  Navigator.push(context,
-                                      MaterialPageRoute(builder: (BuildContext context) => MyPostsPage(),
-                                      )
-                                  );
-                                },
-                                child: Container(
-                                  margin: const EdgeInsets.only(right: 3, top: 3),
-                                  child: isLoading2 ?
-                                  Center(child: CircularProgressIndicator()) :
-                                  Image.network(
-                                    feedImage,
-                                    fit:BoxFit.cover,
+                    child: Row(
+                      children: <Widget>[
+                        Expanded(
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: GestureDetector(
+                              onTap: () {
+                                Navigator.push(context,
+                                    MaterialPageRoute(
+                                      builder: (BuildContext context) =>
+                                          UpdateProfile(),
+                                    )
+                                );
+                              },
+                              child: Container(
+                                child: Center(
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Text(
+                                      'Edit Profile',
+                                      style: TextStyle(
+                                        fontSize: 20,
+                                        color: mode ? Colors.white : Colors
+                                            .black,
+                                      ),
+                                    ),
                                   ),
                                 ),
-                              )
-                          ],
+                                decoration: BoxDecoration(
+                                  border: Border.all(
+                                    color: mode ? Colors.white : Colors.grey,),
+                                  borderRadius: BorderRadius.circular(5),
+                                ),
+                              ),
+                            ),
+                          ),
                         ),
-                        GridView.count(
-                          controller: scrollController,
-                          crossAxisCount: 2,
-                          // children: [
-                          //   for (int i = 0; i < 9; i++)
-                          //     Container(
-                          //       margin: const EdgeInsets.only(right: 3, top: 3),
-                          //       child: Image.asset(
-                          //         "images/profilePicture.png",
-                          //         fit: BoxFit.cover,
-                          //       ),
-                          //     )
-                          // ],
-                        )
+                        Expanded(
+                          child: Padding(
+                            padding: const EdgeInsets.all(12.0),
+                            child: Container(
+                              child: Center(
+                                child: Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Text(
+                                    'Share Profile',
+                                    style: TextStyle(
+                                      fontSize: 20,
+                                      color: mode ? Colors.white : Colors.black,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              decoration: BoxDecoration(
+                                border: Border.all(
+                                  color: mode ? Colors.white : Colors.grey,),
+                                borderRadius: BorderRadius.circular(5),
+                              ),
+                            ),
+                          ),
+                        ),
                       ],
                     ),
-                  );
-                }
-              ),
-            ],
-          ),
+                  ),
+                  Column(
+                    children: [
+                      TabBar(
+                        controller: tabController,
+                        indicatorColor: mode ? Colors.grey : Colors.black,
+                        indicatorWeight: 3,
+                        tabs: [
+                          Tab(
+                            icon: Icon(
+                              Icons.grid_on_sharp,
+                              color: mode ? Colors.white : Colors.black,
+                              size: 25,
+                            ),
+                          ),
+                          Tab(
+                            icon: Icon(
+                              Icons.person_pin_outlined,
+                              color: mode ? Colors.white : Colors.black,
+                              size: 28,
+                            ),
+                          ),
+                        ],
+                      ),
+                      Container(
+                        decoration: BoxDecoration(
+                          border: Border(
+                            bottom: BorderSide(
+                              color: Colors.grey,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: 2,),
+                  FutureBuilder(
+                    future: FirebaseFirestore.instance
+                        .collection('posts')
+                        .where('id', isEqualTo: widget.id)
+                        .get(),
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return const Center(
+                          child: CircularProgressIndicator(),
+                        );
+                      }
+                      return Expanded(
+                          child: TabBarView(
+                              controller: tabController,
+                              children: [
+                                snapshot.data!.docs.length == 0
+                                    ?
+                                Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 105, vertical: 100),
+                                  child: Text(
+                                    'No posts available!',
+                                    style: TextStyle(
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                )
+                                    :
+                                GridView.builder(
+                                    controller: scrollController,
+                                    itemCount: (snapshot.data! as dynamic).docs
+                                        .length,
+                                    gridDelegate:
+                                    const SliverGridDelegateWithFixedCrossAxisCount(
+                                      crossAxisCount: 3,
+                                      crossAxisSpacing: 5,
+                                      mainAxisSpacing: 1.5,
+                                      childAspectRatio: 1,
+                                    ),
+                                    itemBuilder: (context, index) {
+                                      DocumentSnapshot snap =
+                                      (snapshot.data! as dynamic).docs[index];
+                                      return GestureDetector(
+                                        onTap: () {
+                                          Navigator.push(context,
+                                              MaterialPageRoute(builder: (
+                                                  BuildContext context) =>
+                                                  MyPostsPage(id: FirebaseAuth.instance.currentUser!.uid),
+                                              )
+                                          );
+                                        },
+                                        child: Container(
+                                          child: Image(
+                                            image: NetworkImage(snap['image']),
+                                            fit: BoxFit.cover,
+                                          ),
+                                        ),
+                                      );
+                                    }
+                                ),
+                                GridView.count(
+                                  controller: scrollController,
+                                  crossAxisCount: 2,
+                                  // children: [
+                                  //   for (int i = 0; i < 9; i++)
+                                  //     Container(
+                                  //       margin: const EdgeInsets.only(right: 3, top: 3),
+                                  //       child: Image.asset(
+                                  //         "images/profilePicture.png",
+                                  //         fit: BoxFit.cover,
+                                  //       ),
+                                  //     )
+                                  // ],
+                                ),
+                              ]
+                          )
+                      );
+                    },
+                  ),
+                ]
+            )
         ),
         bottomNavigationBar: BottomAppBar(
           color: mode ? Colors.grey[800] : Colors.white,
@@ -374,7 +398,8 @@ class _MyAccountState extends State<MyAccount> with SingleTickerProviderStateMix
                 IconButton(
                   onPressed: () {
                     Navigator.pushReplacement(context,
-                        MaterialPageRoute(builder: (BuildContext context) => FeedPage(),));
+                        MaterialPageRoute(
+                          builder: (BuildContext context) => FeedPage(),));
                   },
                   icon: Icon(
                     Icons.home_outlined,
@@ -385,7 +410,8 @@ class _MyAccountState extends State<MyAccount> with SingleTickerProviderStateMix
                 IconButton(
                   onPressed: () {
                     Navigator.pushReplacement(context,
-                        MaterialPageRoute(builder: (BuildContext context) => NewsScreen(),));
+                        MaterialPageRoute(
+                          builder: (BuildContext context) => NewsScreen(),));
                   },
                   icon: Icon(
                     Icons.search,
@@ -396,7 +422,8 @@ class _MyAccountState extends State<MyAccount> with SingleTickerProviderStateMix
                 IconButton(
                   onPressed: () {
                     Navigator.pushReplacement(context,
-                        MaterialPageRoute(builder: (BuildContext context) => ToDoScreen(),));
+                        MaterialPageRoute(
+                          builder: (BuildContext context) => ToDoScreen(),));
                   },
                   icon: Icon(
                     Icons.add,
@@ -407,7 +434,9 @@ class _MyAccountState extends State<MyAccount> with SingleTickerProviderStateMix
                 IconButton(
                   onPressed: () {
                     Navigator.pushReplacement(context,
-                        MaterialPageRoute(builder: (BuildContext context) => RequestPage(),));
+                        MaterialPageRoute(
+                          builder: (BuildContext context) => RequestPage(),)
+                    );
                   },
                   icon: Icon(
                     Icons.favorite_border,
@@ -418,7 +447,11 @@ class _MyAccountState extends State<MyAccount> with SingleTickerProviderStateMix
                 IconButton(
                   onPressed: () {
                     Navigator.pushReplacement(context,
-                        MaterialPageRoute(builder: (BuildContext context) => MyAccount(),));
+                        MaterialPageRoute(
+                          builder: (BuildContext context) => MyAccount(
+                            id: FirebaseAuth.instance.currentUser!.uid,),
+                        )
+                    );
                   },
                   icon: Icon(
                     Icons.person_outline_outlined,
@@ -431,6 +464,33 @@ class _MyAccountState extends State<MyAccount> with SingleTickerProviderStateMix
           ),
         ),
       ),
+    );
+  }
+
+  Column buildStatColumn(int num, String label) {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Text(
+          num.toString(),
+          style: const TextStyle(
+            fontSize: 18,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        Container(
+          margin: const EdgeInsets.only(top: 4),
+          child: Text(
+            label,
+            style: const TextStyle(
+              fontSize: 15,
+              fontWeight: FontWeight.w400,
+              color: Colors.grey,
+            ),
+          ),
+        ),
+      ],
     );
   }
 }

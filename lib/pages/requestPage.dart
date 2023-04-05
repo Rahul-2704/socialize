@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:socialize/news/newsPage.dart';
 import 'package:socialize/pages/accountPage.dart';
@@ -110,7 +111,7 @@ class _RequestPageState extends State<RequestPage> {
               IconButton(
                 onPressed: () {
                   Navigator.pushReplacement(context,
-                      MaterialPageRoute(builder: (BuildContext context) => MyAccount(),));
+                      MaterialPageRoute(builder: (BuildContext context) => MyAccount(id: FirebaseAuth.instance.currentUser!.uid,),));
                 },
                 icon: Icon(
                   Icons.person_outline_outlined,

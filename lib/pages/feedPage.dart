@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:socialize/pages/accountPage.dart';
 import 'package:socialize/pages/requestPage.dart';
@@ -129,7 +130,7 @@ class _FeedPageState extends State<FeedPage> {
               IconButton(
                 onPressed: () {
                   Navigator.pushReplacement(context,
-                      MaterialPageRoute(builder: (BuildContext context) => MyAccount(),));
+                      MaterialPageRoute(builder: (BuildContext context) => MyAccount(id: FirebaseAuth.instance.currentUser!.uid,),));
                 },
                 icon: Icon(
                   Icons.person_outline_outlined,

@@ -2,36 +2,39 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:socialize/api/apis.dart';
-import 'package:socialize/models/user.dart';
-import 'comment_card.dart';
+import 'package:socialize/widgets/comment_card.dart';
 
 class CommentScreen extends StatefulWidget {
-  final UserAccount me;
-  const CommentScreen({Key?key, required this.me}):super(key: key);
+  final snap;
+  const CommentScreen({Key?key, required this.snap}):super(key: key);
   @override
   _CommentScreenState createState()=>_CommentScreenState();
 }
 
 class _CommentScreenState extends State<CommentScreen>{
   String? username;
-  late String photoUrl='';
-  String? uid;
-  String? postId;
-  TextEditingController _commentController=TextEditingController();
-  @override
-  Widget build(BuildContext context){
+  String? id;
+  bool isLoading = false;
+  void initState() {
     var firebaseUser =  FirebaseAuth.instance.currentUser;
     FirebaseFirestore.instance.collection("users").
     doc(firebaseUser!.uid)
         .get().then((value){
-      username=value.data()!["username"];
-      uid=value.data()!["uid"];
-        });
-    FirebaseFirestore.instance.collection("userPosts")
-        .doc(FirebaseAuth.instance.currentUser!.uid).get().then((value){
-          photoUrl=value.data()!["postUrl"];
-          postId=value.data()!["postId"];
+      username = value.data()!["username"];
+      id = value.data()!["id"];
     });
+    setState(() {
+      isLoading = true;
+    });
+    super.initState();
+  }
+  void dispose(){
+    _commentController.dispose();
+    super.dispose();
+  }
+  TextEditingController _commentController=TextEditingController();
+  @override
+  Widget build(BuildContext context){
     return Scaffold(
       appBar: AppBar(
         backgroundColor:Color.fromRGBO(0,0,0,1),
@@ -49,33 +52,37 @@ class _CommentScreenState extends State<CommentScreen>{
             children: [
               CircleAvatar(
                 backgroundImage: NetworkImage(
-                  photoUrl,
+                  'https://picsum.photos/id/237/536/354',
                 ),
                 radius: 18,
               ),
               Expanded(
                 child:Padding(
                   padding: const EdgeInsets.only(left:16.0,right: 8.0),
-                child:TextField(
-                  controller: _commentController,
-                   decoration: InputDecoration(
-                   hintText: 'Comment as ${username}',
-                   border: InputBorder.none,
+                  child:TextField(
+                    controller: _commentController,
+                    decoration: InputDecoration(
+                      hintText: 'Comment as ${username}',
+                      border: InputBorder.none,
+                    ),
+                  ),
                 ),
               ),
-                ),
-              ),
-              Container(
-                padding: const EdgeInsets.symmetric(
-                  vertical: 8,
-                  horizontal: 8,
-                ),
-                child: TextButton(
-                  onPressed: (){
-                  APIs.postComment(widget.me,_commentController.text.trim()).then((value){
-                     print("Commented successfully");
-                    });
-                  },
+              InkWell(
+                onTap: () async{
+                  APIs.postComment(
+                    widget.snap['postId'],
+                    _commentController.text.trim(),
+                    widget.snap['id'],
+                    widget.snap['name'],
+                    widget.snap['profUrl'],
+                  );
+                },
+                child:Container(
+                  padding: EdgeInsets.symmetric(
+                    vertical: 8,
+                    horizontal: 8,
+                  ),
                   child: const Text(
                     'Post',
                     style: TextStyle(
@@ -83,7 +90,7 @@ class _CommentScreenState extends State<CommentScreen>{
                     ),
                   ),
                 ),
-              )
+              ),
             ],
           ),
         ),

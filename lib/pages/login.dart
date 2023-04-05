@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:socialize/pages/accountPage.dart';
-import 'package:socialize/pages/bioData.dart';
 import 'package:socialize/pages/forgotPassword.dart';
 import 'package:socialize/pages/register.dart';
 import 'package:socialize/pages/feedPage.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:socialize/resources/auth_methods.dart';
+import 'package:socialize/api/apis.dart';
+import 'globals.dart';
+
 class LoginPage extends StatefulWidget {
   const LoginPage({Key? key}) : super(key: key);
 
@@ -23,20 +22,18 @@ class _LoginPageState extends State<LoginPage> {
     final FormState? form = _fkLogin.currentState;
     if (form!.validate()) {
       print('Form is valid');
-      // Navigator.pushReplacement(context,
-      //     MaterialPageRoute(builder: (BuildContext context) => FeedPage(),));
     } else {
       print('Form is invalid');
     }
   }
   final _emailController=TextEditingController();
   final _passwordController=TextEditingController();
-  bool _isLoading=false;
+  bool _isLoading = false;
   void loginUser() async{
     setState(() {
       _isLoading=true;
     });
-    String res=await Authmethods().login(
+    String res=await AuthMethods().login(
         email: _emailController.text.trim(),
         password:_passwordController.text.trim(),
     );
@@ -51,7 +48,6 @@ class _LoginPageState extends State<LoginPage> {
   }
   @override
     void dispose() {
-    // Add code before the super
     _emailController.dispose();
     _passwordController.dispose();
     super.dispose();
@@ -172,7 +168,7 @@ class _LoginPageState extends State<LoginPage> {
                         SizedBox(width: 240,),
                         TextButton(
                           onPressed: () {
-                            Navigator.pushReplacement(context,
+                            Navigator.push(context,
                                 MaterialPageRoute(
                                   builder: (BuildContext context) =>
                                       ForgotPassword(),
@@ -194,7 +190,6 @@ class _LoginPageState extends State<LoginPage> {
                       height: 60,
                       child: ElevatedButton(
                         onPressed:(){
-                          dummyEnter();
                           validateAndSaveLogin();
                           loginUser();
                         },
@@ -221,10 +216,12 @@ class _LoginPageState extends State<LoginPage> {
                         TextButton(
                           onPressed: (){
                            Navigator.pushReplacement(context,
-                                  MaterialPageRoute(
-                                    builder: (BuildContext context) =>
-                                        RegisterPage(),));
-                            },
+                              MaterialPageRoute(
+                                builder: (BuildContext context) =>
+                                  RegisterPage(),
+                              )
+                            );
+                          },
                           child: Text(
                             'Sign In',
                             style: TextStyle(

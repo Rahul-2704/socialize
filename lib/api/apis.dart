@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -5,15 +6,84 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:socialize/models/comment.dart';
 import 'package:uuid/uuid.dart';
-import '../models/post.dart';
+import 'package:socialize/models/post.dart';
 import 'package:socialize/models/user.dart';
 import 'package:intl/intl.dart';
+import 'package:socialize/models/user.dart' as model;
+
+class AuthMethods{
+  final FirebaseAuth _auth=FirebaseAuth.instance;
+  final FirebaseFirestore _firestore=FirebaseFirestore.instance;
+
+  Future<model.UserAccount> getUserDetails() async{
+    User? currentUser=_auth.currentUser;
+    DocumentSnapshot snap = await _firestore.collection("users")
+        .doc(currentUser!.uid).get();
+    return model.UserAccount.fromJson(json as Map<String, dynamic>);
+  }
+  Future<String> signupUser({
+    required String firstName,
+    required String lastName,
+    required String email,
+    required String password,
+    required List followers,
+    required List following,
+    required String photoUrl,
+    required String bio,
+    required String username,
+  })async{
+    String res='Some error occurred';
+    try{
+      if(email.isNotEmpty||password.isNotEmpty||firstName.isNotEmpty||lastName.isNotEmpty){
+        UserCredential cred= await _auth.createUserWithEmailAndPassword(email: email, password: password);
+        model.UserAccount user=model.UserAccount(
+          firstname: firstName,
+          lastname: lastName,
+          username: username,
+          bio : bio,
+          id: cred.user!.uid,
+          password: password,
+          email: email,
+          following: following,
+          followers: followers,
+          photoUrl: photoUrl,
+        );
+        await _firestore.collection("users").doc(cred.user!.uid).set(user.toJson(),);
+        res="success";
+      }
+    }catch(err){
+      res=err.toString();
+    }
+    return res;
+  }
+
+  Future<String> login({
+    required String email,
+    required String password
+  })async{
+    String res="Some error occurred";
+
+    try{
+      if(email.isNotEmpty||password.isNotEmpty){
+        await _auth.signInWithEmailAndPassword(
+            email: email,
+            password: password
+        );
+        res="success";
+      }else{
+        res="Please enter all the fields";
+      }
+    }catch(err){
+      res=err.toString();
+    }
+    return res;
+  }
+}
 
 class APIs {
   static FirebaseAuth auth = FirebaseAuth.instance;
   static FirebaseFirestore firestore = FirebaseFirestore.instance;
   static FirebaseStorage storage = FirebaseStorage.instance;
-
   static User get user => auth.currentUser!;
   static late UserAccount me;
 
@@ -40,24 +110,16 @@ class APIs {
     });
   }
 
-  static Future<void> updateUserInfo() async {
-    await firestore
-        .collection('users')
-        .doc(user.uid)
-        .update({
-      'username' : me.username,
-      'bio' : me.bio,
-    });
-  }
-
-  static Future<void> updatePost(File file, String caption) async {
+  static Future<void> addPost(File file, String caption) async {
     var uuid = Uuid();
     var pid = uuid.v1();
     String? username;
+    String? profUrl;
     FirebaseFirestore.instance.collection("users").
     doc(user.uid)
         .get().then((value) {
       username = value.data()!["username"];
+      profUrl = value.data()!["photoUrl"];
     });
     final ext = file.path
         .split('.')
@@ -74,6 +136,9 @@ class APIs {
       image: pUrl,
       caption: caption,
       id: user.uid,
+      postId: pid,
+      profUrl: profUrl!,
+      likes: [],
       name: username!,
       time: DateFormat.jm().format(DateTime.now()),
       date: DateFormat('EEEE,MMM d,yyyy').format(DateTime.now()),
@@ -86,23 +151,86 @@ class APIs {
         .set(
       userPost.toJson(),
     );
+    await firestore
+      .collection('posts')
+      .doc(pid)
+      .set(
+        userPost.toJson()
+      );
   }
 
-  // Future<void> likePost(String postId, String uid, List likes) async {
+  static Future<String> likePost(String postId, String uid, List likes) async {
+    String res = "Some error occurred";
+    try {
+      if (likes.contains(uid)) {
+        await FirebaseFirestore.instance.collection("userPost")
+            .doc(FirebaseAuth.instance.currentUser!.uid)
+            .collection("post")
+            .doc(postId)
+            .update({
+          "likes": FieldValue.arrayRemove([uid]),
+        }
+        );
+        await FirebaseFirestore.instance.collection("posts")
+            .doc(postId)
+            .update({
+          "likes": FieldValue.arrayRemove([uid]),
+        });
+      }
+      else {
+        await FirebaseFirestore.instance.collection("userPost")
+          .doc(FirebaseAuth.instance.currentUser!.uid)
+          .collection("post")
+          .doc(postId)
+          .update({
+            "likes": FieldValue.arrayUnion([uid]),
+          }
+        );
+        await FirebaseFirestore.instance.collection("posts")
+            .doc(postId)
+            .update({
+          "likes": FieldValue.arrayUnion([uid]),
+        });
+      }
+      res = 'success';
+    }
+    catch (e) {
+      print(e.toString());
+    }
+    return res;
+  }
+
+  // static Future<void> likePost(String postId, String id, List likes) async {
   //   try {
-  //     if (likes.contains(uid)) {
+  //     if (likes.contains(FirebaseAuth.instance.currentUser?.uid)) {
+  //       await FirebaseFirestore.instance.collection("userPost")
+  //           .doc(id)
+  //           .collection("post")
+  //           .doc(postId)
+  //           .update({
+  //         "likes": FieldValue.arrayRemove([FirebaseAuth.instance.currentUser?.uid]),
+  //       }
+  //       );
   //       await FirebaseFirestore.instance.collection("posts")
   //           .doc(postId)
-  //           .update(
-  //           { "likes": FieldValue.arrayRemove([uid]),}
-  //       );
+  //           .update({
+  //         "likes": FieldValue.arrayRemove([FirebaseAuth.instance.currentUser?.uid]),
+  //       });
   //     }
   //     else {
+  //       await FirebaseFirestore.instance.collection("userPost")
+  //           .doc(id)
+  //           .collection("post")
+  //           .doc(postId)
+  //           .update({
+  //         "likes": FieldValue.arrayUnion([FirebaseAuth.instance.currentUser?.uid]),
+  //       }
+  //       );
   //       await FirebaseFirestore.instance.collection("posts")
   //           .doc(postId)
-  //           .update(
-  //           {"likes": FieldValue.arrayUnion([uid]),}
-  //       );
+  //           .update({
+  //         "likes": FieldValue.arrayUnion([FirebaseAuth.instance.currentUser?.uid]),
+  //       });
   //     }
   //   }
   //   catch (e) {

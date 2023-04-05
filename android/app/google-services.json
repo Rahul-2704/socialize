@@ -1,33 +1,33 @@
 {
   "project_info": {
-    "project_number": "159615172163",
-    "project_id": "mini-project-4707e",
-    "storage_bucket": "mini-project-4707e.appspot.com"
+    "project_number": "123996695284",
+    "project_id": "socialize-afa70",
+    "storage_bucket": "socialize-afa70.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:159615172163:android:3e89b8bf83ddb58f959ef6",
+        "mobilesdk_app_id": "1:123996695284:android:4d9d10f0e8427f2ba0cca1",
         "android_client_info": {
           "package_name": "com.example.socialize"
         }
       },
       "oauth_client": [
         {
-          "client_id": "159615172163-p7ojlqqs3feru94797ce5mihdoru4o5r.apps.googleusercontent.com",
+          "client_id": "123996695284-hb7u39dtf1cs56pr6nnjfegf5e1j8p38.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyBQTbOp4z3mMKqEVE_xEwu5aPGXHGJSsLY"
+          "current_key": "AIzaSyBy8gyLlumQrUYLIeb7G3x1YOkMkAfx5Vw"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "159615172163-p7ojlqqs3feru94797ce5mihdoru4o5r.apps.googleusercontent.com",
+              "client_id": "123996695284-hb7u39dtf1cs56pr6nnjfegf5e1j8p38.apps.googleusercontent.com",
               "client_type": 3
             }
           ]

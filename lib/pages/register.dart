@@ -1,9 +1,7 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:socialize/pages/bioData.dart';
-import 'package:socialize/resources/auth_methods.dart';
-import 'package:socialize/pages/bioData.dart';
+import 'package:socialize/api/apis.dart';
+
 class RegisterPage extends StatefulWidget {
   const RegisterPage({Key? key}) : super(key: key);
 
@@ -296,7 +294,7 @@ class _RegisterPageState extends State<RegisterPage> {
                   child: ElevatedButton(
                     onPressed: () async{
                       validateAndSave();
-                      String res=await Authmethods().signupUser(
+                      String res=await AuthMethods().signupUser(
                             firstName:_firstnameController.text.trim(),
                             lastName:_lastnameController.text.trim(),
                             email:_emailController.text.trim(),
@@ -306,7 +304,6 @@ class _RegisterPageState extends State<RegisterPage> {
                             photoUrl:'images/profilePicture.png',
                             bio:'',
                             username:'',
-                            caption: '',
                           );
                       print(res);
                     },

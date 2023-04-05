@@ -5,8 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:socialize/pages/interest.dart';
 import 'package:firebase_storage/firebase_storage.dart';
-import '../api/apis.dart';
-import '../api/dialogs.dart';
+import 'package:socialize/api/dialogs.dart';
 
 class BioData extends StatefulWidget {
   const BioData({Key? key}) : super(key: key);

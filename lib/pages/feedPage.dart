@@ -3,10 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:socialize/pages/accountPage.dart';
 import 'package:socialize/pages/requestPage.dart';
 import 'package:socialize/news/newsPage.dart';
-import 'package:socialize/pages/temp.dart';
+import 'package:socialize/pages/todolist.dart';
 import 'package:socialize/widgets/post_card.dart';
 import 'globals.dart';
-import 'package:socialize/api/apis.dart';
 
 class FeedPage extends StatefulWidget {
   const FeedPage({Key? key}) : super(key: key);
@@ -16,7 +15,6 @@ class FeedPage extends StatefulWidget {
 }
 
 class _FeedPageState extends State<FeedPage> {
-  bool request = true;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -46,33 +44,35 @@ class _FeedPageState extends State<FeedPage> {
             ),
             actions:[
               IconButton(
-                  onPressed: (){},
-                  icon:const Icon(
-                    Icons.messenger_outline,
-                    color: Colors.black,
-                  )
+                onPressed: () {},
+                icon:const Icon(
+                  Icons.messenger_outline,
+                  color: Colors.black,
+                )
               )
             ],
           ),
         ),
       ),
       body:StreamBuilder(
-        stream: FirebaseFirestore.instance.collection("userPost/${APIs.user.uid}/post").snapshots(),
-        builder: (context,AsyncSnapshot<QuerySnapshot<Map<String,dynamic>>> snapshot){
-          if(snapshot.connectionState==ConnectionState.waiting){
+        stream: FirebaseFirestore.instance.collection("posts").snapshots(),
+        builder: (context, AsyncSnapshot<QuerySnapshot<Map<String,dynamic>>> snapshot) {
+          if(snapshot.connectionState == ConnectionState.waiting){
             return const Center(
               child: CircularProgressIndicator(),
             );
           }
           return ListView.builder(
             itemCount: snapshot.data!.docs.length,
-            itemBuilder:(context,index) => PostCard(
-             snap:snapshot.data?.docs[index].data(),
-            ),
+            itemBuilder:(context,index) {
+              int reversedList = snapshot.data!.docs.length - 1 - index;
+              return PostCard(
+                snap: snapshot.data?.docs[reversedList].data(),
+              );
+            }
           );
         },
       ),
-
       bottomNavigationBar: BottomAppBar(
         color: mode ? Colors.grey[800] : Colors.white,
         child: Padding(
@@ -107,7 +107,7 @@ class _FeedPageState extends State<FeedPage> {
               IconButton(
                 onPressed: () {
                   Navigator.pushReplacement(context,
-                      MaterialPageRoute(builder: (BuildContext context) => TempScreen(),));
+                      MaterialPageRoute(builder: (BuildContext context) => ToDoScreen(),));
                 },
                 icon: Icon(
                   Icons.add,

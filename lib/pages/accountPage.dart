@@ -6,7 +6,7 @@ import 'package:socialize/pages/feedPage.dart';
 import 'package:socialize/pages/myPostsPage.dart';
 import 'package:socialize/pages/requestPage.dart';
 import 'package:socialize/news/newsPage.dart';
-import 'package:socialize/pages/temp.dart';
+import 'package:socialize/pages/todolist.dart';
 import 'package:socialize/pages/globals.dart';
 import 'package:socialize/api/apis.dart';
 import 'package:socialize/pages/updateProfile.dart';
@@ -40,13 +40,13 @@ class _MyAccountState extends State<MyAccount> with SingleTickerProviderStateMix
     });
 
     var snapshots = FirebaseFirestore.instance
-        .collection('userPost')
-        .doc(FirebaseAuth.instance.currentUser!.uid)
-        .collection('post').get();
+      .collection('userPost')
+      .doc(FirebaseAuth.instance.currentUser!.uid)
+      .collection('post').get();
     snapshots.then((value1){
       final listOfPhotos = value1.docs;
       listOfPhotos.forEach((value) {
-        feedImage=value.data()["image"];
+        feedImage = value.data()["image"];
       });
       setState(() {
         isLoading2 = false;
@@ -145,7 +145,7 @@ class _MyAccountState extends State<MyAccount> with SingleTickerProviderStateMix
                     children: <Widget>[
                       StreamBuilder(
                           stream: FirebaseFirestore.instance.collection("userPost/${APIs.user.uid}/post").snapshots(),
-                          builder: (context,AsyncSnapshot<QuerySnapshot<Map<String,dynamic>>> snapshot){
+                          builder: (context, AsyncSnapshot<QuerySnapshot<Map<String,dynamic>>> snapshot) {
                             if(snapshot.connectionState == ConnectionState.waiting){
                               return const Center(
                                 child: CircularProgressIndicator(),
@@ -396,7 +396,7 @@ class _MyAccountState extends State<MyAccount> with SingleTickerProviderStateMix
                 IconButton(
                   onPressed: () {
                     Navigator.pushReplacement(context,
-                        MaterialPageRoute(builder: (BuildContext context) => TempScreen(),));
+                        MaterialPageRoute(builder: (BuildContext context) => ToDoScreen(),));
                   },
                   icon: Icon(
                     Icons.add,

@@ -145,7 +145,7 @@ class _AddPostState extends State<AddPost> {
                           onPressed: (){
                             if (_formKey.currentState!.validate()){
                               _formKey.currentState!.save();
-                              APIs.updatePost(File(_image!), _captionController.text.trim()).then((value) {
+                              APIs.addPost(File(_image!), _captionController.text.trim()).then((value) {
                                 Dialogs.showSnackBar(context,"Post Done Successfully!");
                               });
                             }

@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:socialize/pages/accountPage.dart';
 import 'package:socialize/pages/requestPage.dart';
 import 'package:socialize/news/newsPage.dart';
-import 'package:socialize/pages/temp.dart';
+import 'package:socialize/pages/todolist.dart';
 import 'globals.dart';
 import 'package:socialize/api/apis.dart';
 import 'package:socialize/widgets/myPostsPost_Card.dart';
@@ -57,9 +57,12 @@ class _MyPostsPageState extends State<MyPostsPage> {
           }
           return ListView.builder(
             itemCount: snapshot.data!.docs.length,
-            itemBuilder:(context,index) => MyPostCard(
-              snap:snapshot.data?.docs[index].data(),
-            ),
+            itemBuilder:(context, index) {
+              int reversedList = snapshot.data!.docs.length - 1 - index;
+              return MyPostCard(
+                snap: snapshot.data?.docs[reversedList].data(),
+              );
+            },
           );
         },
       ),
@@ -98,7 +101,7 @@ class _MyPostsPageState extends State<MyPostsPage> {
               IconButton(
                 onPressed: () {
                   Navigator.pushReplacement(context,
-                      MaterialPageRoute(builder: (BuildContext context) => TempScreen(),));
+                      MaterialPageRoute(builder: (BuildContext context) => ToDoScreen(),));
                 },
                 icon: Icon(
                   Icons.add,

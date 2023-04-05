@@ -4,9 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:socialize/api/apis.dart';
 import 'package:socialize/models/user.dart';
 import 'comment_card.dart';
-import 'package:provider/provider.dart';
-import 'package:socialize/providers/userProvider.dart';
-import 'package:socialize/models/user.dart' as model;
 
 class CommentScreen extends StatefulWidget {
   final UserAccount me;

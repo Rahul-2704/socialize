@@ -6,7 +6,7 @@ import 'package:socialize/pages/feedPage.dart';
 import 'package:socialize/pages/requestPage.dart';
 import 'package:socialize/news/newsPage.dart';
 import 'package:socialize/pages/todolist.dart';
-import '../widgets/post_card.dart';
+import 'package:socialize/widgets/post_card.dart';
 import 'globals.dart';
 import 'package:socialize/api/apis.dart';
 
@@ -20,8 +20,8 @@ class MyPostsPage extends StatefulWidget {
 
 class _MyPostsPageState extends State<MyPostsPage> {
   bool request = true;
-  @override
 
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: PreferredSize(
@@ -61,15 +61,13 @@ class _MyPostsPageState extends State<MyPostsPage> {
           return ListView.builder(
             itemCount: snapshot.data!.docs.length,
             itemBuilder:(context, index) {
-              int reversedList = snapshot.data!.docs.length - 1 - index;
               return PostCard(
-                snap: snapshot.data?.docs[reversedList].data(),
+                snap: snapshot.data?.docs[index].data(),
               );
             },
           );
         },
       ),
-
       bottomNavigationBar: BottomAppBar(
         color: mode ? Colors.grey[800] : Colors.white,
         child: Padding(

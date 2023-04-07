@@ -77,6 +77,10 @@ class AuthMethods{
     }
     return res;
   }
+
+  Future<void> signOut() async {
+    await _auth.signOut();
+  }
 }
 
 class APIs {
@@ -158,6 +162,37 @@ class APIs {
       );
   }
 
+  Future<void> followUser(
+      String uid,
+      String followId
+      ) async {
+    try {
+      DocumentSnapshot snap = await FirebaseFirestore.instance.collection('users').doc(uid).get();
+      List following = (snap.data()! as dynamic)['following'];
+
+      if(following.contains(followId)) {
+        await FirebaseFirestore.instance.collection('users').doc(followId).update({
+          'followers': FieldValue.arrayRemove([uid])
+        });
+
+        await FirebaseFirestore.instance.collection('users').doc(uid).update({
+          'following': FieldValue.arrayRemove([followId])
+        });
+      } else {
+        await FirebaseFirestore.instance.collection('users').doc(followId).update({
+          'followers': FieldValue.arrayUnion([uid])
+        });
+
+        await FirebaseFirestore.instance.collection('users').doc(uid).update({
+          'following': FieldValue.arrayUnion([followId])
+        });
+      }
+
+    } catch(e) {
+      print(e.toString());
+    }
+  }
+
   static Future<void> likePost(String postId, String id, List likes) async {
     try {
       if (likes.contains(FirebaseAuth.instance.currentUser?.uid)) {
@@ -196,17 +231,19 @@ class APIs {
     }
   }
 
-  static Future<void> postComment(String postId, String text, String id, String username, String profUrl) async {
+  static Future<void> postComment(String postId, String text, String uid,
+      String name, String profilePic) async {
     try {
       if (text.isNotEmpty) {
         String commentId = const Uuid().v1();
         await FirebaseFirestore.instance.collection("posts").doc(postId)
             .collection("comments").doc(commentId).set({
-          "profUrl" : profUrl,
-          "username" : username,
-          "id" : id,
+          "profUrl" : profilePic,
+          "comment" : text,
+          "username" : name,
+          "id" : uid,
           "commentId" : commentId,
-          "datePublished" :DateFormat.MMMMEEEEd().format(DateTime.now()),
+          "datePublished" : DateTime.now(),
         });
       }
       else{

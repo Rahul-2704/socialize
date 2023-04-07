@@ -1,73 +1,75 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
-class CommentCard extends StatefulWidget{
-  CommentCard({Key?key}):super(key:key);
+class CommentCard extends StatefulWidget {
+  final snap;
+  const CommentCard({Key? key,required this.snap}) : super(key: key);
+
   @override
-  _CommentCardState createState() => _CommentCardState();
+  State<CommentCard> createState() => _CommentCardState();
 }
-class _CommentCardState extends State<CommentCard>{
+
+class _CommentCardState extends State<CommentCard> {
   @override
-  Widget build(BuildContext context){
+  Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.only(
-        left: 10,
-        right: 10,
-      ),
+      padding: const EdgeInsets.symmetric(vertical:18,horizontal:16),
       child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           CircleAvatar(
-            backgroundImage:NetworkImage(
-                'https://plus.unsplash.com/premium_photo-1661545896479-554fa782ccd5?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MXx8ZWRpdG9yaWFsfGVufDB8fDB8fA%3D%3D&auto=format&fit=crop&w=1000&q=60'
+            backgroundImage: NetworkImage(
+              widget.snap['profUrl'],
             ),
             radius: 18,
           ),
           Expanded(
-            child:
-            Padding(
-              padding:const EdgeInsets.only(left:16),
+            child: Padding(
+              padding: const EdgeInsets.only(left:16),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   RichText(
-                    text:TextSpan(
-                        children: [
-                          TextSpan(
-                            text: 'username',
-                            style: const TextStyle(
-                              fontWeight: FontWeight.bold,
-                              color:Colors.black,
-                            ),
-                          ),
-                          TextSpan(
-                              text: 'Some description here..',
+                      text: TextSpan(
+                          children: [
+                            TextSpan(
+                              text:widget.snap['username'],
                               style: const TextStyle(
+                                fontWeight: FontWeight.bold,
                                 color: Colors.black,
-                              )
-                          ),
-                        ]
-                    ),
+                              ),
+                            ),
+                            TextSpan(
+                                text:' ${widget.snap['comment']}',
+                                style: const TextStyle(
+                                  color: Colors.black,
+                                )
+                            ),
+                          ]
+                      )
                   ),
-                  Padding(
-                    padding:const EdgeInsets.only(top:4),
+                  Padding(padding:const EdgeInsets.only(top:4.0),
                     child: Text(
-                      '23/05/2005',
+                      '${DateFormat.MMMMEEEEd().format(
+                          widget.snap['datePublished'].toDate()
+                      )}',
                       style: TextStyle(
-                        fontSize:12,
-                        fontWeight: FontWeight.w400,
+                        fontSize: 12,
+                        fontWeight: FontWeight.w500,
                       ),
                     ),
-                  ),
+                  )
                 ],
               ),
             ),
           ),
           Container(
-              padding: const EdgeInsets.all(8),
-              child: const Icon(Icons.favorite_border,size: 16,)
-          ),
+            padding: const EdgeInsets.all(8),
+            child: Icon(Icons.favorite_border,size: 16,),
+          )
         ],
       ),
+
     );
   }
 }

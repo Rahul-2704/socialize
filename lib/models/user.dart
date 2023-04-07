@@ -26,7 +26,7 @@ class UserAccount {
   UserAccount.fromJson(Map<String, dynamic> json) {
     photoUrl = json['photoUrl'] ?? '';
     followers = json['bio'] ?? '';
-    username = json['username'];
+    username = json['username'] ?? '';
     following = json['following'] ?? '';
     followers = json['followers'] ?? '';
     id = json['id'] ?? '';
@@ -40,6 +40,7 @@ class UserAccount {
     final data = <String, dynamic>{};
     data['photoUrl'] = photoUrl;
     data['followers'] = followers;
+    data['following'] = following;
     data['firstname'] = firstname;
     data['lastname'] = lastname;
     data['password'] = password;

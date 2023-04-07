@@ -8,8 +8,11 @@ import 'package:socialize/news/newsPage.dart';
 import 'package:socialize/pages/todolist.dart';
 import 'package:socialize/pages/globals.dart';
 import 'package:socialize/api/apis.dart';
-import 'package:socialize/pages/updateProfile.dart';
 import 'package:socialize/pages/myPostsPage.dart';
+import 'package:socialize/pages/updateProfile.dart';
+import 'package:socialize/widgets/follow_button.dart';
+
+import '../api/colors.dart';
 
 class MyAccount extends StatefulWidget {
   final String id;
@@ -24,6 +27,9 @@ class _MyAccountState extends State<MyAccount> with SingleTickerProviderStateMix
   bool isLoading = false;
   var userData = {};
   int postLen = 0;
+  int followers = 0;
+  int following = 0;
+  bool isFollowing = false;
 
   getData() async {
     setState(() {
@@ -41,6 +47,12 @@ class _MyAccountState extends State<MyAccount> with SingleTickerProviderStateMix
           .get();
       postLen = postSnap.docs.length;
       userData = userSnap.data()!;
+      followers = userSnap.data()!['followers'].length;
+      following = userSnap.data()!['following'].length;
+      isFollowing = userSnap
+          .data()!['followers']
+          .contains(FirebaseAuth.instance.currentUser!.uid);
+      setState(() {});
     } catch (e) {
       print(e);
     }
@@ -145,128 +157,84 @@ class _MyAccountState extends State<MyAccount> with SingleTickerProviderStateMix
                           ),
                         ],
                       ),
-                      Column(
-                        children: <Widget>[
-                          StreamBuilder(
-                              stream: FirebaseFirestore.instance.collection(
-                                  "userPost/${APIs.user.uid}/post").snapshots(),
-                              builder: (context, AsyncSnapshot<QuerySnapshot<
-                                  Map<String, dynamic>>> snapshot) {
-                                if (snapshot.connectionState ==
-                                    ConnectionState.waiting) {
-                                  return const Center(
-                                    child: CircularProgressIndicator(),
-                                  );
-                                }
-                                return Text(
-                                  postLen.toString(),
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 25,
-                                    color: mode ? Colors.white : Colors.black,
-                                  ),
-                                );
-                              }
-                          ),
-                          Text(
-                            'Posts',
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 20,
-                              color: mode ? Colors.white : Colors.black,
-                            ),
-                          ),
-                        ],
-                      ),
-                      TextButton(
-                        onPressed: () {},
+                      Expanded(
+                        flex: 1,
                         child: Column(
                           children: [
-                            Text(
-                              '500',
-                              style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 25,
-                                color: mode ? Colors.white : Colors.black,
-                              ),
+                            Row(
+                              mainAxisSize: MainAxisSize.max,
+                              mainAxisAlignment:
+                              MainAxisAlignment.spaceEvenly,
+                              children: [
+                                buildStatColumn(postLen, "posts"),
+                                buildStatColumn(followers, "followers"),
+                                buildStatColumn(following, "following"),
+                              ],
                             ),
-                            Text(
-                              'Friends',
-                              style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 20,
-                                color: mode ? Colors.white : Colors.black,
-                              ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children: [
+                                FirebaseAuth.instance.currentUser!.uid == widget.id
+                                ?
+                                FollowButton(
+                                  text: 'Update Profile',
+                                  backgroundColor:
+                                  mobileBackgroundColor,
+                                  textColor: primaryColor,
+                                  borderColor: Colors.grey,
+                                  function: () {
+                                    Navigator.push(context,
+                                        MaterialPageRoute(
+                                          builder: (BuildContext context) =>
+                                              UpdateProfile(),
+                                        )
+                                    );
+                                  },
+                                )
+                                : isFollowing
+                                ? FollowButton(
+                                  text: 'Unfollow',
+                                  backgroundColor: Colors.white,
+                                  textColor: Colors.black,
+                                  borderColor: Colors.grey,
+                                  function: () async {
+                                    await APIs()
+                                        .followUser(
+                                      FirebaseAuth.instance
+                                          .currentUser!.uid,
+                                      userData['id'],
+                                    );
+                                    setState(() {
+                                      isFollowing = false;
+                                      followers--;
+                                    });
+                                  },
+                                )
+                                :
+                                FollowButton(
+                                  text: 'Follow',
+                                  backgroundColor: Colors.blue,
+                                  textColor: Colors.white,
+                                  borderColor: Colors.blue,
+                                  function: () async {
+                                    await APIs()
+                                        .followUser(
+                                      FirebaseAuth.instance
+                                          .currentUser!.uid,
+                                      userData['id'],
+                                    );
+                                    setState(() {
+                                      isFollowing = true;
+                                      followers++;
+                                    });
+                                  },
+                                )
+                              ],
                             ),
                           ],
                         ),
                       ),
                     ],
-                  ),
-                  Container(
-                    child: Row(
-                      children: <Widget>[
-                        Expanded(
-                          child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: GestureDetector(
-                              onTap: () {
-                                Navigator.push(context,
-                                    MaterialPageRoute(
-                                      builder: (BuildContext context) =>
-                                          UpdateProfile(),
-                                    )
-                                );
-                              },
-                              child: Container(
-                                child: Center(
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: Text(
-                                      'Edit Profile',
-                                      style: TextStyle(
-                                        fontSize: 20,
-                                        color: mode ? Colors.white : Colors
-                                            .black,
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                                decoration: BoxDecoration(
-                                  border: Border.all(
-                                    color: mode ? Colors.white : Colors.grey,),
-                                  borderRadius: BorderRadius.circular(5),
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                        Expanded(
-                          child: Padding(
-                            padding: const EdgeInsets.all(12.0),
-                            child: Container(
-                              child: Center(
-                                child: Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: Text(
-                                    'Share Profile',
-                                    style: TextStyle(
-                                      fontSize: 20,
-                                      color: mode ? Colors.white : Colors.black,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                              decoration: BoxDecoration(
-                                border: Border.all(
-                                  color: mode ? Colors.white : Colors.grey,),
-                                borderRadius: BorderRadius.circular(5),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
                   ),
                   Column(
                     children: [

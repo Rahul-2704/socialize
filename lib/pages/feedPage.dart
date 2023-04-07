@@ -66,9 +66,8 @@ class _FeedPageState extends State<FeedPage> {
           return ListView.builder(
             itemCount: snapshot.data!.docs.length,
             itemBuilder:(context,index) {
-              int reversedList = snapshot.data!.docs.length - 1 - index;
               return PostCard(
-                snap: snapshot.data?.docs[reversedList].data(),
+                snap: snapshot.data?.docs[index].data(),
               );
             }
           );

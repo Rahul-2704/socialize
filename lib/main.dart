@@ -21,11 +21,12 @@ void main() async{
   await Firebase.initializeApp();
   globals.mode = false;
   runApp(
-      MultiProvider(
-        providers: [
-          ChangeNotifierProvider(create:(_) => UserProvider()),
-        ],
-        child:MaterialApp(
+      // MultiProvider(
+      //   providers: [
+      //     ChangeNotifierProvider(create:(_) => UserProvider()),
+      //   ],
+      //   child:
+        MaterialApp(
           debugShowCheckedModeBanner: false,
           routes: {
             '/': (context) => LoginPage(),
@@ -42,6 +43,6 @@ void main() async{
             '/home': (context) => NewsScreen(),
           },
         )
-      )
+  //     )
   );
 }

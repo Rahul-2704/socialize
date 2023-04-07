@@ -4,65 +4,82 @@ import 'package:flutter/material.dart';
 import 'package:socialize/api/apis.dart';
 import 'package:socialize/widgets/comment_card.dart';
 
-class CommentScreen extends StatefulWidget {
+class CommentScreen extends StatefulWidget{
   final snap;
-  const CommentScreen({Key?key, required this.snap}):super(key: key);
-  @override
-  _CommentScreenState createState()=>_CommentScreenState();
+  const CommentScreen({Key?key,required this.snap}):super(key:key);
+  _CommentScreenState createState() => _CommentScreenState();
 }
 
 class _CommentScreenState extends State<CommentScreen>{
-  String? username;
-  String? id;
-  bool isLoading = false;
+  late String username = '';
+  late String pfp = '';
+  late String id = '';
+  late bool isLoading1 = true;
   void initState() {
-    var firebaseUser =  FirebaseAuth.instance.currentUser;
-    FirebaseFirestore.instance.collection("users").
-    doc(firebaseUser!.uid)
-        .get().then((value){
-      username = value.data()!["username"];
-      id = value.data()!["id"];
-    });
-    setState(() {
-      isLoading = true;
-    });
     super.initState();
+    FirebaseFirestore.instance.collection("users").
+    doc(FirebaseAuth.instance.currentUser!.uid)
+        .get().then((value) {
+      username = value.data()!["username"];
+      pfp = value.data()!["photoUrl"];
+      id = value.data()!['id'];
+      setState(() {
+        isLoading1 = false;
+      });
+    });
   }
-  void dispose(){
-    _commentController.dispose();
-    super.dispose();
-  }
-  TextEditingController _commentController=TextEditingController();
+  final TextEditingController _commentController = TextEditingController();
+
   @override
   Widget build(BuildContext context){
     return Scaffold(
       appBar: AppBar(
-        backgroundColor:Color.fromRGBO(0,0,0,1),
+        backgroundColor: Colors.black,
         title: const Text('Comments'),
         centerTitle: false,
       ),
-      body:CommentCard(),
+      body:StreamBuilder(
+        stream: FirebaseFirestore.instance.collection("posts")
+            .doc(widget.snap['postId'])
+            .collection("comments")
+            .orderBy("datePublished", descending: true)
+            .snapshots(),
+        builder: (context,snapshot){
+          if(snapshot.connectionState==ConnectionState.waiting){
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
+          }
+          return ListView.builder(
+            itemCount:(snapshot.data! as dynamic).docs.length,
+            itemBuilder:(context,index) => CommentCard(
+              snap:(snapshot.data! as dynamic).docs[index].data(),
+            )
+          );
+        },
+      ),
       bottomNavigationBar: SafeArea(
         child: Container(
           height: kToolbarHeight,
-          margin: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom,
-          ),
-          padding: const EdgeInsets.only(left: 16,right:8),
+          margin: EdgeInsets.only(bottom:MediaQuery.of(context).viewInsets.bottom),
+          padding: const EdgeInsets.only(left: 16,right: 8),
           child: Row(
-            children: [
+            children:[
+              isLoading1 ? Center(child:const CircularProgressIndicator()):
               CircleAvatar(
-                backgroundImage: NetworkImage(
-                  'https://picsum.photos/id/237/536/354',
-                ),
+                backgroundImage:NetworkImage(
+                  pfp,
+                ) ,
                 radius: 18,
               ),
               Expanded(
-                child:Padding(
-                  padding: const EdgeInsets.only(left:16.0,right: 8.0),
-                  child:TextField(
+                child: Padding(
+                  padding: const EdgeInsets.only(left: 16.0,right: 8.0),
+                  child:isLoading1 ? Center(child:const CircularProgressIndicator()):
+                  TextField(
                     controller: _commentController,
                     decoration: InputDecoration(
-                      hintText: 'Comment as ${username}',
+                      hintText: "Comment as ${username}",
                       border: InputBorder.none,
                     ),
                   ),
@@ -70,27 +87,30 @@ class _CommentScreenState extends State<CommentScreen>{
               ),
               InkWell(
                 onTap: () async{
-                  APIs.postComment(
+                  await APIs.postComment(
                     widget.snap['postId'],
                     _commentController.text.trim(),
-                    widget.snap['id'],
-                    widget.snap['name'],
-                    widget.snap['profUrl'],
+                    id,
+                    username,
+                    pfp,
                   );
+                  setState(() {
+                    _commentController.text='';
+                  });
                 },
-                child:Container(
-                  padding: EdgeInsets.symmetric(
+                child: Container(
+                  padding: const EdgeInsets.symmetric(
                     vertical: 8,
                     horizontal: 8,
                   ),
                   child: const Text(
                     'Post',
                     style: TextStyle(
-                      color: Colors.black,
+                      color: Colors.blueAccent,
                     ),
                   ),
                 ),
-              ),
+              )
             ],
           ),
         ),

@@ -243,7 +243,7 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   void dummyEnter() {
-    _emailController.text = "khushi.soni@spit.ac.in";
-    _passwordController.text = "khushi";
+    _emailController.text = "kunal.pasad@spit.ac.in";
+    _passwordController.text = "kunal6";
   }
 }

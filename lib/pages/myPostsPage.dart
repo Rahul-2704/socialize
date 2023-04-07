@@ -6,9 +6,8 @@ import 'package:socialize/pages/feedPage.dart';
 import 'package:socialize/pages/requestPage.dart';
 import 'package:socialize/news/newsPage.dart';
 import 'package:socialize/pages/todolist.dart';
-import 'package:socialize/widgets/post_card.dart';
+import 'package:socialize/widgets/myPostCard.dart';
 import 'globals.dart';
-import 'package:socialize/api/apis.dart';
 
 class MyPostsPage extends StatefulWidget {
   final String id;
@@ -50,9 +49,9 @@ class _MyPostsPageState extends State<MyPostsPage> {
           ),
         ),
       ),
-      body:StreamBuilder(
-        stream: FirebaseFirestore.instance.collection("userPost/${APIs.user.uid}/post").snapshots(),
-        builder: (context,AsyncSnapshot<QuerySnapshot<Map<String,dynamic>>> snapshot){
+      body: StreamBuilder(
+        stream: FirebaseFirestore.instance.collection("userPost/${widget.id}/post").snapshots(),
+        builder: (context, AsyncSnapshot<QuerySnapshot<Map<String,dynamic>>> snapshot){
           if(snapshot.connectionState == ConnectionState.waiting){
             return const Center(
               child: CircularProgressIndicator(),
@@ -61,7 +60,7 @@ class _MyPostsPageState extends State<MyPostsPage> {
           return ListView.builder(
             itemCount: snapshot.data!.docs.length,
             itemBuilder:(context, index) {
-              return PostCard(
+              return MyPostCard(
                 snap: snapshot.data?.docs[index].data(),
               );
             },

@@ -1,6 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:socialize/pages/login.dart';
 import 'package:socialize/pages/friendPage.dart';
 import 'package:socialize/pages/indexPage.dart';
@@ -14,18 +13,12 @@ import 'package:socialize/news/newsPage.dart';
 import 'package:socialize/pages/feedPage.dart';
 import 'package:socialize/pages/globals.dart' as globals;
 import 'package:firebase_core/firebase_core.dart';
-import 'package:socialize/api/user_provider.dart';
 
 void main() async{
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
   globals.mode = false;
   runApp(
-      // MultiProvider(
-      //   providers: [
-      //     ChangeNotifierProvider(create:(_) => UserProvider()),
-      //   ],
-      //   child:
         MaterialApp(
           debugShowCheckedModeBanner: false,
           routes: {

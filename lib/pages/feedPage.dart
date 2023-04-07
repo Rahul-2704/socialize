@@ -5,7 +5,7 @@ import 'package:socialize/pages/accountPage.dart';
 import 'package:socialize/pages/requestPage.dart';
 import 'package:socialize/news/newsPage.dart';
 import 'package:socialize/pages/todolist.dart';
-import 'package:socialize/widgets/post_card.dart';
+import 'package:socialize/widgets/postCard.dart';
 import 'globals.dart';
 
 class FeedPage extends StatefulWidget {

@@ -16,6 +16,9 @@ class _LoginPageState extends State<LoginPage> {
   late String _emailLogin;
   TextEditingController _passwordLogin = TextEditingController();
   final GlobalKey<FormState> _fkLogin = GlobalKey<FormState>();
+  final _emailController=TextEditingController();
+  final _passwordController=TextEditingController();
+  bool _isLoading = false;
 
   void validateAndSaveLogin() {
     final FormState? form = _fkLogin.currentState;
@@ -25,12 +28,10 @@ class _LoginPageState extends State<LoginPage> {
       print('Form is invalid');
     }
   }
-  final _emailController=TextEditingController();
-  final _passwordController=TextEditingController();
-  bool _isLoading = false;
+
   void loginUser() async{
     setState(() {
-      _isLoading=true;
+      _isLoading = true;
     });
     String res=await AuthMethods().login(
         email: _emailController.text.trim(),
@@ -45,6 +46,7 @@ class _LoginPageState extends State<LoginPage> {
       _isLoading=false;
     });
   }
+
   @override
     void dispose() {
     _emailController.dispose();
@@ -189,7 +191,7 @@ class _LoginPageState extends State<LoginPage> {
                       height: 60,
                       child: ElevatedButton(
                         onPressed:(){
-                          dummyEnter();
+                          // dummyEnter();
                           validateAndSaveLogin();
                           loginUser();
                         },

@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -5,6 +6,7 @@ import 'package:socialize/api/apis.dart';
 import 'package:socialize/pages/accountPage.dart';
 import 'package:socialize/pages/comment_screen.dart';
 import 'package:socialize/widgets/like_animation.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 class PostCard extends StatefulWidget{
   final snap;
@@ -23,16 +25,17 @@ class _PostCardState extends State<PostCard> {
   @override
   void initState() {
     super.initState();
-    fetchCommentLen();
+    getComments();
   }
 
-  fetchCommentLen() async {
+  void getComments() async {
     try {
       QuerySnapshot snap = await FirebaseFirestore.instance
-        .collection('posts')
-        .doc(widget.snap['postId'])
-        .collection('comments')
-        .get();
+          .collection('posts')
+          .doc(widget.snap['postId'])
+          .collection('comments')
+          .get();
+
       commentLen = snap.docs.length;
     }
     catch (err) {
@@ -42,7 +45,11 @@ class _PostCardState extends State<PostCard> {
   }
 
   Widget build(BuildContext context){
-    return Container(
+    return widget.snap['id'] == FirebaseAuth.instance.currentUser?.uid
+        ?
+    Container()
+        :
+    Container(
         padding: const EdgeInsets.symmetric(
           vertical: 2,
         ),
@@ -56,10 +63,18 @@ class _PostCardState extends State<PostCard> {
               child: Row(
                 children: [
                   isLoading ? CircularProgressIndicator() :
-                  CircleAvatar(
-                    radius: 16,
-                    backgroundImage: NetworkImage(
-                      widget.snap['profUrl'],
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(20),
+                    child: CachedNetworkImage(
+                      width: 30,
+                      height: 30,
+                      fit: BoxFit.cover,
+                      imageUrl: widget.snap['profUrl'],
+                      placeholder: (context, url) => const Center(child: CircularProgressIndicator()),
+                      errorWidget: (context, url, error) =>
+                      const CircleAvatar(
+                          child: Icon(Icons.person)
+                      ),
                     ),
                   ),
                   Expanded(
@@ -138,19 +153,16 @@ class _PostCardState extends State<PostCard> {
                     width: double.infinity,
                     child: isLoading ? Center(child: CircularProgressIndicator())
                         :
-                    Image.network(
-                      widget.snap['image'],
-                      errorBuilder: (context, error, stackTrace) {
-                        return Container(
-                          color: Colors.grey,
-                          alignment: Alignment.center,
-                          child: const Text(
-                            'Whoops!',
-                            style: TextStyle(fontSize: 30),
-                          ),
-                        );
-                      },
-                      fit:BoxFit.cover,
+                    ClipRRect(
+                      child: CachedNetworkImage(
+                        fit: BoxFit.cover,
+                        imageUrl: widget.snap['image'],
+                        placeholder: (context, url) => const Center(child: CircularProgressIndicator()),
+                        errorWidget: (context, url, error) =>
+                        const CircleAvatar(
+                            child: Icon(Icons.error)
+                        ),
+                      ),
                     ),
                   ),
                   AnimatedOpacity(
@@ -186,9 +198,9 @@ class _PostCardState extends State<PostCard> {
                   child: IconButton(
                     onPressed:() async {
                       await APIs.likePost(
-                        widget.snap['postId'],
-                        widget.snap['id'],
-                        widget.snap['likes']
+                          widget.snap['postId'],
+                          widget.snap['id'],
+                          widget.snap['likes']
                       );
                     },
                     icon: widget.snap['likes'].contains(FirebaseAuth.instance.currentUser?.uid)
@@ -207,7 +219,7 @@ class _PostCardState extends State<PostCard> {
                   onPressed:() => Navigator.of(context).push(
                     MaterialPageRoute(
                       builder:(context) => CommentScreen(
-                          snap: widget.snap,
+                        snap: widget.snap,
                       ),
                     ),
                   ),

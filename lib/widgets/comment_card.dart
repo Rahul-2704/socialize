@@ -1,5 +1,8 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+
+import '../pages/accountPage.dart';
 
 class CommentCard extends StatefulWidget {
   final snap;
@@ -16,11 +19,19 @@ class _CommentCardState extends State<CommentCard> {
       padding: const EdgeInsets.symmetric(vertical:18,horizontal:16),
       child: Row(
         children: [
-          CircleAvatar(
-            backgroundImage: NetworkImage(
-              widget.snap['profUrl'],
+          ClipRRect(
+            borderRadius: BorderRadius.circular(20),
+            child: CachedNetworkImage(
+              width: 35,
+              height: 35,
+              fit: BoxFit.cover,
+              imageUrl: widget.snap['profUrl'],
+              placeholder: (context, url) => const Center(child: CircularProgressIndicator()),
+              errorWidget: (context, url, error) =>
+              const CircleAvatar(
+                  child: Icon(Icons.person)
+              ),
             ),
-            radius: 18,
           ),
           Expanded(
             child: Padding(
@@ -29,24 +40,54 @@ class _CommentCardState extends State<CommentCard> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  RichText(
-                      text: TextSpan(
-                          children: [
-                            TextSpan(
-                              text:widget.snap['username'],
-                              style: const TextStyle(
-                                fontWeight: FontWeight.bold,
-                                color: Colors.black,
-                              ),
-                            ),
-                            TextSpan(
-                                text:' ${widget.snap['comment']}',
-                                style: const TextStyle(
-                                  color: Colors.black,
+                  // RichText(
+                  //   text: TextSpan(
+                  //     children: [
+                  //       TextSpan(
+                  //         text:widget.snap['username'],
+                  //         style: const TextStyle(
+                  //           fontWeight: FontWeight.bold,
+                  //           color: Colors.black,
+                  //         ),
+                  //       ),
+                  //       TextSpan(
+                  //           text:' ${widget.snap['comment']}',
+                  //           style: const TextStyle(
+                  //             color: Colors.black,
+                  //           )
+                  //       ),
+                  //     ]
+                  //   )
+                  // ),
+                  Row(
+                      children:[
+                        TextButton(
+                            onPressed:(){
+                              Navigator.push(context,
+                                MaterialPageRoute(
+                                  builder: (BuildContext context) => MyAccount(id: widget.snap['id']),
                                 )
-                            ),
-                          ]
-                      )
+                              );
+                            },
+                            child:Row(
+                              children: [
+                                Text(
+                                  widget.snap['username'],
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.black,
+                                  ),
+                                ),
+                                Text(
+                                  widget.snap['comment'],
+                                  style: const TextStyle(
+                                    color: Colors.black,
+                                  ),
+                                ),
+                              ],
+                            )
+                        )
+                      ]
                   ),
                   Padding(padding:const EdgeInsets.only(top:4.0),
                     child: Text(

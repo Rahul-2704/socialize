@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -141,10 +142,18 @@ class _MyAccountState extends State<MyAccount> with SingleTickerProviderStateMix
                     children: <Widget>[
                       Column(
                         children: <Widget>[
-                          CircleAvatar(
-                            radius: 45,
-                            backgroundImage: NetworkImage(
-                              userData['photoUrl'],
+                          ClipRRect(
+                            borderRadius: BorderRadius.circular(45),
+                            child: CachedNetworkImage(
+                              width: 95,
+                              height: 95,
+                              fit: BoxFit.cover,
+                              imageUrl: userData['photoUrl'],
+                              placeholder: (context, url) => const Center(child: CircularProgressIndicator()),
+                              errorWidget: (context, url, error) =>
+                              const CircleAvatar(
+                                  child: Icon(Icons.person)
+                              ),
                             ),
                           ),
                           Text(
@@ -323,10 +332,15 @@ class _MyAccountState extends State<MyAccount> with SingleTickerProviderStateMix
                                               )
                                           );
                                         },
-                                        child: Container(
-                                          child: Image(
-                                            image: NetworkImage(snap['image']),
+                                        child: ClipRRect(
+                                          child: CachedNetworkImage(
                                             fit: BoxFit.cover,
+                                            imageUrl: snap['image'],
+                                            placeholder: (context, url) => const Center(child: CircularProgressIndicator()),
+                                            errorWidget: (context, url, error) =>
+                                            const CircleAvatar(
+                                                child: Icon(Icons.error)
+                                            ),
                                           ),
                                         ),
                                       );

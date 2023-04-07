@@ -1,5 +1,6 @@
 import 'dart:developer';
 import 'dart:io';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -7,7 +8,6 @@ import 'package:image_picker/image_picker.dart';
 import 'package:socialize/api/apis.dart';
 import 'package:socialize/api/dialogs.dart';
 import 'package:socialize/pages/accountPage.dart';
-
 
 class AddPost extends StatefulWidget {
   const AddPost({Key? key}) : super(key: key);
@@ -56,10 +56,18 @@ class _AddPostState extends State<AddPost> {
                       child: Row(
                         children: [
                           isLoading1 ? CircularProgressIndicator():
-                          CircleAvatar(
-                            radius: 30,
-                            backgroundImage: NetworkImage(
-                              pfp,
+                          ClipRRect(
+                            borderRadius: BorderRadius.circular(50),
+                            child: CachedNetworkImage(
+                              width: 75,
+                              height: 75,
+                              fit: BoxFit.cover,
+                              imageUrl: pfp,
+                              placeholder: (context, url) => const Center(child: CircularProgressIndicator()),
+                              errorWidget: (context, url, error) =>
+                              const CircleAvatar(
+                                  child: Icon(Icons.person)
+                              ),
                             ),
                           ),
                           SizedBox(

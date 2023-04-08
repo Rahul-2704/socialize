@@ -304,6 +304,7 @@ class _RegisterPageState extends State<RegisterPage> {
                             photoUrl:'images/profilePicture.png',
                             bio:'',
                             username:'',
+                            login: true,
                           );
                       print(res);
                     },

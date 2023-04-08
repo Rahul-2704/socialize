@@ -149,7 +149,7 @@ class _PostCardState extends State<PostCard> {
                 alignment: Alignment.center,
                 children: [
                   SizedBox(
-                    height: MediaQuery.of(context).size.height * 0.35,
+                    height: MediaQuery.of(context).size.height * 0.45,
                     width: double.infinity,
                     child: isLoading ? Center(child: CircularProgressIndicator())
                         :

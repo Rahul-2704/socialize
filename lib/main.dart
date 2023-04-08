@@ -19,23 +19,22 @@ void main() async{
   await Firebase.initializeApp();
   globals.mode = false;
   runApp(
-        MaterialApp(
-          debugShowCheckedModeBanner: false,
-          routes: {
-            '/': (context) => LoginPage(),
-            '/indexPage': (context) => IndexPage(),
-            '/register': (context) => RegisterPage(),
-            '/interest': (context) => ChooseInterest(),
-            '/bioData': (context) => BioData(),
-            '/login': (context) => LoginPage(),
-            '/feedPage': (context) => FeedPage(),
-            '/searchNews': (context) => SearchNews(),
-            '/accountPage': (context) => MyAccount(id: FirebaseAuth.instance.currentUser!.uid,),
-            '/friendPage': (context) => FriendPage(),
-            '/requestPage': (context) => RequestPage(),
-            '/home': (context) => NewsScreen(),
-          },
-        )
-  //     )
+    MaterialApp(
+      debugShowCheckedModeBanner: false,
+      routes: {
+        '/': (context) => IndexPage(),
+        '/indexPage': (context) => IndexPage(),
+        '/register': (context) => RegisterPage(),
+        '/interest': (context) => ChooseInterest(),
+        '/bioData': (context) => BioData(),
+        '/login': (context) => LoginPage(),
+        '/feedPage': (context) => FeedPage(),
+        '/searchNews': (context) => SearchNews(),
+        '/accountPage': (context) => MyAccount(id: FirebaseAuth.instance.currentUser!.uid,),
+        '/friendPage': (context) => FriendPage(),
+        '/requestPage': (context) => RequestPage(),
+        '/home': (context) => NewsScreen(),
+      },
+    )
   );
 }

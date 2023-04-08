@@ -1,8 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-
-import '../pages/accountPage.dart';
+import 'package:socialize/pages/accountPage.dart';
 
 class CommentCard extends StatefulWidget {
   final snap;
@@ -35,7 +34,7 @@ class _CommentCardState extends State<CommentCard> {
           ),
           Expanded(
             child: Padding(
-              padding: const EdgeInsets.only(left:16),
+              padding: const EdgeInsets.only(left:6),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -60,36 +59,33 @@ class _CommentCardState extends State<CommentCard> {
                   //   )
                   // ),
                   Row(
-                      children:[
-                        TextButton(
-                            onPressed:(){
-                              Navigator.push(context,
-                                MaterialPageRoute(
-                                  builder: (BuildContext context) => MyAccount(id: widget.snap['id']),
-                                )
-                              );
-                            },
-                            child:Row(
-                              children: [
-                                Text(
-                                  widget.snap['username'],
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.black,
-                                  ),
-                                ),
-                                Text(
-                                  widget.snap['comment'],
-                                  style: const TextStyle(
-                                    color: Colors.black,
-                                  ),
-                                ),
-                              ],
+                    children:[
+                      InkWell(
+                        onTap: () {
+                          Navigator.push(context,
+                            MaterialPageRoute(
+                              builder: (BuildContext context) => MyAccount(id: widget.snap['id']),
                             )
-                        )
-                      ]
+                          );
+                        },
+                        child: Text(
+                          widget.snap['username'],
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black,
+                          ),
+                        ),
+                      ),
+                      SizedBox(width: 5,),
+                      Text(
+                        widget.snap['comment'],
+                        style: const TextStyle(
+                          color: Colors.black,
+                        ),
+                      ),
+                    ]
                   ),
-                  Padding(padding:const EdgeInsets.only(top:4.0),
+                  Padding(padding:const EdgeInsets.only(top: 4),
                     child: Text(
                       '${DateFormat.MMMMEEEEd().format(
                           widget.snap['datePublished'].toDate()
@@ -99,14 +95,17 @@ class _CommentCardState extends State<CommentCard> {
                         fontWeight: FontWeight.w500,
                       ),
                     ),
-                  )
+                  ),
                 ],
               ),
             ),
           ),
           Container(
             padding: const EdgeInsets.all(8),
-            child: Icon(Icons.favorite_border,size: 16,),
+            child: Icon(
+              Icons.favorite_border,
+              size: 16,
+            ),
           )
         ],
       ),

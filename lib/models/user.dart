@@ -10,6 +10,7 @@ class UserAccount {
     required this.following,
     required this.followers,
     required this.photoUrl,
+    required this.login,
   });
 
   late String firstname;
@@ -22,6 +23,7 @@ class UserAccount {
   late String password;
   late String photoUrl;
   late String email;
+  late bool login;
 
   UserAccount.fromJson(Map<String, dynamic> json) {
     photoUrl = json['photoUrl'] ?? '';
@@ -34,6 +36,7 @@ class UserAccount {
     password = json['password'] ?? '';
     firstname = json['firstname'] ?? '';
     lastname = json['lastname'] ?? '';
+    login = json['login'] ?? '';
   }
 
   Map<String, dynamic> toJson() {
@@ -48,6 +51,7 @@ class UserAccount {
     data['id'] = id;
     data['email'] = email;
     data['bio'] = bio;
+    data['login'] = login;
     return data;
   }
 }

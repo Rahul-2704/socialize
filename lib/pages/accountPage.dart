@@ -4,6 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:socialize/pages/addPost.dart';
 import 'package:socialize/pages/feedPage.dart';
+import 'package:socialize/pages/indexPage.dart';
 import 'package:socialize/pages/requestPage.dart';
 import 'package:socialize/news/newsPage.dart';
 import 'package:socialize/pages/todolist.dart';
@@ -14,6 +15,7 @@ import 'package:socialize/pages/updateProfile.dart';
 import 'package:socialize/widgets/follow_button.dart';
 
 import '../api/colors.dart';
+import '../api/dialogs.dart';
 
 class MyAccount extends StatefulWidget {
   final String id;
@@ -185,20 +187,42 @@ class _MyAccountState extends State<MyAccount> with SingleTickerProviderStateMix
                               children: [
                                 FirebaseAuth.instance.currentUser!.uid == widget.id
                                 ?
-                                FollowButton(
-                                  text: 'Update Profile',
-                                  backgroundColor:
-                                  mobileBackgroundColor,
-                                  textColor: primaryColor,
-                                  borderColor: Colors.grey,
-                                  function: () {
-                                    Navigator.push(context,
-                                        MaterialPageRoute(
-                                          builder: (BuildContext context) =>
+                                Row(
+                                  children: [
+                                    FollowButton(
+                                      text: 'Update Profile',
+                                      backgroundColor:
+                                      mobileBackgroundColor,
+                                      textColor: primaryColor,
+                                      borderColor: Colors.grey,
+                                      function: () {
+                                        Navigator.push(context,
+                                          MaterialPageRoute(
+                                            builder: (BuildContext context) =>
                                               UpdateProfile(),
-                                        )
-                                    );
-                                  },
+                                          )
+                                        );
+                                      },
+                                    ),
+                                    FollowButton(
+                                      text: 'Log Out',
+                                      backgroundColor:
+                                      mobileBackgroundColor,
+                                      textColor: primaryColor,
+                                      borderColor: Colors.grey,
+                                      function: () async {
+                                        await AuthMethods().signOut().then((value) {
+                                          Dialogs.showSnackBar(context, "You have been logged out!");
+                                        });
+                                        Navigator.push(context,
+                                            MaterialPageRoute(
+                                              builder: (BuildContext context) =>
+                                                  IndexPage(),
+                                            )
+                                        );
+                                      },
+                                    ),
+                                  ],
                                 )
                                 : isFollowing
                                 ? FollowButton(
@@ -328,7 +352,7 @@ class _MyAccountState extends State<MyAccount> with SingleTickerProviderStateMix
                                           Navigator.push(context,
                                               MaterialPageRoute(builder: (
                                                   BuildContext context) =>
-                                                  MyPostsPage(id: FirebaseAuth.instance.currentUser!.uid),
+                                                  MyPostsPage(id: widget.id),
                                               )
                                           );
                                         },

@@ -3,9 +3,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:socialize/models/user.dart';
-import '../api/apis.dart';
-import '../api/dialogs.dart';
+import 'package:socialize/api/apis.dart';
+import 'package:socialize/api/dialogs.dart';
 import 'globals.dart';
 
 class UpdateProfile extends StatefulWidget {
@@ -90,18 +89,20 @@ class _UpdateProfileState extends State<UpdateProfile> {
                       APIs.profileUpdate(i.File(_image!)).then((value) {
                         Dialogs.showSnackBar(context, 'Profile Updated Successfully!');
                       });
-                      final firestoreInstance = FirebaseFirestore.instance;
-                      FirebaseAuth _auth=FirebaseAuth.instance;
-                      firestoreInstance.collection("users").doc(_auth.currentUser!.uid).set(
-                          {
-                            "username" : _usernameController.text.trim(),
-                            "bio" : _bioController.text.trim(),
-                          },SetOptions(merge: true)).then((_){
+                      FirebaseFirestore.instance
+                          .collection("users")
+                          .doc(FirebaseAuth.instance.currentUser!.uid)
+                          .set({
+                        "username" : (_usernameController.text.trim()).isEmpty ? username : _usernameController.text.trim(),
+                        // "bio" : _bioController.text.trim(),
+                        "bio" : (_bioController.text.trim()).isEmpty ? bio : _bioController.text.trim(),
+
+                      },SetOptions(merge: true)).then((_){
                         print("success!");
                       });
                     },
                     child: Text(
-                      'Submit',
+                      'Update',
                       style: TextStyle(
                         fontSize: 25,
                       ),
@@ -124,23 +125,23 @@ class _UpdateProfileState extends State<UpdateProfile> {
       child: TextFormField(
         controller: _usernameController,
         decoration: InputDecoration(
-          border: OutlineInputBorder(
-            borderSide: BorderSide(
-              width: 2,
+            border: OutlineInputBorder(
+              borderSide: BorderSide(
+                width: 2,
+              ),
             ),
-          ),
-          focusedBorder: OutlineInputBorder(
-            borderSide: BorderSide(
-              color: Colors.grey,
-              width: 2,
+            focusedBorder: OutlineInputBorder(
+              borderSide: BorderSide(
+                color: Colors.grey,
+                width: 2,
+              ),
             ),
-          ),
-          prefixIcon: Icon(
-            Icons.person,
-            color: Colors.green,
-          ),
-          hintText: username,
-          helperText: 'Username'
+            prefixIcon: Icon(
+              Icons.person,
+              color: Colors.green,
+            ),
+            hintText: username,
+            helperText: 'Username'
         ),
         onSaved: (username){
           _username = username!;
@@ -185,9 +186,9 @@ class _UpdateProfileState extends State<UpdateProfile> {
               fit: BoxFit.cover,
             ),
           )
-          :
+              :
           isLoading ? Center(child: CircularProgressIndicator())
-          :
+              :
           CircleAvatar(
             radius: 80,
             backgroundImage: NetworkImage(

@@ -205,6 +205,25 @@ class _AddPostState extends State<AddPost> {
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.white,
+                        shape: const CircleBorder(),
+                        fixedSize: Size(MediaQuery.of(context).size.width * .3, MediaQuery.of(context).size.height * .15)),
+                    onPressed: () async {
+                      final ImagePicker picker = ImagePicker();
+                      final XFile? image = await picker.pickImage(
+                          source: ImageSource.camera, imageQuality: 80);
+                      if (image != null) {
+                        log('Image Path: ${image.path}');
+                        setState(() {
+                          _image = image.path;
+                        });
+                        Navigator.pop(context);
+                      }
+                    },
+                    child: Image.asset('images/camera.png')
+                  ),
+                  ElevatedButton(
                       style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.white,
                           shape: const CircleBorder(),
@@ -221,25 +240,8 @@ class _AddPostState extends State<AddPost> {
                           Navigator.pop(context);
                         }
                       },
-                      child: Image.asset('images/add_image.png')),
-                  ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.white,
-                          shape: const CircleBorder(),
-                          fixedSize: Size(MediaQuery.of(context).size.width * .3, MediaQuery.of(context).size.height * .15)),
-                      onPressed: () async {
-                        final ImagePicker picker = ImagePicker();
-                        final XFile? image = await picker.pickImage(
-                            source: ImageSource.camera, imageQuality: 80);
-                        if (image != null) {
-                          log('Image Path: ${image.path}');
-                          setState(() {
-                            _image = image.path;
-                          });
-                          Navigator.pop(context);
-                        }
-                      },
-                      child: Image.asset('images/camera.png')),
+                      child: Image.asset('images/add_image.png')
+                  ),
                 ],
               )
             ],

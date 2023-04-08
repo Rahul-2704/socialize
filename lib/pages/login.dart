@@ -33,11 +33,11 @@ class _LoginPageState extends State<LoginPage> {
     setState(() {
       _isLoading = true;
     });
-    String res=await AuthMethods().login(
+    String res = await AuthMethods().login(
         email: _emailController.text.trim(),
         password:_passwordController.text.trim(),
     );
-    if(res=="success"){
+    if(res == "success"){
      Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context)=>const FeedPage()));
     }
     else{
@@ -63,7 +63,6 @@ class _LoginPageState extends State<LoginPage> {
       body: Container(
         alignment: Alignment.center,
         height : MediaQuery.of(context).size.height,
-
         child: SingleChildScrollView(
           child: Form(
             key: _fkLogin,
@@ -190,7 +189,7 @@ class _LoginPageState extends State<LoginPage> {
                       width: 350,
                       height: 60,
                       child: ElevatedButton(
-                        onPressed:(){
+                        onPressed:() {
                           // dummyEnter();
                           validateAndSaveLogin();
                           loginUser();

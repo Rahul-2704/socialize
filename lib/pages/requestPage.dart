@@ -1,10 +1,13 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:socialize/news/newsPage.dart';
 import 'package:socialize/pages/accountPage.dart';
 import 'package:socialize/pages/todolist.dart';
 import 'package:socialize/pages/feedPage.dart';
+import '../api/global_variable.dart';
 import 'globals.dart';
+import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 
 class RequestPage extends StatefulWidget {
   const RequestPage({Key? key}) : super(key: key);
@@ -14,46 +17,106 @@ class RequestPage extends StatefulWidget {
 }
 
 class _RequestPageState extends State<RequestPage> {
+  final TextEditingController _searchController=TextEditingController();
+  bool isShowUser = false;
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: PreferredSize(
-        preferredSize: Size.fromHeight(50),
-        child: Container(
-          decoration: BoxDecoration(
-            border: Border(
-              bottom: BorderSide(
-                color: Colors.grey,
-              ),
-            ),
+      appBar: AppBar(
+        backgroundColor: Colors.white,
+        title:TextFormField(
+          decoration: InputDecoration(
+            labelText: 'Search a user',
           ),
-          child: AppBar(
-            automaticallyImplyLeading: false,
-            backgroundColor: mode ? Colors.black : Colors.white,
-            elevation: 0,
-            title: Padding(
-              padding: const EdgeInsets.all(12.0),
-              child: Text(
-                'Notifications',
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  color: mode ? Colors.white : Colors.black,
-                ),
-              ),
-            ),
-          ),
-        ),
+          controller: _searchController,
+          onFieldSubmitted: (String _){
+            print(_);
+            setState(() {
+              isShowUser=true;
+            });
+          },
+        ) ,
       ),
-      body: Container(
-        color: mode ? Colors.grey[850] : Colors.white,
-        child: Padding(
-          padding: const EdgeInsets.all(15.0),
-          child: ListView(
-            children: <Widget>[
-              nameTextField(),
-            ],
-          ),
+      body:
+      isShowUser
+          ?
+      GestureDetector(
+        onTap: () => FocusScope.of(context).unfocus(),
+        child: FutureBuilder(
+            future: FirebaseFirestore.instance.collection("users")
+              .where('username', isGreaterThanOrEqualTo: _searchController.text)
+              .get(),
+            builder:(context, snapshot) {
+              if (!snapshot.hasData) {
+                return const Center(child: CircularProgressIndicator());
+              }
+              return ListView.builder(
+                  itemCount: (snapshot.data! as dynamic).docs.length,
+                  itemBuilder: (context, index) {
+                    return ListTile(
+                      leading: CircleAvatar(
+                        backgroundImage: NetworkImage(
+                          (snapshot.data! as dynamic).docs[index]['photoUrl']
+                        ),
+                      ),
+                      title: Padding(
+                        padding: const EdgeInsets.only(right:200.0),
+                        child: TextButton(
+                          child: Text((snapshot.data! as dynamic).docs[index]['username'],
+                            style: TextStyle(
+                              color: Colors.black54,
+                            ),),
+                          onPressed: () {
+                            Navigator.push(context,
+                                MaterialPageRoute(
+                                  builder: (BuildContext context) => MyAccount(id:(snapshot.data! as dynamic).docs[index]['id']),
+                                )
+                            );
+                          },),
+                      ),
+
+                    );
+                  }
+              );
+            }
         ),
+      )
+          :
+      FutureBuilder(
+        future: FirebaseFirestore.instance
+            .collection('posts')
+            .orderBy('date')
+            .get(),
+        builder: (context, snapshot) {
+          if (!snapshot.hasData) {
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
+          }
+          return StaggeredGridView.countBuilder(
+            crossAxisCount: 3,
+            itemCount: (snapshot.data! as dynamic).docs.length,
+            itemBuilder: (context, index) => Image.network(
+              (snapshot.data! as dynamic).docs[index]['image'],
+              fit: BoxFit.cover,
+            ),
+            staggeredTileBuilder: (index) => MediaQuery.of(context)
+                .size
+                .width >
+                webScreenSize
+                ? StaggeredTile.count(
+                (index % 7 == 0) ? 1 : 1, (index % 7 == 0) ? 1 : 1)
+                : StaggeredTile.count(
+                (index % 7 == 0) ? 2 : 1, (index % 7 == 0) ? 2 : 1),
+            mainAxisSpacing: 8.0,
+            crossAxisSpacing: 8.0,
+          );
+        },
       ),
       bottomNavigationBar: BottomAppBar(
         color: mode ? Colors.grey[800] : Colors.white,
@@ -121,36 +184,6 @@ class _RequestPageState extends State<RequestPage> {
               ),
             ],
           ),
-        ),
-      ),
-    );
-  }
-  Widget nameTextField(){
-    return TextFormField(
-      decoration: InputDecoration(
-        enabledBorder: OutlineInputBorder(
-          borderSide: BorderSide(
-            color: mode ? Colors.grey : Colors.black,
-            width: 2,
-          ),
-        ),
-        focusedBorder: OutlineInputBorder(
-          borderSide: BorderSide(
-            color: mode ? Colors.grey : Colors.black,
-            width: 2,
-          ),
-        ),
-        prefixIcon: Icon(
-          Icons.search,
-          color: mode ? Colors.grey : Colors.black,
-        ),
-        labelText: 'Search ',
-        hintText: 'Search ',
-        labelStyle: TextStyle(
-          color: mode ? Colors.grey : Colors.black,
-        ),
-        hintStyle: TextStyle(
-          color: mode ? Colors.grey : Colors.black,
         ),
       ),
     );

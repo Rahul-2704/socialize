@@ -129,7 +129,13 @@ class _FeedPageState extends State<FeedPage> {
               IconButton(
                 onPressed: () {
                   Navigator.pushReplacement(context,
-                      MaterialPageRoute(builder: (BuildContext context) => MyAccount(id: FirebaseAuth.instance.currentUser!.uid,),));
+                    MaterialPageRoute(
+                      builder: (BuildContext context) =>
+                        MyAccount(
+                          id: FirebaseAuth.instance.currentUser!.uid,
+                        ),
+                    )
+                  );
                 },
                 icon: Icon(
                   Icons.person_outline_outlined,

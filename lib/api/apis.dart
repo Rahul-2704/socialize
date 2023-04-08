@@ -30,6 +30,7 @@ class AuthMethods{
     required String photoUrl,
     required String bio,
     required String username,
+    required bool login,
   })async{
     String res='Some error occurred';
     try{
@@ -39,6 +40,7 @@ class AuthMethods{
           firstname: firstName,
           lastname: lastName,
           username: username,
+          login: true,
           bio : bio,
           id: cred.user!.uid,
           password: password,
@@ -65,10 +67,18 @@ class AuthMethods{
     try{
       if(email.isNotEmpty||password.isNotEmpty){
         await _auth.signInWithEmailAndPassword(
-            email: email,
-            password: password
+          email: email,
+          password: password,
+
         );
         res="success";
+        FirebaseFirestore
+            .instance
+            .collection('users')
+            .doc(FirebaseAuth.instance.currentUser!.uid)
+            .update({
+          'login': true,
+        });
       }else{
         res="Please enter all the fields";
       }
@@ -79,7 +89,13 @@ class AuthMethods{
   }
 
   Future<void> signOut() async {
-    await _auth.signOut();
+    await FirebaseFirestore
+      .instance
+      .collection('users')
+      .doc(FirebaseAuth.instance.currentUser!.uid)
+      .update({
+        'login': false,
+    });
   }
 }
 
@@ -91,26 +107,22 @@ class APIs {
   static late UserAccount me;
 
   static Future<void> profileUpdate(File file) async{
-    final ext = file.path
-        .split('.')
-        .last;
+    final ext = file.path.split('.').last;
     log('Extension: $ext');
     final ref = storage.ref().child('photos/${user.uid}.$ext');
-    await ref
-        .putFile(file, SettableMetadata(contentType: 'image/$ext'))
-        .then((p0) {
+    await ref.putFile(file, SettableMetadata(contentType: 'image/$ext')).then((p0) {
       log('Data Transferred: ${p0.bytesTransferred / 1000} kb');
     });
     String url = await ref.getDownloadURL();
     final firestoreInstance = FirebaseFirestore.instance;
+
     FirebaseAuth _auth=FirebaseAuth.instance;
-    firestoreInstance.collection("users").doc(_auth.currentUser!.uid).set(
-        {
-          "photoUrl" : url,
-        },
-        SetOptions(merge: true)).then((_){
-      print(url);
-    });
+
+    firestoreInstance.collection("users").doc(_auth.currentUser!.uid).update(
+      {
+        "photoUrl" : url,
+      },
+    );
   }
 
   static Future<void> addPost(File file, String caption) async {
@@ -155,11 +167,21 @@ class APIs {
       userPost.toJson(),
     );
     await firestore
-      .collection('posts')
-      .doc(pid)
-      .set(
+        .collection('posts')
+        .doc(pid)
+        .set(
         userPost.toJson()
-      );
+    );
+  }
+
+  static Future<void> updateUserInfo() async {
+    await firestore
+        .collection('users')
+        .doc(user.uid)
+        .update({
+      'username' : me.username,
+      'bio' : me.bio,
+    });
   }
 
   Future<void> followUser(

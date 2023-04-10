@@ -3,7 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:socialize/pages/interest.dart';
+import 'package:socialize/pages/feedPage.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:socialize/api/dialogs.dart';
 
@@ -25,7 +25,7 @@ class _BioDataState extends State<BioData> {
     if (form!.validate()) {
       print('Form is valid');
       Navigator.pushReplacement(context,
-          MaterialPageRoute(builder: (BuildContext context) => ChooseInterest(),));
+          MaterialPageRoute(builder: (BuildContext context) => FeedPage(),));
     } else {
       print('Form is invalid');
     }
@@ -110,10 +110,10 @@ class _BioDataState extends State<BioData> {
                         Dialogs.showSnackBar(context,"Bio Updated Successfully!");
                       });
                       Navigator.pushReplacement(context,
-                          MaterialPageRoute(
-                            builder: (BuildContext context) =>
-                                ChooseInterest(),
-                          )
+                        MaterialPageRoute(
+                          builder: (BuildContext context) =>
+                            FeedPage(),
+                        )
                       );
                     },
                     child: Text(

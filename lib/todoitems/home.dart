@@ -1,11 +1,11 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:socialize/news/news_home.dart';
 import 'package:socialize/todoitems/todo.dart';
 import 'package:socialize/todoitems/colors.dart';
 import 'package:socialize/todoitems/todoItem.dart';
 import 'package:socialize/pages/accountPage.dart';
 import 'package:socialize/pages/requestPage.dart';
-import 'package:socialize/news/newsPage.dart';
 import 'package:socialize/pages/feedPage.dart';
 import 'package:socialize/pages/globals.dart';
 import 'package:socialize/pages/todolist.dart';
@@ -154,8 +154,8 @@ class _HomeState extends State<Home> {
                 ),
                 IconButton(
                   onPressed: () {
-                    Navigator.pushReplacement(context,
-                        MaterialPageRoute(builder: (BuildContext context) => NewsScreen(),));
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (BuildContext context) => HomeNews(),));
                   },
                   icon: Icon(
                     Icons.search,
@@ -275,21 +275,24 @@ class _HomeState extends State<Home> {
     return AppBar(
       backgroundColor: tdBGColor,
       elevation: 0,
-      title: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-        Icon(
-          Icons.menu,
-          color: tdBlack,
-          size: 30,
-        ),
-        Container(
-          height: 40,
-          width: 40,
-          child: ClipRRect(
-            borderRadius: BorderRadius.circular(20),
-            child: Image.asset('images/profilePicture.png'),
+      title: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Icon(
+            Icons.menu,
+            color: tdBlack,
+            size: 30,
           ),
-        ),
-      ]),
+          Container(
+            height: 40,
+            width: 40,
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(20),
+              child: Image.asset('images/profilePicture.png'),
+            ),
+          ),
+        ]
+      ),
     );
   }
 }

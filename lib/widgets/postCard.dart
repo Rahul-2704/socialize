@@ -3,10 +3,11 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:socialize/api/apis.dart';
+import 'package:socialize/api/dialogs.dart';
 import 'package:socialize/pages/accountPage.dart';
 import 'package:socialize/pages/comment_screen.dart';
 import 'package:socialize/widgets/like_animation.dart';
-import 'package:cached_network_image/cached_network_image.dart';
+import 'package:gallery_saver/gallery_saver.dart';
 
 class PostCard extends StatefulWidget{
   final snap;
@@ -238,7 +239,23 @@ class _PostCardState extends State<PostCard> {
                     alignment: Alignment.bottomRight,
                     child: IconButton(
                       icon: const Icon(Icons.bookmark_border),
-                      onPressed: (){},
+                      onPressed: () async{
+                        try{
+                          print(widget.snap['image']);
+                          await GallerySaver.saveImage(widget.snap['image'],
+                          albumName: 'Socialize').then((success)
+                          {
+                            Navigator.pop(context);
+                            if(success!=null&&success){
+                              Dialogs.showSnackBar(context,'Image Successfully saved!');
+                            }
+                          });
+                        }
+                        catch(e){
+                          print(widget.snap['image']);
+                          print(e.toString());
+                        }
+                      },
                     ),
                   ),
                 ),

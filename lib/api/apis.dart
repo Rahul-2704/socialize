@@ -35,8 +35,8 @@ class AuthMethods{
     String res='Some error occurred';
     try{
       if(email.isNotEmpty||password.isNotEmpty||firstName.isNotEmpty||lastName.isNotEmpty){
-        UserCredential cred= await _auth.createUserWithEmailAndPassword(email: email, password: password);
-        model.UserAccount user=model.UserAccount(
+        UserCredential cred = await _auth.createUserWithEmailAndPassword(email: email, password: password);
+        model.UserAccount user = model.UserAccount(
           firstname: firstName,
           lastname: lastName,
           username: username,
@@ -277,4 +277,5 @@ class APIs {
       );
     }
   }
+
 }

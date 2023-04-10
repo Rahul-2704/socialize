@@ -294,18 +294,18 @@ class _RegisterPageState extends State<RegisterPage> {
                   child: ElevatedButton(
                     onPressed: () async{
                       validateAndSave();
-                      String res=await AuthMethods().signupUser(
-                            firstName:_firstnameController.text.trim(),
-                            lastName:_lastnameController.text.trim(),
-                            email:_emailController.text.trim(),
-                            password:_password.text.trim(),
-                            followers: [],
-                            following: [],
-                            photoUrl:'images/profilePicture.png',
-                            bio:'',
-                            username:'',
-                            login: true,
-                          );
+                      String res = await AuthMethods().signupUser(
+                        firstName:_firstnameController.text.trim(),
+                        lastName:_lastnameController.text.trim(),
+                        email:_emailController.text.trim(),
+                        password:_password.text.trim(),
+                        followers: [],
+                        following:[],
+                        photoUrl:'images/profilePicture.png',
+                        bio:'',
+                        username:'',
+                        login: true,
+                      );
                       print(res);
                     },
                     child: Text(

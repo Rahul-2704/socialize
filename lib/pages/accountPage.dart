@@ -2,11 +2,11 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:socialize/news/news_home.dart';
 import 'package:socialize/pages/addPost.dart';
 import 'package:socialize/pages/feedPage.dart';
 import 'package:socialize/pages/indexPage.dart';
 import 'package:socialize/pages/requestPage.dart';
-import 'package:socialize/news/newsPage.dart';
 import 'package:socialize/pages/todolist.dart';
 import 'package:socialize/pages/globals.dart';
 import 'package:socialize/api/apis.dart';
@@ -106,7 +106,7 @@ class _MyAccountState extends State<MyAccount> with SingleTickerProviderStateMix
                 ),
               ),
               actions: [
-                IconButton(
+                userData['id'] == FirebaseAuth.instance.currentUser?.uid ? IconButton(
                   onPressed: () async {
                     Navigator.push(context,
                         MaterialPageRoute(
@@ -119,8 +119,8 @@ class _MyAccountState extends State<MyAccount> with SingleTickerProviderStateMix
                     color: mode ? Colors.white : Colors.black,
                     size: 25,
                   ),
-                ),
-                IconButton(
+                ) : Container(),
+                userData['id'] == FirebaseAuth.instance.currentUser?.uid ? IconButton(
                   onPressed: () {
                     setState(() {
                       mode = !mode;
@@ -130,7 +130,7 @@ class _MyAccountState extends State<MyAccount> with SingleTickerProviderStateMix
                     mode ? Icons.light_mode : Icons.dark_mode,
                     color: mode ? Colors.white : Colors.black,
                   ),
-                ),
+                ) : Container(),
               ],
             ),
           ),
@@ -159,10 +159,18 @@ class _MyAccountState extends State<MyAccount> with SingleTickerProviderStateMix
                             ),
                           ),
                           Text(
-                            userData['username'],
+                            '${userData['firstname']}',
                             style: TextStyle(
                               fontWeight: FontWeight.bold,
                               fontSize: 20,
+                              color: mode ? Colors.white : Colors.black,
+                            ),
+                          ),
+                          Text(
+                            userData['bio'],
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w500,
                               color: mode ? Colors.white : Colors.black,
                             ),
                           ),
@@ -335,8 +343,7 @@ class _MyAccountState extends State<MyAccount> with SingleTickerProviderStateMix
                                     :
                                 GridView.builder(
                                     controller: scrollController,
-                                    itemCount: (snapshot.data! as dynamic).docs
-                                        .length,
+                                    itemCount: (snapshot.data! as dynamic).docs.length,
                                     gridDelegate:
                                     const SliverGridDelegateWithFixedCrossAxisCount(
                                       crossAxisCount: 3,
@@ -350,10 +357,10 @@ class _MyAccountState extends State<MyAccount> with SingleTickerProviderStateMix
                                       return GestureDetector(
                                         onTap: () {
                                           Navigator.push(context,
-                                              MaterialPageRoute(builder: (
-                                                  BuildContext context) =>
-                                                  MyPostsPage(id: widget.id),
-                                              )
+                                            MaterialPageRoute(
+                                              builder: (BuildContext context) =>
+                                              MyPostsPage(id: widget.id),
+                                            )
                                           );
                                         },
                                         child: ClipRRect(
@@ -415,9 +422,9 @@ class _MyAccountState extends State<MyAccount> with SingleTickerProviderStateMix
                 ),
                 IconButton(
                   onPressed: () {
-                    Navigator.pushReplacement(context,
+                    Navigator.push(context,
                         MaterialPageRoute(
-                          builder: (BuildContext context) => NewsScreen(),));
+                          builder: (BuildContext context) => HomeNews(),));
                   },
                   icon: Icon(
                     Icons.search,

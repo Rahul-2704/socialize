@@ -1,7 +1,8 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:socialize/news/newsPage.dart';
+import 'package:socialize/news/news_home.dart';
 import 'package:socialize/pages/accountPage.dart';
 import 'package:socialize/pages/todolist.dart';
 import 'package:socialize/pages/feedPage.dart';
@@ -29,12 +30,16 @@ class _RequestPageState extends State<RequestPage> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.white,
+        elevation: 1,
         title:TextFormField(
           decoration: InputDecoration(
+            prefixIcon: Icon(
+              Icons.search,
+            ),
             labelText: 'Search a user',
           ),
           controller: _searchController,
-          onFieldSubmitted: (String _){
+          onFieldSubmitted: (String _) {
             print(_);
             setState(() {
               isShowUser=true;
@@ -50,73 +55,115 @@ class _RequestPageState extends State<RequestPage> {
         child: FutureBuilder(
             future: FirebaseFirestore.instance.collection("users")
               .where('username', isGreaterThanOrEqualTo: _searchController.text)
+              .where('username', isEqualTo: _searchController.text)
               .get(),
             builder:(context, snapshot) {
               if (!snapshot.hasData) {
                 return const Center(child: CircularProgressIndicator());
               }
-              return ListView.builder(
+              return (snapshot.data! as dynamic).docs.length == 0
+                  ?
+              Padding(
+                padding: const EdgeInsets.symmetric(
+                  vertical: 25,
+                  horizontal: 78,
+                ),
+                child: Text(
+                  'No such user exists!!',
+                  style: TextStyle(
+                      fontSize: 25,
+                      color: Colors.black
+                  ),
+                ),
+              )
+                  :
+              GestureDetector(
+                onTap: () => FocusScope.of(context).unfocus(),
+                child: ListView.builder(
                   itemCount: (snapshot.data! as dynamic).docs.length,
                   itemBuilder: (context, index) {
                     return ListTile(
-                      leading: CircleAvatar(
-                        backgroundImage: NetworkImage(
-                          (snapshot.data! as dynamic).docs[index]['photoUrl']
+                      leading: ClipRRect(
+                        borderRadius: BorderRadius.circular(20),
+                        child: CachedNetworkImage(
+                          width: 40,
+                          height: 40,
+                          fit: BoxFit.cover,
+                          imageUrl: (snapshot.data! as dynamic).docs[index]['photoUrl'],
+                          placeholder: (context, url) => const Center(child: CircularProgressIndicator()),
+                          errorWidget: (context, url, error) =>
+                          const CircleAvatar(
+                              child: Icon(Icons.person)
+                          ),
                         ),
                       ),
                       title: Padding(
-                        padding: const EdgeInsets.only(right:200.0),
-                        child: TextButton(
-                          child: Text((snapshot.data! as dynamic).docs[index]['username'],
+                        padding: const EdgeInsets.only(right:200),
+                        child: InkWell(
+                          child: Text(
+                            (snapshot.data! as dynamic).docs[index]['username'],
                             style: TextStyle(
                               color: Colors.black54,
-                            ),),
-                          onPressed: () {
+                            ),
+                          ),
+                          onTap: () {
                             Navigator.push(context,
-                                MaterialPageRoute(
-                                  builder: (BuildContext context) => MyAccount(id:(snapshot.data! as dynamic).docs[index]['id']),
-                                )
+                              MaterialPageRoute(
+                                builder: (BuildContext context) => MyAccount(id:(snapshot.data! as dynamic).docs[index]['id']),
+                              )
                             );
-                          },),
+                          },
+                        ),
                       ),
-
                     );
                   }
+                ),
               );
             }
         ),
       )
           :
-      FutureBuilder(
-        future: FirebaseFirestore.instance
-            .collection('posts')
-            .orderBy('date')
-            .get(),
-        builder: (context, snapshot) {
-          if (!snapshot.hasData) {
-            return const Center(
-              child: CircularProgressIndicator(),
-            );
-          }
-          return StaggeredGridView.countBuilder(
-            crossAxisCount: 3,
-            itemCount: (snapshot.data! as dynamic).docs.length,
-            itemBuilder: (context, index) => Image.network(
-              (snapshot.data! as dynamic).docs[index]['image'],
-              fit: BoxFit.cover,
-            ),
-            staggeredTileBuilder: (index) => MediaQuery.of(context)
-                .size
-                .width >
-                webScreenSize
-                ? StaggeredTile.count(
-                (index % 7 == 0) ? 1 : 1, (index % 7 == 0) ? 1 : 1)
-                : StaggeredTile.count(
-                (index % 7 == 0) ? 2 : 1, (index % 7 == 0) ? 2 : 1),
-            mainAxisSpacing: 8.0,
-            crossAxisSpacing: 8.0,
-          );
-        },
+      GestureDetector(
+        onTap: () => FocusScope.of(context).unfocus(),
+        child: Container(
+          padding: EdgeInsets.only(top: 8),
+          child: FutureBuilder(
+            future: FirebaseFirestore.instance
+                .collection('posts')
+                .orderBy('date')
+                .get(),
+            builder: (context, snapshot) {
+              if (!snapshot.hasData) {
+                return const Center(
+                  child: CircularProgressIndicator(),
+                );
+              }
+              return StaggeredGridView.countBuilder(
+                crossAxisCount: 3,
+                itemCount: (snapshot.data! as dynamic).docs.length,
+                itemBuilder: (context, index) => CachedNetworkImage(
+                  imageUrl: (snapshot.data! as dynamic).docs[index]['image'],
+                  fit: BoxFit.cover,
+                  placeholder: (context, url) => const Center(child: CircularProgressIndicator()),
+                  errorWidget: (context, url, error) =>
+                  const CircleAvatar(
+                    child: Icon(Icons.error)
+                  ),
+                ),
+                staggeredTileBuilder: (index) => MediaQuery.of(context)
+                    .size
+                    .width >
+                    webScreenSize
+                    ? StaggeredTile.count(
+                    (index % 7 == 0) ? 1 : 1, (index % 7 == 0) ? 1 : 1)
+                    : StaggeredTile.count(
+                    (index % 7 == 0) ? 2 : 1, (index % 7 == 0) ? 2 : 1),
+                mainAxisSpacing: 8.0,
+                crossAxisSpacing: 8.0,
+              );
+            },
+          ),
+        ),
       ),
       bottomNavigationBar: BottomAppBar(
         color: mode ? Colors.grey[800] : Colors.white,
@@ -140,8 +187,8 @@ class _RequestPageState extends State<RequestPage> {
               ),
               IconButton(
                 onPressed: () {
-                  Navigator.pushReplacement(context,
-                      MaterialPageRoute(builder: (BuildContext context) => NewsScreen(),));
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (BuildContext context) => HomeNews(),));
                 },
                 icon: Icon(
                   Icons.search,

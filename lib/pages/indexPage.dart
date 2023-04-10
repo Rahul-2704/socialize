@@ -1,9 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:socialize/news/news_home.dart';
 import 'package:socialize/pages/accountPage.dart';
 import 'package:socialize/pages/requestPage.dart';
-import 'package:socialize/news/newsPage.dart';
 import 'package:socialize/pages/todolist.dart';
 import 'package:socialize/widgets/postCard.dart';
 import 'feedPage.dart';
@@ -37,7 +37,6 @@ class _IndexPageState extends State<IndexPage> {
     .doc(FirebaseAuth.instance.currentUser!.uid)
     .get().then((value) {
       isLogin = value.data()!['login'];
-      id = value.data()!['id'];
   });
     super.initState();
     LoadHome();
@@ -254,8 +253,8 @@ class _IndexPageState extends State<IndexPage> {
               ),
               IconButton(
                 onPressed: () {
-                  Navigator.pushReplacement(context,
-                      MaterialPageRoute(builder: (BuildContext context) => NewsScreen(),));
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (BuildContext context) => HomeNews(),));
                 },
                 icon: Icon(
                   Icons.search,

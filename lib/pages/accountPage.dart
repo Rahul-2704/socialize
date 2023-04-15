@@ -49,6 +49,8 @@ class _MyAccountState extends State<MyAccount> with SingleTickerProviderStateMix
           .where('id', isEqualTo: widget.id)
           .get();
       postLen = postSnap.docs.length;
+     // postData=postSnap.data()!;
+
       userData = userSnap.data()!;
       followers = userSnap.data()!['followers'].length;
       following = userSnap.data()!['following'].length;
@@ -206,8 +208,9 @@ class _MyAccountState extends State<MyAccount> with SingleTickerProviderStateMix
                                       function: () {
                                         Navigator.push(context,
                                           MaterialPageRoute(
-                                            builder: (BuildContext context) =>
-                                              UpdateProfile(),
+                                            builder: (BuildContext context) => UpdateProfile(
+                                              //snap:FirebaseFirestore.instance.collection("posts").snapshots().first,
+                                            ),
                                           )
                                         );
                                       },

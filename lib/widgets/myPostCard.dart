@@ -20,6 +20,7 @@ class _MyPostCardState extends State<MyPostCard> {
   bool isLikeAnimating = false;
   bool isLoading = false;
   int commentLen = 0;
+  late String profUrl='';
 
   @override
   void initState() {
@@ -63,7 +64,7 @@ class _MyPostCardState extends State<MyPostCard> {
                       width: 30,
                       height: 30,
                       fit: BoxFit.cover,
-                      imageUrl: widget.snap['profUrl'],
+                      imageUrl:widget.snap['profUrl'],
                       placeholder: (context, url) => const Center(child: CircularProgressIndicator()),
                       errorWidget: (context, url, error) =>
                       const CircleAvatar(

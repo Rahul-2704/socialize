@@ -8,6 +8,7 @@ import 'package:socialize/api/dialogs.dart';
 import 'globals.dart';
 
 class UpdateProfile extends StatefulWidget {
+ // final snap;
   const UpdateProfile({Key?key}):super(key: key);
   @override
   State<UpdateProfile> createState() => _UpdateProfileState();
@@ -24,8 +25,9 @@ class _UpdateProfileState extends State<UpdateProfile> {
   late String username = '';
   late String pfp = '';
   late String bio = '';
+  late String postId='';
   @override
-  void initState() {
+  void initState(){
     super.initState();
     FirebaseFirestore.instance.collection("users").
     doc(FirebaseAuth.instance.currentUser!.uid)
@@ -38,9 +40,15 @@ class _UpdateProfileState extends State<UpdateProfile> {
       });
     });
   }
+  void getId() async{
+    QuerySnapshot<Map<String,dynamic>> snapshot=await FirebaseFirestore.instance.collection("posts")
+        .where("id",isEqualTo: FirebaseAuth.instance.currentUser!.uid).get();
+    postId=snapshot.docs.first.id;
+  }
 
   @override
   Widget build(BuildContext context) {
+
     return GestureDetector(
       onTap: () => FocusScope.of(context).unfocus(),
       child: Scaffold(

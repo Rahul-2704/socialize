@@ -300,7 +300,7 @@ class _RegisterPageState extends State<RegisterPage> {
                         email:_emailController.text.trim(),
                         password:_password.text.trim(),
                         followers: [],
-                        following:[],
+                        following:['0RuOpoFQ9OSX9Zg4XR0Zw1RQxDk1','0TJuKI3NRzS76S3QfXyDl3XSBEC3','24628DFOwtYxf8rcybYVqmDFWCv1','BXJZybUthNU3BMMSNRLD8LdLWyE3','HFXSfGA5OzLh6KrzJB4Xh3fgipy2','XiCTzf4rbxNQ8CxZWoXCieTeTcg1','xYyIxUppuTRunI48YVVIYzgypQj2'],
                         photoUrl:'images/profilePicture.png',
                         bio:'',
                         username:'',

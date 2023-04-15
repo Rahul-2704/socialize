@@ -123,6 +123,10 @@ class APIs {
         "photoUrl" : url,
       },
     );
+    // firestoreInstance.collection("posts").doc(postId).update(
+    //     {
+    //       "profUrl": url,
+    //     } );
   }
 
   static Future<void> addPost(File file, String caption) async {

@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:uuid/uuid.dart';
+
 class AddToDo extends StatefulWidget {
   const AddToDo({Key? key}) : super(key: key);
 
@@ -121,7 +122,7 @@ class _AddToDoState extends State<AddToDo> {
                     SizedBox(
                       height: 30,
                     ),
-                    button(),
+                    Button(),
                   ],
                 ),
               )
@@ -131,18 +132,24 @@ class _AddToDoState extends State<AddToDo> {
       ),
     );
   }
-  Widget button(){
+
+  Widget Button(){
     return InkWell(
       onTap: (){
-        String todoId=const Uuid().v1();
-        FirebaseFirestore.instance.collection("Todo").doc(todoId).set({
-          "title":_titleController.text,
-          "todoId":todoId,
-          "id":FirebaseAuth.instance.currentUser!.uid,
-          "task":type,
-          "Category":category,
-          "description":_descriptionController.text,
-          "time":DateFormat.j().format(DateTime.now()).toString(),
+        String todoId = const Uuid().v1();
+        FirebaseFirestore.instance
+            .collection('users')
+            .doc(FirebaseAuth.instance.currentUser!.uid)
+            .collection('Todo')
+            .doc(todoId).set({
+          "title" : _titleController.text,
+          "todoId" : todoId,
+          "id" : FirebaseAuth.instance.currentUser!.uid,
+          "task" : type,
+          "Category" : category,
+          "description" : _descriptionController.text,
+          "time" : DateFormat.j().format(DateTime.now()).toString(),
+          "check" : false,
         });
         Navigator.pop(context);
       },
@@ -159,17 +166,19 @@ class _AddToDoState extends State<AddToDo> {
           )
         ),
         child:Center(
-          child: Text('Add To Do',
-          style: TextStyle(
-            color: Colors.white,
-            fontSize: 18,
-            fontWeight: FontWeight.w600,
-          ),),
-
+          child: Text(
+            'Add To Do',
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 18,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
         )
       ),
     );
   }
+
   Widget description(){
     return Container(
       height: 150,
@@ -200,21 +209,21 @@ class _AddToDoState extends State<AddToDo> {
       ),
     );
   }
+
   Widget taskSelect(String label,int color){
     return InkWell(
       onTap: (){
         setState(() {
-          type=label;
+          type = label;
         });
       },
       child: Chip(
-
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(
             10,
           ),
         ),
-        backgroundColor:type==label?Colors.white:Color(color),
+        backgroundColor: type == label ? Colors.white : Color(color),
         label:Text(
           label,
           style: TextStyle(
@@ -230,6 +239,7 @@ class _AddToDoState extends State<AddToDo> {
       ),
     );
   }
+
   Widget categorySelect(String label,int color){
     return InkWell(
       onTap: (){
@@ -259,6 +269,7 @@ class _AddToDoState extends State<AddToDo> {
       ),
     );
   }
+
   Widget title(){
     return Container(
       height: 55,
@@ -284,15 +295,16 @@ class _AddToDoState extends State<AddToDo> {
       ),
     );
   }
+
   Widget label(String label){
     return Text(
-          label,
-          style: TextStyle(
-            color: Colors.white,
-            fontWeight: FontWeight.w600,
-            fontSize: 16.5,
-            letterSpacing: 0.2,
-          ),
+      label,
+      style: TextStyle(
+        color: Colors.white,
+        fontWeight: FontWeight.w600,
+        fontSize: 16.5,
+        letterSpacing: 0.2,
+      ),
     );
   }
 }

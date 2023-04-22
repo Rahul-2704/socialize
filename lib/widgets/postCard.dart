@@ -8,6 +8,7 @@ import 'package:socialize/pages/accountPage.dart';
 import 'package:socialize/pages/comment_screen.dart';
 import 'package:socialize/widgets/like_animation.dart';
 import 'package:gallery_saver/gallery_saver.dart';
+import '../pages/globals.dart';
 
 class PostCard extends StatefulWidget{
   final snap;
@@ -22,11 +23,63 @@ class _PostCardState extends State<PostCard> {
   bool isLikeAnimating = false;
   bool isLoading = false;
   int commentLen = 0;
+  late String pfp = '';
+  List<String> likeUser = [];
+  int likes = 0;
+  late String userName = '';
+  late String firstName = '';
+  late String lastName = '';
+  late String img = '';
+  late String id = '';
 
   @override
   void initState() {
+    FirebaseFirestore.instance
+        .collection('users')
+        .doc(widget.snap['id'])
+        .get().then((value) {
+      pfp = value.data()!['photoUrl'];
+    });
     super.initState();
     getComments();
+    _loadData();
+    updateData(widget.snap['id']);
+  }
+
+  Future<void> updateData(String userId) async{
+    await FirebaseFirestore.instance
+        .collection('users')
+        .doc(userId)
+        .get().then((value) {
+      id = value.data()!["id"];
+      userName = value.data()!["username"];
+      firstName = value.data()!["firstname"];
+      lastName = value.data()!["lastname"];
+      img = value.data()!["photoUrl"];
+    });
+  }
+
+  getData() async {
+    setState(() {
+      isLoading = true;
+    });
+    try {
+      likes = widget.snap['likes'].length;
+      for(int i=0;i<likes;i++){
+        likeUser.add(widget.snap['likes'][i].toString());
+      }
+      print(likeUser);
+    } catch (e) {
+      print(e);
+    }
+    setState(() {
+      isLoading = false;
+    });
+  }
+
+  Future<void> _loadData() async {
+    await getData();
+    setState(() {});
   }
 
   void getComments() async {
@@ -36,7 +89,6 @@ class _PostCardState extends State<PostCard> {
           .doc(widget.snap['postId'])
           .collection('comments')
           .get();
-
       commentLen = snap.docs.length;
     }
     catch (err) {
@@ -51,6 +103,7 @@ class _PostCardState extends State<PostCard> {
     Container()
         :
     Container(
+        color: !mode ? Colors.white : Colors.grey[800],
         padding: const EdgeInsets.symmetric(
           vertical: 2,
         ),
@@ -70,7 +123,7 @@ class _PostCardState extends State<PostCard> {
                       width: 30,
                       height: 30,
                       fit: BoxFit.cover,
-                      imageUrl: widget.snap['profUrl'],
+                      imageUrl: pfp,
                       placeholder: (context, url) => const Center(child: CircularProgressIndicator()),
                       errorWidget: (context, url, error) =>
                       const CircleAvatar(
@@ -97,7 +150,7 @@ class _PostCardState extends State<PostCard> {
                               widget.snap['name'],
                               style: TextStyle(
                                   fontWeight: FontWeight.bold,
-                                  color: Colors.black
+                                  color: !mode ? Colors.black : Colors.white,
                               ),
                             ),
                           )
@@ -114,10 +167,13 @@ class _PostCardState extends State<PostCard> {
                           ),
                           shrinkWrap: true,
                           children: [
-                            "Delete",
+                            'Delete',
                           ].map(
                                 (e) => InkWell(
-                              onTap: () {},
+                              onTap: () {
+                                APIs.deletePost(widget.snap['postId']);
+                                Navigator.of(context).pop();
+                              },
                               child: Container(
                                 padding: const EdgeInsets.symmetric(
                                     vertical:12,
@@ -130,7 +186,10 @@ class _PostCardState extends State<PostCard> {
                         ),
                       ));
                     },
-                    icon:const Icon(Icons.more_vert),
+                    icon: Icon(
+                        Icons.more_vert,
+                        color: mode ? Colors.white : Colors.black,
+                    ),
                   ),
                 ],
               ),
@@ -211,8 +270,9 @@ class _PostCardState extends State<PostCard> {
                       color: Colors.red,
                     )
                         :
-                    const Icon(
+                     Icon(
                       Icons.favorite_border,
+                      color: mode ? Colors.white : Colors.black,
                     ),
                   ),
                 ),
@@ -224,29 +284,33 @@ class _PostCardState extends State<PostCard> {
                       ),
                     ),
                   ),
-                  icon:const Icon(
+                  icon: Icon(
                     Icons.comment_outlined,
+                    color: mode ? Colors.white : Colors.black,
                   ),
                 ),
                 IconButton(
                   onPressed:(){},
-                  icon:const Icon(
+                  icon:Icon(
                     Icons.send,
+                    color: mode ? Colors.white : Colors.black,
                   ),
                 ),
                 Expanded(
-                  child:Align(
+                  child: Align(
                     alignment: Alignment.bottomRight,
                     child: IconButton(
-                      icon: const Icon(Icons.bookmark_border),
+                      icon: Icon(
+                          Icons.bookmark_border,
+                          color: mode ? Colors.white : Colors.black,
+                      ),
                       onPressed: () async{
                         try{
                           print(widget.snap['image']);
                           await GallerySaver.saveImage(widget.snap['image'],
                           albumName: 'Socialize').then((success)
                           {
-                            Navigator.pop(context);
-                            if(success!=null&&success){
+                            if(success != null && success) {
                               Dialogs.showSnackBar(context,'Image Successfully saved!');
                             }
                           });
@@ -269,11 +333,22 @@ class _PostCardState extends State<PostCard> {
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  DefaultTextStyle(
-                    style:Theme.of(context).textTheme.titleSmall!.copyWith(fontWeight: FontWeight.w800),
-                    child:Text(
-                      '${widget.snap['likes'].length} likes',
-                      style:Theme.of(context).textTheme.bodyMedium,
+                  InkWell(
+                    onTap: (){
+                      // likesCard();
+                      Widget newWidget = likesCard();
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => newWidget));
+                    },
+                    child: DefaultTextStyle(
+                      style:Theme.of(context).textTheme.titleSmall!.copyWith(fontWeight: FontWeight.w800),
+                      child:Text(
+                        '${widget.snap['likes'].length} likes',
+                        // style:Theme.of(context).textTheme.bodyMedium,
+                        style: TextStyle(
+                          color: mode ? Colors.white : Colors.black,
+                          fontWeight: FontWeight.w400,
+                        ),
+                      ),
                     ),
                   ),
                   Container(
@@ -283,16 +358,22 @@ class _PostCardState extends State<PostCard> {
                     ),
                     child:RichText(
                       text: TextSpan(
-                          style: const TextStyle(color:Colors.black) ,
+                          style: const TextStyle(
+                              color:Colors.black,
+                          ) ,
                           children: [
                             TextSpan(
                               text : widget.snap['name'],
-                              style:const TextStyle(fontWeight: FontWeight.bold,
-                                color: Colors.black,
+                              style: TextStyle(fontWeight: FontWeight.bold,
+                                // color: Colors.black,
+                                color: mode ? Colors.white : Colors.black,
                               ),
                             ),
                             TextSpan(
                               text: ' ${widget.snap['caption']}',
+                              style: TextStyle(
+                                color: mode ? Colors.white : Colors.black,
+                              )
                             ),
                           ]
                       ),
@@ -307,12 +388,12 @@ class _PostCardState extends State<PostCard> {
                       ),
                     ),
                     child:Container(
-                      padding:const EdgeInsets.symmetric(vertical: 4) ,
+                      padding:const EdgeInsets.symmetric(vertical: 4),
                       child: Text(
                         "View all ${commentLen} comments",
                         style: TextStyle(
                           fontSize: 16,
-                          color:Colors.black38,
+                          color: mode ? Colors.white : Colors.black,
                         ),
                       ),
                     ),
@@ -321,7 +402,9 @@ class _PostCardState extends State<PostCard> {
                     padding: const EdgeInsets.symmetric(vertical: 4),
                     child: Text(
                       widget.snap['date'],
-                      style:const TextStyle(fontSize: 16),
+                      style: TextStyle(
+                          fontSize: 16,
+                          color: mode ? Colors.white : Colors.black,),
                     ),
                   )
                 ],
@@ -330,5 +413,159 @@ class _PostCardState extends State<PostCard> {
           ],
         )
     );
+  }
+
+  Widget likesCard(){
+    return Scaffold(
+      body: SingleChildScrollView(
+        child: Container(
+          height: MediaQuery.of(context).size.height*0.098,
+          width: double.maxFinite,
+          child: Column(
+            children: [
+              Row(
+                children: [
+                  SizedBox(
+                    width: MediaQuery.of(context).size.width*0.03,
+                  ),
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(45),
+                    child: CachedNetworkImage(
+                      width: 60,
+                      height: 60,
+                      fit: BoxFit.cover,
+                      imageUrl: pfp,
+                      placeholder: (context, url) => const Center(child: CircularProgressIndicator()),
+                      errorWidget: (context, url, error) =>
+                      const CircleAvatar(
+                          child: Icon(Icons.person)
+                      ),
+                    ),
+                  ),
+                  SizedBox(
+                    width: MediaQuery.of(context).size.width/20,
+                  ),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Container(
+                        child: Text(
+                          widget.snap['name'],
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 15,
+                          ),
+                        ),
+                      ),
+                      SizedBox(
+                        height: MediaQuery.of(context).size.height*0.015,
+                      ),
+                      Container(
+                        child: Text(
+                          firstName+" "+lastName,
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+              Divider(
+                color: Colors.black,
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+    // return Scaffold(
+    //   appBar: AppBar(
+    //     backgroundColor: Colors.white,
+    //     iconTheme: IconThemeData(
+    //       color: Colors.black,
+    //     ),
+    //     title: Text(
+    //       'Likes',
+    //       style: TextStyle(
+    //         color: Colors.black,
+    //       ),
+    //     ),
+    //   ),
+    //   body: StreamBuilder(
+    //       stream: FirebaseFirestore.instance.collection('users').snapshots(),
+    //       builder: (context, AsyncSnapshot<QuerySnapshot<Map<String,dynamic>>> snapshot){
+    //         if(snapshot.connectionState==ConnectionState.waiting){
+    //           return Center(child: CircularProgressIndicator());
+    //         }
+    //         return ListView.builder(
+    //           itemCount: snapshot.data!.docs.length,
+    //           itemBuilder: (context,index){
+    //             updateData();
+    //             print(userName);
+    //             return SingleChildScrollView(
+    //                 child: Container(
+    //                   height: MediaQuery.of(context).size.height*0.098,
+    //                   width: double.maxFinite,
+    //                   child: Column(
+    //                     children: [
+    //                       Row(
+    //                         children: [
+    //                           SizedBox(
+    //                             width: MediaQuery.of(context).size.width*0.03,
+    //                           ),
+    //                           ClipRRect(
+    //                             borderRadius: BorderRadius.circular(45),
+    //                             child: CachedNetworkImage(
+    //                               width: 60,
+    //                               height: 60,
+    //                               fit: BoxFit.cover,
+    //                               imageUrl: img,
+    //                               placeholder: (context, url) => const Center(child: CircularProgressIndicator()),
+    //                               errorWidget: (context, url, error) =>
+    //                               const CircleAvatar(
+    //                                   child: Icon(Icons.person)
+    //                               ),
+    //                             ),
+    //                           ),
+    //                           SizedBox(
+    //                             width: MediaQuery.of(context).size.width/20,
+    //                           ),
+    //                           Column(
+    //                             crossAxisAlignment: CrossAxisAlignment.start,
+    //                             mainAxisAlignment: MainAxisAlignment.center,
+    //                             children: [
+    //                               Container(
+    //                                 child: Text(
+    //                                   userName,
+    //                                   style: TextStyle(
+    //                                     fontWeight: FontWeight.bold,
+    //                                     fontSize: 15,
+    //                                   ),
+    //                                 ),
+    //                               ),
+    //                               SizedBox(
+    //                                 height: MediaQuery.of(context).size.height*0.015,
+    //                               ),
+    //                               Container(
+    //                                 child: Text(
+    //                                   firstName+" "+lastName,
+    //                                 ),
+    //                               ),
+    //                             ],
+    //                           ),
+    //                         ],
+    //                       ),
+    //                       Divider(
+    //                         color: Colors.black,
+    //                       ),
+    //                     ],
+    //                   ),
+    //                 ),
+    //               );
+    //           },
+    //         );
+    //       }
+    //   ),
+    // );
   }
 }

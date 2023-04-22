@@ -20,10 +20,16 @@ class _MyPostCardState extends State<MyPostCard> {
   bool isLikeAnimating = false;
   bool isLoading = false;
   int commentLen = 0;
-  late String profUrl='';
+  late String pfp = '';
 
   @override
   void initState() {
+    FirebaseFirestore.instance
+    .collection('users')
+    .doc(FirebaseAuth.instance.currentUser!.uid)
+    .get().then((value) {
+      pfp = value.data()!['photoUrl'];
+    });
     super.initState();
     getComments();
   }
@@ -64,7 +70,7 @@ class _MyPostCardState extends State<MyPostCard> {
                       width: 30,
                       height: 30,
                       fit: BoxFit.cover,
-                      imageUrl:widget.snap['profUrl'],
+                      imageUrl: pfp,
                       placeholder: (context, url) => const Center(child: CircularProgressIndicator()),
                       errorWidget: (context, url, error) =>
                       const CircleAvatar(

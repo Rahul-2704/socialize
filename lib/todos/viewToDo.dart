@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:uuid/uuid.dart';
+
 class viewToDo extends StatefulWidget {
   final snap;
   const viewToDo({Key? key,required this.snap}) : super(key: key);
@@ -70,7 +71,10 @@ class _viewToDoState extends State<viewToDo> {
                       ),
                       IconButton(
                         onPressed: (){
-                          FirebaseFirestore.instance.collection("Todo").doc(widget.snap['todoId']).delete()
+                          FirebaseFirestore.instance
+                              .collection('users')
+                              .doc(FirebaseAuth.instance.currentUser!.uid)
+                              .collection('Todo').doc(widget.snap['todoId']).delete()
                               .then((value){
                                 Navigator.pop(context);
                           });
@@ -180,11 +184,14 @@ class _viewToDoState extends State<viewToDo> {
       ),
     );
   }
+
   Widget button(){
     return InkWell(
       onTap: (){
-        String todoId=const Uuid().v1();
-        FirebaseFirestore.instance.collection("Todo").doc(widget.snap['todoId']).update({
+        FirebaseFirestore.instance
+            .collection('users')
+            .doc(FirebaseAuth.instance.currentUser!.uid)
+            .collection('Todo').doc(widget.snap['todoId']).update({
           "title":_titleController.text,
           "task":type,
           "Category":category,
@@ -212,12 +219,13 @@ class _viewToDoState extends State<viewToDo> {
                 color: Colors.white,
                 fontSize: 18,
                 fontWeight: FontWeight.w600,
-              ),),
-
+              ),
+            ),
           )
       ),
     );
   }
+
   Widget description(){
     return Container(
       height: 150,

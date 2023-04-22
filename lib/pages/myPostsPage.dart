@@ -5,7 +5,7 @@ import 'package:socialize/news/news_home.dart';
 import 'package:socialize/pages/accountPage.dart';
 import 'package:socialize/pages/feedPage.dart';
 import 'package:socialize/pages/requestPage.dart';
-import 'package:socialize/pages/todolist.dart';
+import 'package:socialize/todos/ToDo.dart';
 import 'package:socialize/widgets/myPostCard.dart';
 import 'globals.dart';
 
@@ -101,7 +101,7 @@ class _MyPostsPageState extends State<MyPostsPage> {
               IconButton(
                 onPressed: () {
                   Navigator.pushReplacement(context,
-                      MaterialPageRoute(builder: (BuildContext context) => ToDoScreen(),));
+                      MaterialPageRoute(builder: (BuildContext context) => ToDo(),));
                 },
                 icon: Icon(
                   Icons.add,

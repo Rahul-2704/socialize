@@ -35,10 +35,13 @@ class _CommentScreenState extends State<CommentScreen>{
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.black,
-        title: const Text('Comments'),
+        title: const Text(
+            'Comments',
+        ),
         centerTitle: false,
       ),
       body:StreamBuilder(
+
         stream: FirebaseFirestore.instance.collection("posts")
             .doc(widget.snap['postId'])
             .collection("comments")

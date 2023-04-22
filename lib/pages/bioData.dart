@@ -46,7 +46,7 @@ class _BioDataState extends State<BioData> {
                 child: Padding(
                   padding: const EdgeInsets.only(top: 5),
                   child: Image(
-                    height: 40,
+                    height: MediaQuery.of(context).size.height*0.05,
                     image: AssetImage('images/logo.png'),
                   ),
                 ),
@@ -55,7 +55,7 @@ class _BioDataState extends State<BioData> {
                 'Socialize',
                 style: TextStyle(
                   fontFamily: 'Lobster',
-                  fontSize: 50,
+                  fontSize: MediaQuery.of(context).size.height*0.055,
                   fontWeight: FontWeight.bold,
                 ),
               ),
@@ -70,17 +70,20 @@ class _BioDataState extends State<BioData> {
             ),
           ),
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+            padding: EdgeInsets.symmetric(
+                horizontal: MediaQuery.of(context).size.width*0.02,
+                vertical: MediaQuery.of(context).size.height*0.02
+            ),
             child: ListView(
               children: <Widget>[
                 imageProfile(),
-                SizedBox(height: 20,),
+                SizedBox(height: MediaQuery.of(context).size.height*0.022,),
                 nameTextField(),
-                SizedBox(height: 20,),
+                SizedBox(height: MediaQuery.of(context).size.height*0.022,),
                 aboutTextField(),
-                SizedBox(height: 20,),
+                SizedBox(height: MediaQuery.of(context).size.height*0.022,),
                 SizedBox(
-                  height: 45,
+                  height: MediaQuery.of(context).size.height*0.07,
                   width: 350,
                   child: ElevatedButton(
                     onPressed: () async{
@@ -119,7 +122,7 @@ class _BioDataState extends State<BioData> {
                     child: Text(
                       'Submit',
                       style: TextStyle(
-                        fontSize: 25,
+                        fontSize: MediaQuery.of(context).size.height*0.035,
                       ),
                     ),
                     style: ButtonStyle(
@@ -216,8 +219,8 @@ class _BioDataState extends State<BioData> {
             ),
           ),
           Positioned(
-            bottom: 20,
-            right: 20,
+            bottom: MediaQuery.of(context).size.height*0.02,
+            right: MediaQuery.of(context).size.height*0.02,
             child: InkWell(
               onTap: () {
                 showModalBottomSheet(
@@ -228,7 +231,7 @@ class _BioDataState extends State<BioData> {
               child: Icon(
                 Icons.camera_alt,
                 color: Colors.teal,
-                size: 30,
+                size: MediaQuery.of(context).size.height*0.04,
               ),
             ),
           ),
@@ -239,7 +242,7 @@ class _BioDataState extends State<BioData> {
 
   Widget bottomSheet(){
     return Container(
-      height: 100,
+      height: MediaQuery.of(context).size.height*0.15,
       width: MediaQuery.of(context).size.width,
       margin: EdgeInsets.symmetric(
         horizontal: 20,
@@ -250,11 +253,11 @@ class _BioDataState extends State<BioData> {
           Text(
             'Choose Profile Photo',
             style: TextStyle(
-              fontSize: 23,
+              fontSize: MediaQuery.of(context).size.height*0.035,
               fontWeight: FontWeight.w400,
             ),
           ),
-          SizedBox(height: 20,),
+          SizedBox(height: MediaQuery.of(context).size.height*0.02,),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
@@ -269,10 +272,13 @@ class _BioDataState extends State<BioData> {
                     Navigator.pop(context);
                   }
                   },
-                label: Text('Camera', style: TextStyle(fontSize: 20,),),
+                label: Text('Camera', style: TextStyle(
+                  fontSize: MediaQuery.of(context).size.height*0.03,
+                ),
+                ),
                 icon: Icon(
                   Icons.camera,
-                  size: 27,
+                  size: MediaQuery.of(context).size.height*0.035,
                 ),
               ),
               SizedBox(width: 15,),
@@ -286,10 +292,13 @@ class _BioDataState extends State<BioData> {
                     Navigator.pop(context);
                   }
                 },
-                label: Text('Gallery', style: TextStyle(fontSize: 20,),),
+                label: Text('Gallery', style: TextStyle(
+                  fontSize: MediaQuery.of(context).size.height*0.03,
+                ),
+                ),
                 icon: Icon(
                   Icons.image,
-                  size: 27,
+                  size: MediaQuery.of(context).size.height*0.035,
                 ),
               ),
             ],

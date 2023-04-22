@@ -19,8 +19,8 @@ class _UpdateProfileState extends State<UpdateProfile> {
   late String _username;
   final GlobalKey<FormState> _bioK = GlobalKey<FormState>();
   String? _image;
-  final TextEditingController _usernameController = TextEditingController();
-  final TextEditingController _bioController = TextEditingController();
+  late TextEditingController _usernameController;
+  late TextEditingController _bioController;
   bool isLoading = true;
   late String username = '';
   late String pfp = '';
@@ -37,6 +37,8 @@ class _UpdateProfileState extends State<UpdateProfile> {
       bio = value.data()!["bio"];
       setState(() {
         isLoading = false;
+        _usernameController = TextEditingController(text: username);
+        _bioController = TextEditingController(text: bio);
       });
     });
   }
@@ -102,9 +104,7 @@ class _UpdateProfileState extends State<UpdateProfile> {
                           .doc(FirebaseAuth.instance.currentUser!.uid)
                           .set({
                         "username" : (_usernameController.text.trim()).isEmpty ? username : _usernameController.text.trim(),
-                        // "bio" : _bioController.text.trim(),
                         "bio" : (_bioController.text.trim()).isEmpty ? bio : _bioController.text.trim(),
-
                       },SetOptions(merge: true)).then((_){
                         print("success!");
                       });

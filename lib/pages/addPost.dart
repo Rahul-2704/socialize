@@ -49,18 +49,18 @@ class _AddPostState extends State<AddPost> {
                 child: Column(
                   children: [
                     SizedBox(
-                      height: 20,
+                      height: MediaQuery.of(context).size.height*0.025,
                     ),
                     Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 20),
+                      padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.height*0.025),
                       child: Row(
                         children: [
                           isLoading1 ? CircularProgressIndicator():
                           ClipRRect(
-                            borderRadius: BorderRadius.circular(50),
+                            borderRadius: BorderRadius.circular(100),
                             child: CachedNetworkImage(
-                              width: 75,
-                              height: 75,
+                              width: MediaQuery.of(context).size.width*0.22,
+                              height: MediaQuery.of(context).size.width*0.22,
                               fit: BoxFit.cover,
                               imageUrl: pfp,
                               placeholder: (context, url) => const Center(child: CircularProgressIndicator()),
@@ -76,8 +76,8 @@ class _AddPostState extends State<AddPost> {
                           Text(
                             username,
                             style: TextStyle(
-                              fontSize: 25,
-                              fontWeight: FontWeight.bold,
+                              fontSize: MediaQuery.of(context).size.height*0.04,
+                              fontWeight: FontWeight.w500,
                               color: Colors.black87,
                             ),
                           ),
@@ -85,7 +85,7 @@ class _AddPostState extends State<AddPost> {
                       ),
                     ),
                     SizedBox(
-                      height: 15,
+                      height: MediaQuery.of(context).size.height*0.02,
                     ),
                       Form(
                         key: _formKey,
@@ -110,9 +110,11 @@ class _AddPostState extends State<AddPost> {
                                 image: AssetImage('images/profilePicture.png'),
                               ),
                             ),
-                        SizedBox(height: 20,),
+                        SizedBox(height: MediaQuery.of(context).size.height*0.02),
                         Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 15),
+                          padding: EdgeInsets.symmetric(
+                              horizontal: MediaQuery.of(context).size.width*0.04
+                          ),
                           child: TextFormField(
                             controller: _captionController,
                             maxLines: 2,
@@ -140,7 +142,7 @@ class _AddPostState extends State<AddPost> {
                             ),
                           ),
                         ),
-                        SizedBox(height: 20,),
+                        SizedBox(height: MediaQuery.of(context).size.height*0.02,),
                           ],
                         ),
                       ),
@@ -169,7 +171,7 @@ class _AddPostState extends State<AddPost> {
                           child: Text(
                             'Post',
                             style: TextStyle(
-                              fontSize: 18,
+                              fontSize: MediaQuery.of(context).size.height*0.025,
                             ),
                           )
                       ),
@@ -196,9 +198,13 @@ class _AddPostState extends State<AddPost> {
             padding:
             EdgeInsets.only(top: MediaQuery.of(context).size.height * .03, bottom: MediaQuery.of(context).size.height * .05),
             children: [
-              const Text('Pick Profile Picture',
+              Text(
+                  'Pick Profile Picture',
                   textAlign: TextAlign.center,
-                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500)
+                  style: TextStyle(
+                    fontSize: MediaQuery.of(context).size.height*0.02,
+                    fontWeight: FontWeight.w500
+                  )
               ),
               SizedBox(height: MediaQuery.of(context).size.height * .02),
               Row(

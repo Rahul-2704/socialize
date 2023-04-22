@@ -2,10 +2,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:socialize/news/news_home.dart';
-import 'package:socialize/pages/ToDo.dart';
+import 'package:socialize/todos/ToDo.dart';
 import 'package:socialize/pages/accountPage.dart';
 import 'package:socialize/pages/requestPage.dart';
-import 'package:socialize/pages/todolist.dart';
 import 'package:socialize/widgets/postCard.dart';
 import 'globals.dart';
 

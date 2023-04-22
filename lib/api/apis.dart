@@ -129,6 +129,14 @@ class APIs {
     //     } );
   }
 
+  static Future<void> deletePost(String postId)async {
+    try{
+      FirebaseFirestore.instance.collection("posts").doc(postId).delete();
+    }catch(e){
+      print(e.toString());
+    }
+  }
+
   static Future<void> addPost(File file, String caption) async {
     var uuid = Uuid();
     var pid = uuid.v1();

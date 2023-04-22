@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:socialize/news/news_home.dart';
 import 'package:socialize/pages/accountPage.dart';
 import 'package:socialize/pages/requestPage.dart';
-import 'package:socialize/pages/todolist.dart';
+import 'package:socialize/todos/ToDo.dart';
 import 'package:socialize/widgets/postCard.dart';
 import 'feedPage.dart';
 import 'globals.dart';
@@ -265,7 +265,7 @@ class _IndexPageState extends State<IndexPage> {
               IconButton(
                 onPressed: () {
                   Navigator.pushReplacement(context,
-                      MaterialPageRoute(builder: (BuildContext context) => ToDoScreen(),));
+                      MaterialPageRoute(builder: (BuildContext context) => ToDo(),));
                 },
                 icon: Icon(
                   Icons.add,

@@ -4,8 +4,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:socialize/news/news_home.dart';
 import 'package:socialize/pages/accountPage.dart';
-import 'package:socialize/pages/todolist.dart';
 import 'package:socialize/pages/feedPage.dart';
+import 'package:socialize/todos/ToDo.dart';
 import '../api/global_variable.dart';
 import 'globals.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
@@ -29,14 +29,19 @@ class _RequestPageState extends State<RequestPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        // backgroundColor: Colors.white,
+        backgroundColor: mode ? Colors.grey[800] : Colors.white60,
         elevation: 1,
         title:TextFormField(
           decoration: InputDecoration(
             prefixIcon: Icon(
               Icons.search,
+              color: mode ? Colors.white : Colors.black,
             ),
             labelText: 'Search a user',
+            labelStyle: TextStyle(
+              color: mode ? Colors.white : Colors.black,
+            )
           ),
           controller: _searchController,
           onFieldSubmitted: (String _) {
@@ -126,6 +131,7 @@ class _RequestPageState extends State<RequestPage> {
       GestureDetector(
         onTap: () => FocusScope.of(context).unfocus(),
         child: Container(
+          color: mode ? Colors.grey[900] : Colors.white,
           padding: EdgeInsets.only(top: 8),
           child: FutureBuilder(
             future: FirebaseFirestore.instance
@@ -199,7 +205,7 @@ class _RequestPageState extends State<RequestPage> {
               IconButton(
                 onPressed: () {
                   Navigator.pushReplacement(context,
-                      MaterialPageRoute(builder: (BuildContext context) => ToDoScreen(),));
+                      MaterialPageRoute(builder: (BuildContext context) => ToDo(),));
                 },
                 icon: Icon(
                   Icons.add,

@@ -2,6 +2,8 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+
+import '../pages/globals.dart';
 class FollowerUsers extends StatefulWidget {
   final snap;
   const FollowerUsers({Key? key, this.snap}) : super(key: key);
@@ -73,7 +75,7 @@ class _FollowerUsersState extends State<FollowerUsers> {
       child: Container(
         height: MediaQuery.of(context).size.height*0.098,
         width: double.maxFinite,
-        // padding: EdgeInsets.only(left: 8),
+        padding: EdgeInsets.only(top: 5),
         child: Column(
           children: [
             Row(
@@ -96,7 +98,7 @@ class _FollowerUsersState extends State<FollowerUsers> {
                   ),
                 ),
                 SizedBox(
-                  width: MediaQuery.of(context).size.width/20,
+                  width: MediaQuery.of(context).size.width / 20,
                 ),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -107,7 +109,8 @@ class _FollowerUsersState extends State<FollowerUsers> {
                         userName,
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
-                          fontSize: 15,
+                          fontSize: 16,
+                          color: mode ? Colors.white : Colors.black,
                         ),
                       ),
                     ),
@@ -117,6 +120,10 @@ class _FollowerUsersState extends State<FollowerUsers> {
                     Container(
                       child: Text(
                         firstName + ' ' + lastName,
+                        style: TextStyle(
+                          color: mode ? Colors.white : Colors.black,
+                          fontWeight: FontWeight.w400
+                        ),
                       ),
                     ),
                   ],
@@ -124,7 +131,7 @@ class _FollowerUsersState extends State<FollowerUsers> {
               ],
             ),
             Divider(
-              color: Colors.black,
+              color: mode ? Colors.white60 : Colors.black,
             ),
           ],
         ),

@@ -8,7 +8,6 @@ import 'package:socialize/api/dialogs.dart';
 import 'globals.dart';
 
 class UpdateProfile extends StatefulWidget {
- // final snap;
   const UpdateProfile({Key?key}):super(key: key);
   @override
   State<UpdateProfile> createState() => _UpdateProfileState();
@@ -26,6 +25,7 @@ class _UpdateProfileState extends State<UpdateProfile> {
   late String pfp = '';
   late String bio = '';
   late String postId='';
+
   @override
   void initState(){
     super.initState();
@@ -50,8 +50,7 @@ class _UpdateProfileState extends State<UpdateProfile> {
 
   @override
   Widget build(BuildContext context) {
-
-    return GestureDetector(
+    return !isLoading ? GestureDetector(
       onTap: () => FocusScope.of(context).unfocus(),
       child: Scaffold(
         appBar: PreferredSize(
@@ -66,9 +65,9 @@ class _UpdateProfileState extends State<UpdateProfile> {
             ),
             child: AppBar(
               leading: BackButton(
-                color: mode ? Colors.white : Colors.black,
+                color: mode ? Colors.white : Colors.black87,
               ),
-              backgroundColor: mode ? Colors.black : Colors.white,
+              backgroundColor: mode ? Colors.black87 : Colors.white,
               elevation: 1,
               title: Text(
                 'Update Profile',
@@ -81,6 +80,7 @@ class _UpdateProfileState extends State<UpdateProfile> {
           ),
         ),
         body: Container(
+          color: !mode ? Colors.white : Colors.grey[900],
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
             child: ListView(
@@ -116,7 +116,9 @@ class _UpdateProfileState extends State<UpdateProfile> {
                       ),
                     ),
                     style: ButtonStyle(
-                      backgroundColor: MaterialStateProperty.all(Colors.teal[400]),
+                      backgroundColor: MaterialStateProperty.all(
+                          !mode ? Colors.blue : Colors.black38
+                      ),
                     ),
                   ),
                 ),
@@ -125,31 +127,42 @@ class _UpdateProfileState extends State<UpdateProfile> {
           ),
         ),
       ),
-    );
+    )
+    : Center(child: CircularProgressIndicator(),);
   }
 
   Widget nameTextField(){
     return Form(
       child: TextFormField(
+        style: TextStyle(
+            color: mode ? Colors.white : Colors.black,
+        ),
         controller: _usernameController,
         decoration: InputDecoration(
-            border: OutlineInputBorder(
-              borderSide: BorderSide(
-                width: 2,
-              ),
+          border: OutlineInputBorder(
+            borderSide: BorderSide(
+              width: 2,
+              color: mode ? Colors.white : Colors.black,
             ),
-            focusedBorder: OutlineInputBorder(
-              borderSide: BorderSide(
-                color: Colors.grey,
-                width: 2,
-              ),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderSide: BorderSide(
+              color: mode ? Colors.grey : Colors.black,
+              width: 2,
             ),
-            prefixIcon: Icon(
-              Icons.person,
-              color: Colors.green,
-            ),
-            hintText: username,
-            helperText: 'Username'
+          ),
+          prefixIcon: Icon(
+            Icons.person,
+            color: mode ? Colors.greenAccent : Colors.green,
+          ),
+          hintText: username,
+          helperText: 'Username',
+          helperStyle: TextStyle(
+            color: mode ? Colors.white70 : Colors.black,
+          ),
+          hintStyle: TextStyle(
+            color: mode ? Colors.white70 : Colors.black,
+          )
         ),
         onSaved: (username){
           _username = username!;
@@ -160,6 +173,9 @@ class _UpdateProfileState extends State<UpdateProfile> {
 
   Widget aboutTextField(){
     return TextFormField(
+      style: TextStyle(
+        color: mode ? Colors.white : Colors.black,
+      ),
       controller: _bioController,
       maxLines: 3,
       decoration: InputDecoration(
@@ -170,12 +186,18 @@ class _UpdateProfileState extends State<UpdateProfile> {
         ),
         focusedBorder: OutlineInputBorder(
           borderSide: BorderSide(
-            color: Colors.grey,
+            color: mode ? Colors.grey : Colors.black,
             width: 2,
           ),
         ),
         hintText: bio,
         helperText: 'About',
+        helperStyle: TextStyle(
+          color: mode ? Colors.white70 : Colors.black,
+        ),
+        hintStyle: TextStyle(
+          color: mode ? Colors.white70 : Colors.black,
+        )
       ),
     );
   }
@@ -227,11 +249,12 @@ class _UpdateProfileState extends State<UpdateProfile> {
 
   Widget bottomSheet(){
     return Container(
-      height: 100,
+      color: mode ? Colors.black87 : Colors.black,
+      height: 120,
       width: MediaQuery.of(context).size.width,
-      margin: EdgeInsets.symmetric(
+      padding: EdgeInsets.symmetric(
         horizontal: 20,
-        vertical: 20,
+        vertical: 10,
       ),
       child: Column(
         children: <Widget>[
@@ -240,6 +263,7 @@ class _UpdateProfileState extends State<UpdateProfile> {
             style: TextStyle(
               fontSize: 23,
               fontWeight: FontWeight.w400,
+              color: !mode ? Colors.black : Colors.white,
             ),
           ),
           SizedBox(height: 20,),
@@ -256,10 +280,17 @@ class _UpdateProfileState extends State<UpdateProfile> {
                     Navigator.pop(context);
                   }
                 },
-                label: Text('Camera', style: TextStyle(fontSize: 20,),),
+                label: Text(
+                  'Camera',
+                  style: TextStyle(
+                    fontSize: 20,
+                    color: !mode ? Colors.blue : Colors.grey,
+                  ),
+                ),
                 icon: Icon(
                   Icons.camera,
                   size: 27,
+                  color: !mode ? Colors.blue : Colors.grey,
                 ),
               ),
               SizedBox(width: 15,),
@@ -277,11 +308,13 @@ class _UpdateProfileState extends State<UpdateProfile> {
                   'Gallery',
                   style: TextStyle(
                     fontSize: 20,
+                    color: !mode ? Colors.blue : Colors.grey,
                   ),
                 ),
                 icon: Icon(
                   Icons.image,
                   size: 27,
+                  color: !mode ? Colors.blue : Colors.grey,
                 ),
               ),
             ],

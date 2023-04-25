@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:socialize/news/news_home.dart';
+import 'package:socialize/pages/suggestionPage.dart';
 import 'package:socialize/todos/ToDo.dart';
 import 'package:socialize/pages/accountPage.dart';
 import 'package:socialize/pages/requestPage.dart';
@@ -31,31 +32,48 @@ class _FeedPageState extends State<FeedPage> {
           ),
           child: AppBar(
             automaticallyImplyLeading: false,
-            backgroundColor: mode ? Colors.black : Colors.white,
+            backgroundColor: mode ? Colors.black87 : Colors.white,
             elevation: 0,
             title: Padding(
               padding: const EdgeInsets.all(15.0),
-              child: Text(
-                'Socialize',
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  color: mode ? Colors.white : Colors.black,
-                ),
+              child: Row(
+                children: [
+                  Container(
+                    child: Image(
+                      height: 25,
+                      image: AssetImage('images/logo.png'),
+                    ),
+                  ),
+                  SizedBox(width: 1,),
+                  Text(
+                    'Socialize',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      color: mode ? Colors.white : Colors.black,
+                    ),
+                  ),
+                ]
               ),
             ),
             actions:[
               IconButton(
-                onPressed: () {},
-                icon:const Icon(
+                onPressed: () {
+                  Navigator.push(context,
+                    MaterialPageRoute(
+                      builder: (BuildContext context) => SuggestionPage(),
+                    )
+                  );
+                },
+                icon: Icon(
                   Icons.messenger_outline,
-                  color: Colors.black,
-                )
-              )
+                  color: !mode ? Colors.black : Colors.white,
+                ),
+              ),
             ],
           ),
         ),
       ),
-      body:StreamBuilder(
+      body: StreamBuilder(
         stream: FirebaseFirestore.instance.collection("posts").snapshots(),
         builder: (context, AsyncSnapshot<QuerySnapshot<Map<String,dynamic>>> snapshot) {
           if(snapshot.connectionState == ConnectionState.waiting){
@@ -63,18 +81,21 @@ class _FeedPageState extends State<FeedPage> {
               child: CircularProgressIndicator(),
             );
           }
-          return ListView.builder(
-            itemCount: snapshot.data!.docs.length,
-            itemBuilder:(context,index) {
-              return PostCard(
-                snap: snapshot.data?.docs[index].data(),
-              );
-            }
+          return Container(
+            color: mode ? Colors.grey[900] : Colors.white,
+            child: ListView.builder(
+              itemCount: snapshot.data!.docs.length,
+              itemBuilder:(context,index) {
+                return PostCard(
+                  snap: snapshot.data?.docs[index].data(),
+                );
+              }
+            ),
           );
         },
       ),
       bottomNavigationBar: BottomAppBar(
-        color: mode ? Colors.grey[800] : Colors.white,
+        color: mode ? Colors.black87 : Colors.white,
         child: Padding(
           padding: EdgeInsets.only(bottom: 10,),
           child: Row(
@@ -109,7 +130,7 @@ class _FeedPageState extends State<FeedPage> {
               ),
               IconButton(
                 onPressed: () {
-                  Navigator.pushReplacement(context,
+                  Navigator.push(context,
                       MaterialPageRoute(builder: (BuildContext context) => ToDo(),));
                 },
                 icon: Icon(

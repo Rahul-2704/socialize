@@ -9,10 +9,14 @@ class PostPhoto {
     required this.postId,
     required this.likes,
     required this.profUrl,
+    required this.firstname,
+    required this.lastname,
   });
 
   late String image;
   late String caption;
+  late String firstname;
+  late String lastname;
   late String date;
   late String name;
   late String id;
@@ -31,6 +35,8 @@ class PostPhoto {
     postId = json['postId'] ?? '';
     likes = json['likes'] ?? '';
     profUrl = json['profUrl'] ?? '';
+    firstname = json['firstname'] ?? '';
+    lastname = json['lastname'] ?? '';
   }
 
   Map<String, dynamic> toJson() {
@@ -44,6 +50,8 @@ class PostPhoto {
     data['postId'] = postId;
     data['likes'] = likes;
     data['profUrl'] = profUrl;
+    data['firstname'] = firstname;
+    data['lastname'] = lastname;
     return data;
   }
 }

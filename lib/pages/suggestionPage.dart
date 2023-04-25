@@ -1,17 +1,17 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:socialize/widgets/followerCard.dart';
-
+import 'package:socialize/widgets/suggestion_card.dart';
+import 'accountPage.dart';
 import 'globals.dart';
 
-class FollowersPage extends StatefulWidget {
-  const FollowersPage({Key? key}) : super(key: key);
+class SuggestionPage extends StatefulWidget {
+  const SuggestionPage({Key? key}) : super(key: key);
 
   @override
-  State<FollowersPage> createState() => _FollowersPageState();
+  State<SuggestionPage> createState() => _SuggestionPageState();
 }
 
-class _FollowersPageState extends State<FollowersPage> {
+class _SuggestionPageState extends State<SuggestionPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -21,7 +21,7 @@ class _FollowersPageState extends State<FollowersPage> {
           color: !mode ? Colors.black : Colors.white,
         ),
         title: Text(
-          'Followers',
+          'Suggestions',
           style: TextStyle(
             color: !mode ? Colors.black : Colors.white,
           ),
@@ -38,8 +38,17 @@ class _FollowersPageState extends State<FollowersPage> {
               child: ListView.builder(
                 itemCount: snapshot.data!.docs.length,
                 itemBuilder: (context,index){
-                  return FollowerUsers(
-                    snap: snapshot.data!.docs[index].data(),
+                  return InkWell(
+                    onTap: () {
+                      Navigator.push(context,
+                          MaterialPageRoute(
+                            builder: (BuildContext context) => MyAccount(id:(snapshot.data! as dynamic).docs[index]['id']),
+                          )
+                      );
+                    },
+                    child: SuggestedUsers(
+                      snap: snapshot.data!.docs[index].data(),
+                    ),
                   );
                 },
               ),

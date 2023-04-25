@@ -88,17 +88,17 @@ class _MyAccountState extends State<MyAccount> with SingleTickerProviderStateMix
             decoration: BoxDecoration(
               border: Border(
                 bottom: !mode ? BorderSide(
-                  color: Colors.grey,
+                  color: Colors.black87,
                 )
                 :
                 BorderSide(
-                  color: Colors.white60,
+                  color: Colors.grey,
                 ),
               ),
             ),
             child: AppBar(
               automaticallyImplyLeading: false,
-              backgroundColor: mode ? Colors.grey[900] : Colors.white,
+              backgroundColor: mode ? Colors.black87 : Colors.white,
               elevation: 0,
               title: Padding(
                 padding: const EdgeInsets.all(12.0),
@@ -126,10 +126,11 @@ class _MyAccountState extends State<MyAccount> with SingleTickerProviderStateMix
                   ),
                 ) : Container(),
                 userData['id'] == FirebaseAuth.instance.currentUser?.uid ? IconButton(
-                  onPressed: () {
+                  onPressed: () async{
                     setState(() {
                       mode = !mode;
                     });
+                    await APIs.changeMode(mode);
                   },
                   icon: Icon(
                     mode ? Icons.light_mode : Icons.dark_mode,
@@ -141,7 +142,7 @@ class _MyAccountState extends State<MyAccount> with SingleTickerProviderStateMix
           ),
         ),
         body: Container(
-          color: !mode ? Colors.white : Colors.grey[800],
+          color: !mode ? Colors.white : Colors.grey[900],
           child: Padding(
               padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 5),
               child: Column(
@@ -196,7 +197,7 @@ class _MyAccountState extends State<MyAccount> with SingleTickerProviderStateMix
                                           style: TextStyle(
                                             fontSize: MediaQuery.of(context).size.height*0.02,
                                             fontWeight: FontWeight.w400,
-                                            color: mode ? Colors.white60 : Colors.grey[700],
+                                            color: mode ? Colors.white : Colors.grey[900],
                                           ),
                                         ),
                                       ),
@@ -230,7 +231,7 @@ class _MyAccountState extends State<MyAccount> with SingleTickerProviderStateMix
                                             style: TextStyle(
                                               fontSize: MediaQuery.of(context).size.height*0.02,
                                               fontWeight: FontWeight.w400,
-                                              color: mode ? Colors.white60 : Colors.grey[700],
+                                              color: mode ? Colors.white : Colors.grey[900],
                                             ),
                                           ),
                                         ),
@@ -265,7 +266,7 @@ class _MyAccountState extends State<MyAccount> with SingleTickerProviderStateMix
                                             style: TextStyle(
                                               fontSize: MediaQuery.of(context).size.height*0.02,
                                               fontWeight: FontWeight.w400,
-                                              color: mode ? Colors.white60 : Colors.grey[700],
+                                              color: mode ? Colors.white : Colors.grey[900],
                                             ),
                                           ),
                                         ),
@@ -286,7 +287,7 @@ class _MyAccountState extends State<MyAccount> with SingleTickerProviderStateMix
                                         backgroundColor:
                                         mobileBackgroundColor,
                                         textColor: primaryColor,
-                                        borderColor: Colors.grey,
+                                        borderColor: mode ? Colors.white : Colors.black,
                                         function: () {
                                           Navigator.push(context,
                                             MaterialPageRoute(
@@ -301,16 +302,16 @@ class _MyAccountState extends State<MyAccount> with SingleTickerProviderStateMix
                                         backgroundColor:
                                         mobileBackgroundColor,
                                         textColor: primaryColor,
-                                        borderColor: Colors.grey,
+                                        borderColor: mode ? Colors.white : Colors.black,
                                         function: () async {
                                           await AuthMethods().signOut().then((value) {
                                             Dialogs.showSnackBar(context, "You have been logged out!");
                                           });
                                           Navigator.push(context,
-                                              MaterialPageRoute(
-                                                builder: (BuildContext context) =>
-                                                    IndexPage(),
-                                              )
+                                            MaterialPageRoute(
+                                              builder: (BuildContext context) =>
+                                                IndexPage(),
+                                            )
                                           );
                                         },
                                       ),
@@ -321,7 +322,7 @@ class _MyAccountState extends State<MyAccount> with SingleTickerProviderStateMix
                                     text: 'Unfollow',
                                     backgroundColor: Colors.white,
                                     textColor: Colors.black,
-                                    borderColor: Colors.grey,
+                                    borderColor: mode ? Colors.white : Colors.black,
                                     function: () async {
                                       await APIs()
                                           .followUser(
@@ -340,7 +341,7 @@ class _MyAccountState extends State<MyAccount> with SingleTickerProviderStateMix
                                     text: 'Follow',
                                     backgroundColor: Colors.blue,
                                     textColor: Colors.white,
-                                    borderColor: Colors.blue,
+                                    borderColor: mode ? Colors.white : Colors.black,
                                     function: () async {
                                       await APIs()
                                           .followUser(
@@ -378,6 +379,9 @@ class _MyAccountState extends State<MyAccount> with SingleTickerProviderStateMix
                               color: mode ? Colors.white : Colors.black,
                             ),
                           ),
+                          SizedBox(
+                            height: MediaQuery.of(context).size.height*0.004,
+                          ),
                           Text(
                             userData['bio'],
                             style: TextStyle(
@@ -393,7 +397,7 @@ class _MyAccountState extends State<MyAccount> with SingleTickerProviderStateMix
                       children: [
                         TabBar(
                           controller: tabController,
-                          indicatorColor: mode ? Colors.grey : Colors.black,
+                          indicatorColor: mode ? Colors.white70 : Colors.black,
                           indicatorWeight: 3,
                           tabs: [
                             Tab(
@@ -416,11 +420,11 @@ class _MyAccountState extends State<MyAccount> with SingleTickerProviderStateMix
                           decoration: BoxDecoration(
                             border: Border(
                               bottom: !mode ? BorderSide(
-                                color: Colors.grey,
+                                color: Colors.black,
                               )
                               :
                               BorderSide(
-                                color: Colors.white60,
+                                color: Colors.grey,
                               ),
                             ),
                           ),
@@ -517,7 +521,7 @@ class _MyAccountState extends State<MyAccount> with SingleTickerProviderStateMix
           ),
         ),
         bottomNavigationBar: BottomAppBar(
-          color: mode ? Colors.grey[800] : Colors.white,
+          color: mode ? Colors.black87 : Colors.white,
           child: Padding(
             padding: EdgeInsets.only(bottom: 10,),
             child: Row(
@@ -551,7 +555,7 @@ class _MyAccountState extends State<MyAccount> with SingleTickerProviderStateMix
                 ),
                 IconButton(
                   onPressed: () {
-                    Navigator.pushReplacement(context,
+                    Navigator.push(context,
                         MaterialPageRoute(
                           builder: (BuildContext context) => ToDo(),));
                   },

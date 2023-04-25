@@ -4,15 +4,15 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:socialize/pages/globals.dart';
 
-class FollowingUsers extends StatefulWidget {
+class SuggestedUsers extends StatefulWidget {
   final snap;
-  const FollowingUsers({Key? key, this.snap}) : super(key: key);
+  const SuggestedUsers({Key? key, this.snap}) : super(key: key);
 
   @override
-  State<FollowingUsers> createState() => _FollowingUsersState();
+  State<SuggestedUsers> createState() => _SuggestedUsersState();
 }
 
-class _FollowingUsersState extends State<FollowingUsers> {
+class _SuggestedUsersState extends State<SuggestedUsers> {
   bool isLoading = false;
   List<String> userFollowingList = [];
   int following = 0;
@@ -21,6 +21,7 @@ class _FollowingUsersState extends State<FollowingUsers> {
   late String lastName = '';
   late String img = '';
   late String id = '';
+  var userData = {};
 
   getData() async {
     setState(() {
@@ -70,8 +71,10 @@ class _FollowingUsersState extends State<FollowingUsers> {
 
   @override
   Widget build(BuildContext context) {
-    return userFollowingList.contains(id) ?
-    SingleChildScrollView(
+    return (userFollowingList.contains(id) || (id  == FirebaseAuth.instance.currentUser!.uid)) ?
+    Container()
+    :
+    !isLoading ? SingleChildScrollView(
       child: Container(
         padding: EdgeInsets.only(top: 5),
         height: MediaQuery.of(context).size.height*0.098,

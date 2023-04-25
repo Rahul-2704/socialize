@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import '../pages/globals.dart';
 
 class ToDoCard extends StatefulWidget {
   const ToDoCard({
@@ -53,11 +54,11 @@ class _ToDoCardState extends State<ToDoCard> {
             },
             icon: !check ? Icon(
               Icons.check_box_outline_blank,
-              color: Colors.white,
+              color: !mode ? Colors.black : Colors.white,
               size: 37,
             ) : Icon(
               Icons.check_box,
-              color: Colors.greenAccent,
+              color: Colors.green,
               size: 37,
             ),
           ),
@@ -98,7 +99,7 @@ class _ToDoCardState extends State<ToDoCard> {
                       height: 33,
                       width: 36,
                       decoration: BoxDecoration(
-                        color:widget.iconBgColor,
+                        color: widget.iconBgColor,
                         borderRadius: BorderRadius.circular(8),
                       ),
                       child: Icon(

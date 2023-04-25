@@ -29,10 +29,12 @@ class _RequestPageState extends State<RequestPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        // backgroundColor: Colors.white,
-        backgroundColor: mode ? Colors.grey[800] : Colors.white60,
+        backgroundColor: mode ? Colors.black87 : Colors.white60,
         elevation: 1,
         title:TextFormField(
+          style: TextStyle(
+            color: !mode ? Colors.black : Colors.white,
+          ),
           decoration: InputDecoration(
             prefixIcon: Icon(
               Icons.search,
@@ -47,20 +49,18 @@ class _RequestPageState extends State<RequestPage> {
           onFieldSubmitted: (String _) {
             print(_);
             setState(() {
-              isShowUser=true;
+              isShowUser = true;
             });
           },
         ) ,
       ),
-      body:
-      isShowUser
+      body: isShowUser
           ?
       GestureDetector(
         onTap: () => FocusScope.of(context).unfocus(),
         child: FutureBuilder(
             future: FirebaseFirestore.instance.collection("users")
               .where('username', isGreaterThanOrEqualTo: _searchController.text)
-              .where('username', isEqualTo: _searchController.text)
               .get(),
             builder:(context, snapshot) {
               if (!snapshot.hasData) {
@@ -84,44 +84,47 @@ class _RequestPageState extends State<RequestPage> {
                   :
               GestureDetector(
                 onTap: () => FocusScope.of(context).unfocus(),
-                child: ListView.builder(
-                  itemCount: (snapshot.data! as dynamic).docs.length,
-                  itemBuilder: (context, index) {
-                    return ListTile(
-                      leading: ClipRRect(
-                        borderRadius: BorderRadius.circular(20),
-                        child: CachedNetworkImage(
-                          width: 40,
-                          height: 40,
-                          fit: BoxFit.cover,
-                          imageUrl: (snapshot.data! as dynamic).docs[index]['photoUrl'],
-                          placeholder: (context, url) => const Center(child: CircularProgressIndicator()),
-                          errorWidget: (context, url, error) =>
-                          const CircleAvatar(
-                              child: Icon(Icons.person)
-                          ),
-                        ),
-                      ),
-                      title: Padding(
-                        padding: const EdgeInsets.only(right:200),
-                        child: InkWell(
-                          child: Text(
-                            (snapshot.data! as dynamic).docs[index]['username'],
-                            style: TextStyle(
-                              color: Colors.black54,
-                            ),
-                          ),
-                          onTap: () {
-                            Navigator.push(context,
+                child: Container(
+                  color: mode ? Colors.grey[900] : Colors.white,
+                  child: ListView.builder(
+                    itemCount: (snapshot.data! as dynamic).docs.length,
+                    itemBuilder: (context, index) {
+                      return InkWell(
+                        onTap: () {
+                          Navigator.push(context,
                               MaterialPageRoute(
                                 builder: (BuildContext context) => MyAccount(id:(snapshot.data! as dynamic).docs[index]['id']),
                               )
-                            );
-                          },
+                          );
+                        },
+                        child: ListTile(
+                          leading: ClipRRect(
+                            borderRadius: BorderRadius.circular(20),
+                            child: CachedNetworkImage(
+                              width: 40,
+                              height: 40,
+                              fit: BoxFit.cover,
+                              imageUrl: (snapshot.data! as dynamic).docs[index]['photoUrl'],
+                              placeholder: (context, url) => const Center(child: CircularProgressIndicator()),
+                              errorWidget: (context, url, error) =>
+                              const CircleAvatar(
+                                  child: Icon(Icons.person)
+                              ),
+                            ),
+                          ),
+                          title: Padding(
+                            padding: const EdgeInsets.only(right: 100),
+                            child: Text(
+                              (snapshot.data! as dynamic).docs[index]['username'],
+                              style: TextStyle(
+                                color: !mode ? Colors.black54 : Colors.white70,
+                              ),
+                            ),
+                          ),
                         ),
-                      ),
-                    );
-                  }
+                      );
+                    }
+                  ),
                 ),
               );
             }
@@ -171,8 +174,9 @@ class _RequestPageState extends State<RequestPage> {
           ),
         ),
       ),
+
       bottomNavigationBar: BottomAppBar(
-        color: mode ? Colors.grey[800] : Colors.white,
+        color: mode ? Colors.black87 : Colors.white,
         child: Padding(
           padding: EdgeInsets.only(bottom: 10,),
           child: Row(
@@ -204,7 +208,7 @@ class _RequestPageState extends State<RequestPage> {
               ),
               IconButton(
                 onPressed: () {
-                  Navigator.pushReplacement(context,
+                  Navigator.push(context,
                       MaterialPageRoute(builder: (BuildContext context) => ToDo(),));
                 },
                 icon: Icon(

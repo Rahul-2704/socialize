@@ -44,12 +44,6 @@ class _RegisterPageState extends State<RegisterPage> {
       ),
       body: Container(
         height : MediaQuery.of(context).size.height,
-        decoration: BoxDecoration(
-          image: DecorationImage(
-            image: AssetImage('images/indexBackground.jpg'),
-            fit: BoxFit.cover,
-          ),
-        ),
         child: SingleChildScrollView(
           child: Form(
             key: _fk,
@@ -305,6 +299,7 @@ class _RegisterPageState extends State<RegisterPage> {
                         bio:'',
                         username:'',
                         login: true,
+                        mode: false,
                       );
                       print(res);
                     },

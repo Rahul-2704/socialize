@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:socialize/api/apis.dart';
 import 'package:socialize/widgets/comment_card.dart';
 
+import 'globals.dart';
+
 class CommentScreen extends StatefulWidget{
   final snap;
   const CommentScreen({Key?key,required this.snap}):super(key:key);
@@ -34,35 +36,44 @@ class _CommentScreenState extends State<CommentScreen>{
   Widget build(BuildContext context){
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.black,
-        title: const Text(
-            'Comments',
+        iconTheme: IconThemeData(
+          color: !mode ? Colors.black87 : Colors.white,
+        ),
+        backgroundColor: mode ? Colors.black87 : Colors.white,
+        title: Text(
+          'Comments',
+          style: TextStyle(
+            color: !mode ? Colors.black87 : Colors.white,
+          ),
         ),
         centerTitle: false,
       ),
-      body:StreamBuilder(
-
-        stream: FirebaseFirestore.instance.collection("posts")
-            .doc(widget.snap['postId'])
-            .collection("comments")
-            .orderBy("datePublished", descending: true)
-            .snapshots(),
-        builder: (context,snapshot){
-          if(snapshot.connectionState==ConnectionState.waiting){
-            return const Center(
-              child: CircularProgressIndicator(),
+      body: Container(
+        color: mode ? Colors.black87 : Colors.white,
+        child: StreamBuilder(
+          stream: FirebaseFirestore.instance.collection("posts")
+              .doc(widget.snap['postId'])
+              .collection("comments")
+              .orderBy("datePublished", descending: true)
+              .snapshots(),
+          builder: (context,snapshot){
+            if(snapshot.connectionState==ConnectionState.waiting){
+              return const Center(
+                child: CircularProgressIndicator(),
+              );
+            }
+            return ListView.builder(
+              itemCount:(snapshot.data! as dynamic).docs.length,
+              itemBuilder:(context,index) => CommentCard(
+                snap:(snapshot.data! as dynamic).docs[index].data(),
+              )
             );
-          }
-          return ListView.builder(
-            itemCount:(snapshot.data! as dynamic).docs.length,
-            itemBuilder:(context,index) => CommentCard(
-              snap:(snapshot.data! as dynamic).docs[index].data(),
-            )
-          );
-        },
+          },
+        ),
       ),
       bottomNavigationBar: SafeArea(
         child: Container(
+          color: mode ? Colors.black : Colors.white,
           height: kToolbarHeight,
           margin: EdgeInsets.only(bottom:MediaQuery.of(context).viewInsets.bottom),
           padding: const EdgeInsets.only(left: 16,right: 8),
@@ -80,9 +91,15 @@ class _CommentScreenState extends State<CommentScreen>{
                   padding: const EdgeInsets.only(left: 16.0,right: 8.0),
                   child:isLoading1 ? Center(child:const CircularProgressIndicator()):
                   TextField(
+                    style: TextStyle(
+                      color: !mode ? Colors.black : Colors.white,
+                    ),
                     controller: _commentController,
                     decoration: InputDecoration(
                       hintText: "Comment as ${username}",
+                      hintStyle: TextStyle(
+                        color: !mode ? Colors.black : Colors.white,
+                      ),
                       border: InputBorder.none,
                     ),
                   ),
@@ -106,10 +123,10 @@ class _CommentScreenState extends State<CommentScreen>{
                     vertical: 8,
                     horizontal: 8,
                   ),
-                  child: const Text(
+                  child: Text(
                     'Post',
                     style: TextStyle(
-                      color: Colors.blueAccent,
+                      color: !mode ? Colors.black : Colors.white,
                     ),
                   ),
                 ),

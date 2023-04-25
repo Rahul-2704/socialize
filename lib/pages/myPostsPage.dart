@@ -37,7 +37,7 @@ class _MyPostsPageState extends State<MyPostsPage> {
             leading: BackButton(
               color: mode ? Colors.white : Colors.black,
             ),
-            backgroundColor: mode ? Colors.black : Colors.white,
+            backgroundColor: mode ? Colors.black87 : Colors.white,
             elevation: 1,
             title: Text(
               'Posts',
@@ -50,25 +50,28 @@ class _MyPostsPageState extends State<MyPostsPage> {
         ),
       ),
       body: StreamBuilder(
-        stream: FirebaseFirestore.instance.collection("userPost/${widget.id}/post").snapshots(),
+        stream: FirebaseFirestore.instance.collection("posts").where('id', isEqualTo: widget.id ).snapshots(),
         builder: (context, AsyncSnapshot<QuerySnapshot<Map<String,dynamic>>> snapshot){
           if(snapshot.connectionState == ConnectionState.waiting){
             return const Center(
               child: CircularProgressIndicator(),
             );
           }
-          return ListView.builder(
-            itemCount: snapshot.data!.docs.length,
-            itemBuilder:(context, index) {
-              return MyPostCard(
-                snap: snapshot.data?.docs[index].data(),
-              );
-            },
+          return Container(
+            color: mode ? Colors.grey[900] : Colors.white,
+            child: ListView.builder(
+              itemCount: snapshot.data!.docs.length,
+              itemBuilder:(context, index) {
+                return MyPostCard(
+                  snap: snapshot.data?.docs[index].data(),
+                );
+              },
+            ),
           );
         },
       ),
       bottomNavigationBar: BottomAppBar(
-        color: mode ? Colors.grey[800] : Colors.white,
+        color: mode ? Colors.black87 : Colors.white,
         child: Padding(
           padding: EdgeInsets.only(bottom: 10,),
           child: Row(

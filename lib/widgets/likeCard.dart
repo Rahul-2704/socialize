@@ -1,25 +1,25 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:socialize/pages/globals.dart';
 
-class FollowingUsers extends StatefulWidget {
+import '../pages/globals.dart';
+
+class LikeUsers extends StatefulWidget {
   final snap;
-  const FollowingUsers({Key? key, this.snap}) : super(key: key);
+  const LikeUsers({Key? key, this.snap}) : super(key: key);
 
   @override
-  State<FollowingUsers> createState() => _FollowingUsersState();
+  State<LikeUsers> createState() => _LikeUsersState();
 }
 
-class _FollowingUsersState extends State<FollowingUsers> {
+class _LikeUsersState extends State<LikeUsers> {
   bool isLoading = false;
-  List<String> userFollowingList = [];
-  int following = 0;
+  List<String> likeUser = [];
+  int likes = 0;
   late String userName = '';
   late String firstName = '';
   late String lastName = '';
-  late String img = '';
+  late String img = 'images/logo.png';
   late String id = '';
 
   getData() async {
@@ -27,15 +27,12 @@ class _FollowingUsersState extends State<FollowingUsers> {
       isLoading = true;
     });
     try {
-      var userSnap = await FirebaseFirestore.instance
-          .collection('users')
-          .doc(FirebaseAuth.instance.currentUser!.uid)
-          .get();
-      following = userSnap.data()!['following'].length;
-      for(int i=0;i<following;i++){
-        userFollowingList.add(userSnap.data()!['following'][i].toString());
+      likes = widget.snap['likes'].length;
+      for (int i = 0; i < likes; i++) {
+        likeUser.add(widget.snap['likes'][i].toString());
       }
-    } catch (e) {
+    }
+    catch (e) {
       print(e);
     }
     setState(() {
@@ -49,15 +46,21 @@ class _FollowingUsersState extends State<FollowingUsers> {
   }
 
   Future<void> updateData(String userId) async{
+    setState(() {
+      isLoading = true;
+    });
     await FirebaseFirestore.instance
         .collection('users')
         .doc(userId)
         .get().then((value) {
-      id = value.data()!["id"];
-      userName = value.data()!["username"];
-      firstName = value.data()!["firstname"];
-      lastName = value.data()!["lastname"];
-      img = value.data()!["photoUrl"];
+      id = value.data()!['id'];
+      userName = value.data()!['username'];
+      firstName = value.data()!['firstname'];
+      lastName = value.data()!['lastname'];
+      img = value.data()!['photoUrl'];
+    });
+    setState(() {
+      isLoading = false;
     });
   }
 
@@ -70,7 +73,7 @@ class _FollowingUsersState extends State<FollowingUsers> {
 
   @override
   Widget build(BuildContext context) {
-    return userFollowingList.contains(id) ?
+    return likeUser.contains(id) ?
     SingleChildScrollView(
       child: Container(
         padding: EdgeInsets.only(top: 5),
@@ -121,8 +124,8 @@ class _FollowingUsersState extends State<FollowingUsers> {
                       child: Text(
                         firstName + ' ' + lastName,
                         style: TextStyle(
-                          color: mode ? Colors.white : Colors.black,
-                          fontWeight: FontWeight.w400,
+                            color: mode ? Colors.white : Colors.black,
+                            fontWeight: FontWeight.w400
                         ),
                       ),
                     ),
@@ -136,6 +139,7 @@ class _FollowingUsersState extends State<FollowingUsers> {
           ],
         ),
       ),
-    ) : Container();
+    ) :
+    Container();
   }
 }

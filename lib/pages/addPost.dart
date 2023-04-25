@@ -9,6 +9,8 @@ import 'package:socialize/api/apis.dart';
 import 'package:socialize/api/dialogs.dart';
 import 'package:socialize/pages/accountPage.dart';
 
+import 'globals.dart';
+
 class AddPost extends StatefulWidget {
   const AddPost({Key? key}) : super(key: key);
 
@@ -43,6 +45,8 @@ class _AddPostState extends State<AddPost> {
       onTap: () => FocusScope.of(context).unfocus(),
       child: Scaffold(
         body: Container(
+          height: double.maxFinite,
+          color: !mode ? Colors.white : Colors.black87,
           child: SingleChildScrollView(
             child: Center(
               child: SafeArea(
@@ -78,7 +82,7 @@ class _AddPostState extends State<AddPost> {
                             style: TextStyle(
                               fontSize: MediaQuery.of(context).size.height*0.04,
                               fontWeight: FontWeight.w500,
-                              color: Colors.black87,
+                              color: !mode ? Colors.black87 : Colors.white,
                             ),
                           ),
                         ],
@@ -107,7 +111,7 @@ class _AddPostState extends State<AddPost> {
                               )
                               :
                               Image(
-                                image: AssetImage('images/profilePicture.png'),
+                                image: AssetImage('images/uploadImage.jpg'),
                               ),
                             ),
                         SizedBox(height: MediaQuery.of(context).size.height*0.02),
@@ -116,28 +120,31 @@ class _AddPostState extends State<AddPost> {
                               horizontal: MediaQuery.of(context).size.width*0.04
                           ),
                           child: TextFormField(
+                            style: TextStyle(
+                              color: !mode ? Colors.black : Colors.white,
+                            ),
                             controller: _captionController,
                             maxLines: 2,
                             decoration: InputDecoration(
                               border: OutlineInputBorder(
                                   borderSide: BorderSide(
-                                    color: Colors.teal,
+                                    color: !mode ? Colors.black : Colors.white,
                                     width: 2,
                                   ),
                               ),
                               focusedBorder: OutlineInputBorder(
                                   borderSide: BorderSide(
-                                    color: Colors.black,
+                                    color: !mode ? Colors.black : Colors.white,
                                     width: 1,
                                   ),
                               ),
                               labelText: 'Enter Caption',
                               hintText: 'Caption',
                               hintStyle: TextStyle(
-                                  color: Colors.black,
+                                color: !mode ? Colors.black : Colors.white,
                               ),
                               labelStyle: TextStyle(
-                                  color: Colors.black,
+                                color: !mode ? Colors.black : Colors.white,
                               ),
                             ),
                           ),
@@ -151,7 +158,9 @@ class _AddPostState extends State<AddPost> {
                       height: MediaQuery.of(context).size.height*0.07,
                       child: ElevatedButton(
                         style: ButtonStyle(
-                          backgroundColor: MaterialStateProperty.all(Colors.cyan),
+                          backgroundColor: MaterialStateProperty.all(
+                            !mode ? Colors.blue : Colors.black38,
+                          ),
                         ),
                           onPressed: () async {
                             if (_formKey.currentState!.validate()){
@@ -193,43 +202,27 @@ class _AddPostState extends State<AddPost> {
             borderRadius: BorderRadius.only(
                 topLeft: Radius.circular(20), topRight: Radius.circular(20))),
         builder: (_) {
-          return ListView(
-            shrinkWrap: true,
-            padding:
-            EdgeInsets.only(top: MediaQuery.of(context).size.height * .03, bottom: MediaQuery.of(context).size.height * .05),
-            children: [
-              Text(
-                  'Pick Profile Picture',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontSize: MediaQuery.of(context).size.height*0.02,
-                    fontWeight: FontWeight.w500
-                  )
-              ),
-              SizedBox(height: MediaQuery.of(context).size.height * .02),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.white,
-                        shape: const CircleBorder(),
-                        fixedSize: Size(MediaQuery.of(context).size.width * .3, MediaQuery.of(context).size.height * .15)),
-                    onPressed: () async {
-                      final ImagePicker picker = ImagePicker();
-                      final XFile? image = await picker.pickImage(
-                          source: ImageSource.camera, imageQuality: 80);
-                      if (image != null) {
-                        log('Image Path: ${image.path}');
-                        setState(() {
-                          _image = image.path;
-                        });
-                        Navigator.pop(context);
-                      }
-                    },
-                    child: Image.asset('images/camera.png')
-                  ),
-                  ElevatedButton(
+          return Container(
+            color: mode ? Colors.black87 : Colors.white,
+            child: ListView(
+              shrinkWrap: true,
+              padding:
+              EdgeInsets.only(top: MediaQuery.of(context).size.height * .03, bottom: MediaQuery.of(context).size.height * .05),
+              children: [
+                Text(
+                    'Pick Profile Picture',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontSize: MediaQuery.of(context).size.height*0.02,
+                      fontWeight: FontWeight.w500,
+                      color: !mode ? Colors.black : Colors.white,
+                    )
+                ),
+                SizedBox(height: MediaQuery.of(context).size.height * .02),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    ElevatedButton(
                       style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.white,
                           shape: const CircleBorder(),
@@ -237,7 +230,7 @@ class _AddPostState extends State<AddPost> {
                       onPressed: () async {
                         final ImagePicker picker = ImagePicker();
                         final XFile? image = await picker.pickImage(
-                            source: ImageSource.gallery, imageQuality: 80);
+                            source: ImageSource.camera, imageQuality: 80);
                         if (image != null) {
                           log('Image Path: ${image.path}');
                           setState(() {
@@ -246,11 +239,31 @@ class _AddPostState extends State<AddPost> {
                           Navigator.pop(context);
                         }
                       },
-                      child: Image.asset('images/add_image.png')
-                  ),
-                ],
-              )
-            ],
+                      child: Image.asset('images/camera.png')
+                    ),
+                    ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.white,
+                            shape: const CircleBorder(),
+                            fixedSize: Size(MediaQuery.of(context).size.width * .3, MediaQuery.of(context).size.height * .15)),
+                        onPressed: () async {
+                          final ImagePicker picker = ImagePicker();
+                          final XFile? image = await picker.pickImage(
+                              source: ImageSource.gallery, imageQuality: 80);
+                          if (image != null) {
+                            log('Image Path: ${image.path}');
+                            setState(() {
+                              _image = image.path;
+                            });
+                            Navigator.pop(context);
+                          }
+                        },
+                        child: Image.asset('images/add_image.png')
+                    ),
+                  ],
+                )
+              ],
+            ),
           );
         });
   }

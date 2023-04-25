@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
+import '../pages/globals.dart';
 import 'news_model.dart';
 
 class CategoryNews extends StatefulWidget {
@@ -43,114 +44,142 @@ class _CategoryNewsState extends State<CategoryNews> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          'NEWS',
-        ),
-        centerTitle: true,
-      ),
-      body: SingleChildScrollView(
+      appBar: PreferredSize(
+        preferredSize: Size.fromHeight(55),
         child: Container(
-          child: Column(
-            children: [
-              Container(
-                margin: EdgeInsets.fromLTRB(15, 20, 0, 0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    SizedBox(width: 12,),
-                    Container(
-                      margin: EdgeInsets.symmetric(vertical: 15),
-                      child: Text(
-                        widget.query,
-                        style: TextStyle(
-                          fontSize: 39,
-                        ),
-                      ),
-                    ),
-                  ],
+          decoration: BoxDecoration(
+            border: Border(
+              bottom: BorderSide(
+                color: Colors.grey,
+              ),
+            ),
+          ),
+          child: AppBar(
+            iconTheme: IconThemeData(
+              color: !mode ? Colors.black87 : Colors.white,
+            ),
+            backgroundColor: mode ? Colors.black87 : Colors.white,
+            elevation: 0,
+            title: Padding(
+              padding: const EdgeInsets.all(15.0),
+              child: Text(
+                'News',
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  color: mode ? Colors.white : Colors.black,
                 ),
               ),
-              isLoading
-              ?
-              Container(
-                height: MediaQuery.of(context).size.height - 500,
-                child: Center(
-                  child: CircularProgressIndicator()
+            ),
+            centerTitle: true,
+          ),
+        ),
+      ),
+      body: Container(
+        color: !mode ? Colors.white : Colors.grey[900],
+        child: SingleChildScrollView(
+          child: Container(
+            child: Column(
+              children: [
+                Container(
+                  margin: EdgeInsets.fromLTRB(15, 20, 0, 0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      SizedBox(width: 12,),
+                      Container(
+                        margin: EdgeInsets.symmetric(vertical: 15),
+                        child: Text(
+                          widget.query,
+                          style: TextStyle(
+                            fontSize: 39,
+                            color: mode ? Colors.white : Colors.black,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                isLoading
+                ?
+                Container(
+                  height: MediaQuery.of(context).size.height - 500,
+                  child: Center(
+                    child: CircularProgressIndicator()
+                  )
                 )
-              )
-              :
-              ListView.builder(
-                  physics: NeverScrollableScrollPhysics(),
-                  shrinkWrap: true,
-                  itemCount: newsModelList.length,
-                  itemBuilder: (context, index) {
-                    return Container(
-                      margin: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                      child: Card(
-                        elevation: 1,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(15),
-                        ),
-                        child: Stack(
-                          children: [
-                            ClipRRect(
-                              child: Image.network(
-                                newsModelList[index].newsImg,
-                                fit: BoxFit.fitHeight,
-                                width: double.infinity,
-                                height: 230,
-                              ),
-                              borderRadius: BorderRadius.circular(15),
-                            ),
-                            Positioned(
-                              left: 0,
-                              right: 0,
-                              bottom: 0,
-                              child: Container(
-                                decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(15),
-                                    gradient: LinearGradient(
-                                      colors: [
-                                        Colors.black12.withOpacity(0),
-                                        Colors.black,
-                                      ],
-                                      begin: Alignment.topCenter,
-                                      end: Alignment.bottomCenter,
-                                    )
+                :
+                ListView.builder(
+                    physics: NeverScrollableScrollPhysics(),
+                    shrinkWrap: true,
+                    itemCount: newsModelList.length,
+                    itemBuilder: (context, index) {
+                      return Container(
+                        margin: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                        child: Card(
+                          elevation: 1,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(15),
+                          ),
+                          child: Stack(
+                            children: [
+                              ClipRRect(
+                                child: Image.network(
+                                  newsModelList[index].newsImg,
+                                  fit: BoxFit.fitHeight,
+                                  width: double.infinity,
+                                  height: 230,
                                 ),
-                                padding: EdgeInsets.fromLTRB(15, 15, 10, 8),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      newsModelList[index].newsHead,
-                                      style: TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 18,
-                                        fontWeight: FontWeight.bold,
+                                borderRadius: BorderRadius.circular(15),
+                              ),
+                              Positioned(
+                                left: 0,
+                                right: 0,
+                                bottom: 0,
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(15),
+                                      gradient: LinearGradient(
+                                        colors: [
+                                          Colors.black12.withOpacity(0),
+                                          Colors.black,
+                                        ],
+                                        begin: Alignment.topCenter,
+                                        end: Alignment.bottomCenter,
+                                      )
+                                  ),
+                                  padding: EdgeInsets.fromLTRB(15, 15, 10, 8),
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        newsModelList[index].newsHead,
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 18,
+                                          fontWeight: FontWeight.bold,
+                                        ),
                                       ),
-                                    ),
-                                    Text(
-                                      newsModelList[index].newsDes.length > 50 ?
-                                      '${newsModelList[index].newsDes.substring(0, 50)}....'
-                                          : newsModelList[index].newsDes,
-                                      style: TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 12,
+                                      Text(
+                                        newsModelList[index].newsDes.length > 50 ?
+                                        '${newsModelList[index].newsDes.substring(0, 50)}....'
+                                            : newsModelList[index].newsDes,
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 12,
+                                        ),
                                       ),
-                                    ),
-                                  ],
+                                    ],
+                                  ),
                                 ),
                               ),
-                            ),
-                          ],
-                        ),
-                      )
-                  );
-                }
-              ),
-            ],
+                            ],
+                          ),
+                        )
+                    );
+                  }
+                ),
+              ],
+            ),
           ),
         ),
       ),

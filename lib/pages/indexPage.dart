@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:socialize/news/news_home.dart';
 import 'package:socialize/pages/accountPage.dart';
 import 'package:socialize/pages/requestPage.dart';
+import 'package:socialize/pages/suggestionPage.dart';
 import 'package:socialize/todos/ToDo.dart';
 import 'package:socialize/widgets/postCard.dart';
 import 'feedPage.dart';
@@ -37,6 +38,7 @@ class _IndexPageState extends State<IndexPage> {
     .doc(FirebaseAuth.instance.currentUser!.uid)
     .get().then((value) {
       isLogin = value.data()!['login'];
+      mode = value.data()!['mode'];
   });
     super.initState();
     LoadHome();
@@ -50,12 +52,7 @@ class _IndexPageState extends State<IndexPage> {
   Widget splash() {
     return Scaffold(
       body: Container(
-        decoration: BoxDecoration(
-          image: DecorationImage(
-            image: AssetImage('images/indexBackground.jpg'),
-            fit: BoxFit.cover,
-          ),
-        ),
+        color: !mode ? Colors.white : Colors.grey[900],
         child: Center(
           child: Container(
             child: Padding(
@@ -74,12 +71,7 @@ class _IndexPageState extends State<IndexPage> {
   Widget index() {
     return Scaffold(
       body: Container(
-        decoration: BoxDecoration(
-          image: DecorationImage(
-            image: AssetImage('images/indexBackground.jpg'),
-            fit: BoxFit.cover,
-          ),
-        ),
+        color: !mode ? Colors.white : Colors.grey[900],
         child: Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -102,6 +94,7 @@ class _IndexPageState extends State<IndexPage> {
                       fontFamily: 'Lobster',
                       fontSize: 70,
                       fontWeight: FontWeight.bold,
+                      color: mode ? Colors.white : Colors.black,
                     ),
                   ),
                 ],
@@ -113,6 +106,7 @@ class _IndexPageState extends State<IndexPage> {
                   style: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
+                    color: mode ? Colors.white : Colors.black,
                   ),
                 ),
               ),
@@ -189,31 +183,48 @@ class _IndexPageState extends State<IndexPage> {
           ),
           child: AppBar(
             automaticallyImplyLeading: false,
-            backgroundColor: mode ? Colors.black : Colors.white,
+            backgroundColor: mode ? Colors.black87 : Colors.white,
             elevation: 0,
             title: Padding(
               padding: const EdgeInsets.all(15.0),
-              child: Text(
-                'Socialize',
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  color: mode ? Colors.white : Colors.black,
-                ),
+              child: Row(
+                  children: [
+                    Container(
+                      child: Image(
+                        height: 25,
+                        image: AssetImage('images/logo.png'),
+                      ),
+                    ),
+                    SizedBox(width: 1,),
+                    Text(
+                      'Socialize',
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        color: mode ? Colors.white : Colors.black,
+                      ),
+                    ),
+                  ]
               ),
             ),
             actions:[
               IconButton(
-                  onPressed: () {},
-                  icon:const Icon(
-                    Icons.messenger_outline,
-                    color: Colors.black,
-                  )
-              )
+                onPressed: () {
+                  Navigator.push(context,
+                    MaterialPageRoute(
+                      builder: (BuildContext context) => SuggestionPage(),
+                    )
+                  );
+                },
+                icon: Icon(
+                  Icons.messenger_outline,
+                  color: !mode ? Colors.black : Colors.white,
+                ),
+              ),
             ],
           ),
         ),
       ),
-      body:StreamBuilder(
+      body: StreamBuilder(
         stream: FirebaseFirestore.instance.collection("posts").snapshots(),
         builder: (context, AsyncSnapshot<QuerySnapshot<Map<String,dynamic>>> snapshot) {
           if(snapshot.connectionState == ConnectionState.waiting){
@@ -221,18 +232,21 @@ class _IndexPageState extends State<IndexPage> {
               child: CircularProgressIndicator(),
             );
           }
-          return ListView.builder(
-              itemCount: snapshot.data!.docs.length,
-              itemBuilder:(context,index) {
-                return PostCard(
-                  snap: snapshot.data?.docs[index].data(),
-                );
-              }
+          return Container(
+            color: mode ? Colors.grey[900] : Colors.white,
+            child: ListView.builder(
+                itemCount: snapshot.data!.docs.length,
+                itemBuilder:(context,index) {
+                  return PostCard(
+                    snap: snapshot.data?.docs[index].data(),
+                  );
+                }
+            ),
           );
         },
       ),
       bottomNavigationBar: BottomAppBar(
-        color: mode ? Colors.grey[800] : Colors.white,
+        color: mode ? Colors.black87 : Colors.white,
         child: Padding(
           padding: EdgeInsets.only(bottom: 10,),
           child: Row(
@@ -254,7 +268,10 @@ class _IndexPageState extends State<IndexPage> {
               IconButton(
                 onPressed: () {
                   Navigator.push(context,
-                      MaterialPageRoute(builder: (BuildContext context) => HomeNews(),));
+                      MaterialPageRoute(
+                        builder: (BuildContext context) => HomeNews(),
+                      )
+                  );
                 },
                 icon: Icon(
                   Icons.search,
@@ -264,7 +281,7 @@ class _IndexPageState extends State<IndexPage> {
               ),
               IconButton(
                 onPressed: () {
-                  Navigator.pushReplacement(context,
+                  Navigator.push(context,
                       MaterialPageRoute(builder: (BuildContext context) => ToDo(),));
                 },
                 icon: Icon(
@@ -287,7 +304,13 @@ class _IndexPageState extends State<IndexPage> {
               IconButton(
                 onPressed: () {
                   Navigator.pushReplacement(context,
-                      MaterialPageRoute(builder: (BuildContext context) => MyAccount(id: FirebaseAuth.instance.currentUser!.uid,),));
+                      MaterialPageRoute(
+                        builder: (BuildContext context) =>
+                            MyAccount(
+                              id: FirebaseAuth.instance.currentUser!.uid,
+                            ),
+                      )
+                  );
                 },
                 icon: Icon(
                   Icons.person_outline_outlined,

@@ -41,85 +41,130 @@ class _ToDoState extends State<ToDo> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.black54,
-      appBar: AppBar(
-        backgroundColor: Colors.black38,
-        title: Text(
-          'Hello ' + firstName,
-          style: TextStyle(
-            fontSize: 34,
-            fontWeight: FontWeight.bold,
-            color: Colors.white,
-          ),
-        ),
-        actions: [
-          IconButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (BuildContext context) => AddToDo(),
-                  )
-                );
-              },
-              icon: Icon(
-                Icons.add_box_outlined,
-                size: 25,
-              )),
-          SizedBox(
-            width: 20,
-          ),
-          CircleAvatar(
-            backgroundImage: AssetImage('images/profilePicture.png'),
-          ),
-          SizedBox(
-            width: 10,
-          )
-        ],
-        bottom: PreferredSize(
-          child: Align(
-            alignment: Alignment.centerLeft,
-            child: Padding(
-              padding: const EdgeInsets.only(left: 22),
-              child: Row(
-                children: [
-                  Text(
-                    DateFormat.MMMMd().format(DateTime.now()),
-                    style: TextStyle(
-                      fontSize: 33,
-                      fontWeight: FontWeight.w400,
-                      color: Colors.white,
-                    ),
-                  ),
-                  SizedBox(
-                    width: 180,
-                  ),
-                  IconButton(
-                    onPressed: () {
-                      // FirebaseFirestore.instance.collection("Todo").doc(widget.snap['todoId']).delete()
-                      //     .then((value){
-                      //   Navigator.pop(context);
-                      // });
-                      //  var instance=FirebaseFirestore.instance.collection("Todo");
-                      // for(int i=0;i<selected.length;i++){
-                      //   instance.delete();
-                      // }
-                    },
-                    icon: Icon(
-                      Icons.delete,
-                      color: Colors.white,
-                      size: 28,
-                    ),
-                  ),
-                ],
+      backgroundColor: mode ? Colors.grey[900] : Colors.white,
+      appBar: PreferredSize(
+        preferredSize: Size.fromHeight(50),
+        child: Container(
+          decoration: BoxDecoration(
+            border: Border(
+              bottom: BorderSide(
+                color: Colors.grey,
               ),
             ),
           ),
-          preferredSize: Size.fromHeight(35),
+          child: AppBar(
+            iconTheme: IconThemeData(
+              color: !mode ? Colors.black : Colors.white,
+            ),
+            backgroundColor: mode ? Colors.black87 : Colors.white,
+            elevation: 0,
+            title: Padding(
+              padding: const EdgeInsets.all(15.0),
+              child: Text(
+                'ToDo Items',
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  color: mode ? Colors.white : Colors.black,
+                ),
+              ),
+            ),
+            actions:[
+              IconButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (BuildContext context) => AddToDo(),
+                    )
+                  );
+                },
+                icon: Icon(
+                  Icons.add_box_outlined,
+                  size: 25,
+                )
+              ),
+            ],
+          ),
         ),
       ),
+      // appBar: AppBar(
+      //   backgroundColor: Colors.black38,
+      //   title: Text(
+      //     'Hello ' + firstName,
+      //     style: TextStyle(
+      //       fontSize: 34,
+      //       fontWeight: FontWeight.bold,
+      //       color: Colors.white,
+      //     ),
+      //   ),
+      //   actions: [
+      //     IconButton(
+      //         onPressed: () {
+      //           Navigator.push(
+      //             context,
+      //             MaterialPageRoute(
+      //               builder: (BuildContext context) => AddToDo(),
+      //             )
+      //           );
+      //         },
+      //         icon: Icon(
+      //           Icons.add_box_outlined,
+      //           size: 25,
+      //         )),
+      //     SizedBox(
+      //       width: 20,
+      //     ),
+      //     CircleAvatar(
+      //       backgroundImage: AssetImage('images/profilePicture.png'),
+      //     ),
+      //     SizedBox(
+      //       width: 10,
+      //     )
+      //   ],
+      //   bottom: PreferredSize(
+      //     child: Align(
+      //       alignment: Alignment.centerLeft,
+      //       child: Padding(
+      //         padding: const EdgeInsets.only(left: 22),
+      //         child: Row(
+      //           children: [
+      //             Text(
+      //               DateFormat.MMMMd().format(DateTime.now()),
+      //               style: TextStyle(
+      //                 fontSize: 33,
+      //                 fontWeight: FontWeight.w400,
+      //                 color: Colors.white,
+      //               ),
+      //             ),
+      //             SizedBox(
+      //               width: 180,
+      //             ),
+      //             IconButton(
+      //               onPressed: () {
+      //                 // FirebaseFirestore.instance.collection("Todo").doc(widget.snap['todoId']).delete()
+      //                 //     .then((value){
+      //                 //   Navigator.pop(context);
+      //                 // });
+      //                 //  var instance=FirebaseFirestore.instance.collection("Todo");
+      //                 // for(int i=0;i<selected.length;i++){
+      //                 //   instance.delete();
+      //                 // }
+      //               },
+      //               icon: Icon(
+      //                 Icons.delete,
+      //                 color: Colors.white,
+      //                 size: 28,
+      //               ),
+      //             ),
+      //           ],
+      //         ),
+      //       ),
+      //     ),
+      //     preferredSize: Size.fromHeight(35),
+      //   ),
+      // ),
       bottomNavigationBar: BottomAppBar(
-        color: mode ? Colors.grey[800] : Colors.white,
+        color: mode ? Colors.black87 : Colors.white,
         child: Padding(
           padding: const EdgeInsets.only(
             bottom: 10,
@@ -159,7 +204,7 @@ class _ToDoState extends State<ToDo> {
               ),
               IconButton(
                 onPressed: () {
-                  Navigator.pushReplacement(
+                  Navigator.push(
                       context,
                       MaterialPageRoute(
                         builder: (BuildContext context) => ToDo(),
@@ -205,6 +250,7 @@ class _ToDoState extends State<ToDo> {
           ),
         ),
       ),
+
       body: StreamBuilder(
         stream: FirebaseFirestore.instance
             .collection('users')

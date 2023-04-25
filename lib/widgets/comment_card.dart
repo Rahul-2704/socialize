@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:socialize/pages/accountPage.dart';
 
+import '../pages/globals.dart';
+
 class CommentCard extends StatefulWidget {
   final snap;
   const CommentCard({Key? key,required this.snap}) : super(key: key);
@@ -39,25 +41,6 @@ class _CommentCardState extends State<CommentCard> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  // RichText(
-                  //   text: TextSpan(
-                  //     children: [
-                  //       TextSpan(
-                  //         text:widget.snap['username'],
-                  //         style: const TextStyle(
-                  //           fontWeight: FontWeight.bold,
-                  //           color: Colors.black,
-                  //         ),
-                  //       ),
-                  //       TextSpan(
-                  //           text:' ${widget.snap['comment']}',
-                  //           style: const TextStyle(
-                  //             color: Colors.black,
-                  //           )
-                  //       ),
-                  //     ]
-                  //   )
-                  // ),
                   Row(
                     children:[
                       InkWell(
@@ -72,15 +55,15 @@ class _CommentCardState extends State<CommentCard> {
                           widget.snap['username'],
                           style: TextStyle(
                             fontWeight: FontWeight.bold,
-                            color: Colors.black,
+                            color: !mode ? Colors.black : Colors.white,
                           ),
                         ),
                       ),
                       SizedBox(width: 5,),
                       Text(
                         widget.snap['comment'],
-                        style: const TextStyle(
-                          color: Colors.black,
+                        style: TextStyle(
+                          color: !mode ? Colors.black : Colors.white,
                         ),
                       ),
                     ]
@@ -93,6 +76,7 @@ class _CommentCardState extends State<CommentCard> {
                       style: TextStyle(
                         fontSize: 12,
                         fontWeight: FontWeight.w500,
+                        color: !mode ? Colors.black : Colors.white,
                       ),
                     ),
                   ),
@@ -105,6 +89,7 @@ class _CommentCardState extends State<CommentCard> {
             child: Icon(
               Icons.favorite_border,
               size: 16,
+              color: !mode ? Colors.black87 : Colors.white,
             ),
           )
         ],

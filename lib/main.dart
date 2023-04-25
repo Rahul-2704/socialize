@@ -2,7 +2,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:socialize/news/news_home.dart';
 import 'package:socialize/pages/login.dart';
-import 'package:socialize/pages/friendPage.dart';
 import 'package:socialize/pages/indexPage.dart';
 import 'package:socialize/pages/register.dart';
 import 'package:socialize/pages/bioData.dart';
@@ -29,7 +28,6 @@ void main() async{
         '/login': (context) => LoginPage(),
         '/feedPage': (context) => FeedPage(),
         '/accountPage': (context) => MyAccount(id: FirebaseAuth.instance.currentUser!.uid,),
-        '/friendPage': (context) => FriendPage(),
         '/requestPage': (context) => RequestPage(),
         '/news_home': (context) => HomeNews(),
       },

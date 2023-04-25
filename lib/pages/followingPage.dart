@@ -2,6 +2,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:socialize/widgets/followingCard.dart';
 
+import 'globals.dart';
+
 class FollowingPage extends StatefulWidget {
   const FollowingPage({Key? key}) : super(key: key);
 
@@ -14,14 +16,14 @@ class _FollowingPageState extends State<FollowingPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: mode ? Colors.grey[900] : Colors.white,
         iconTheme: IconThemeData(
-          color: Colors.black,
+          color: !mode ? Colors.black : Colors.white,
         ),
         title: Text(
           'Following',
           style: TextStyle(
-            color: Colors.black,
+            color: !mode ? Colors.black : Colors.white,
           ),
         ),
       ),
@@ -31,13 +33,16 @@ class _FollowingPageState extends State<FollowingPage> {
           if(snapshot.connectionState==ConnectionState.waiting){
             return Center(child: CircularProgressIndicator());
           }
-          return ListView.builder(
-            itemCount: snapshot.data!.docs.length,
-            itemBuilder: (context,index){
-              return FollowingUsers(
-                snap: snapshot.data!.docs[index].data(),
-              );
-            },
+          return Container(
+            color: mode ? Colors.grey[900] : Colors.white,
+            child: ListView.builder(
+              itemCount: snapshot.data!.docs.length,
+              itemBuilder: (context,index){
+                return FollowingUsers(
+                  snap: snapshot.data!.docs[index].data(),
+                );
+              },
+            ),
           );
         }
       ),

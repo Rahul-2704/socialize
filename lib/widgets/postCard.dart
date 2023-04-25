@@ -6,6 +6,7 @@ import 'package:socialize/api/apis.dart';
 import 'package:socialize/api/dialogs.dart';
 import 'package:socialize/pages/accountPage.dart';
 import 'package:socialize/pages/comment_screen.dart';
+import 'package:socialize/pages/likePage.dart';
 import 'package:socialize/widgets/like_animation.dart';
 import 'package:gallery_saver/gallery_saver.dart';
 import '../pages/globals.dart';
@@ -24,13 +25,6 @@ class _PostCardState extends State<PostCard> {
   bool isLoading = false;
   int commentLen = 0;
   late String pfp = '';
-  List<String> likeUser = [];
-  int likes = 0;
-  late String userName = '';
-  late String firstName = '';
-  late String lastName = '';
-  late String img = '';
-  late String id = '';
 
   @override
   void initState() {
@@ -42,44 +36,6 @@ class _PostCardState extends State<PostCard> {
     });
     super.initState();
     getComments();
-    _loadData();
-    updateData(widget.snap['id']);
-  }
-
-  Future<void> updateData(String userId) async{
-    await FirebaseFirestore.instance
-        .collection('users')
-        .doc(userId)
-        .get().then((value) {
-      id = value.data()!["id"];
-      userName = value.data()!["username"];
-      firstName = value.data()!["firstname"];
-      lastName = value.data()!["lastname"];
-      img = value.data()!["photoUrl"];
-    });
-  }
-
-  getData() async {
-    setState(() {
-      isLoading = true;
-    });
-    try {
-      likes = widget.snap['likes'].length;
-      for(int i=0;i<likes;i++){
-        likeUser.add(widget.snap['likes'][i].toString());
-      }
-      print(likeUser);
-    } catch (e) {
-      print(e);
-    }
-    setState(() {
-      isLoading = false;
-    });
-  }
-
-  Future<void> _loadData() async {
-    await getData();
-    setState(() {});
   }
 
   void getComments() async {
@@ -103,7 +59,7 @@ class _PostCardState extends State<PostCard> {
     Container()
         :
     Container(
-        color: !mode ? Colors.white : Colors.grey[800],
+        color: !mode ? Colors.white : Colors.grey[900],
         padding: const EdgeInsets.symmetric(
           vertical: 2,
         ),
@@ -134,7 +90,7 @@ class _PostCardState extends State<PostCard> {
                   Expanded(
                     child:Padding(
                       padding: const EdgeInsets.only(
-                          left:5
+                          left: 5
                       ),
                       child: Column(
                         mainAxisSize: MainAxisSize.min,
@@ -334,10 +290,15 @@ class _PostCardState extends State<PostCard> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   InkWell(
-                    onTap: (){
-                      // likesCard();
-                      Widget newWidget = likesCard();
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => newWidget));
+                    onTap: () {
+                      // Navigator.push(context,
+                      //   MaterialPageRoute(
+                      //   builder: (BuildContext context) =>
+                      //     LikePage(
+                      //       postId: widget.snap['postId'],
+                      //     ),
+                      //   )
+                      // );
                     },
                     child: DefaultTextStyle(
                       style:Theme.of(context).textTheme.titleSmall!.copyWith(fontWeight: FontWeight.w800),
@@ -354,7 +315,7 @@ class _PostCardState extends State<PostCard> {
                   Container(
                     width: double.infinity,
                     padding: const EdgeInsets.only(
-                      top:8,
+                      top: 8,
                     ),
                     child:RichText(
                       text: TextSpan(
@@ -364,15 +325,17 @@ class _PostCardState extends State<PostCard> {
                           children: [
                             TextSpan(
                               text : widget.snap['name'],
-                              style: TextStyle(fontWeight: FontWeight.bold,
-                                // color: Colors.black,
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
                                 color: mode ? Colors.white : Colors.black,
+                                fontSize: 16,
                               ),
                             ),
                             TextSpan(
-                              text: ' ${widget.snap['caption']}',
+                              text: '  ${widget.snap['caption']}',
                               style: TextStyle(
-                                color: mode ? Colors.white : Colors.black,
+                                color: mode ? Colors.white70 : Colors.black87,
+                                fontWeight: FontWeight.w400,
                               )
                             ),
                           ]
@@ -387,24 +350,26 @@ class _PostCardState extends State<PostCard> {
                         ),
                       ),
                     ),
-                    child:Container(
-                      padding:const EdgeInsets.symmetric(vertical: 4),
+                    child: Container(
+                      padding: EdgeInsets.symmetric(vertical: 4),
                       child: Text(
                         "View all ${commentLen} comments",
                         style: TextStyle(
                           fontSize: 16,
                           color: mode ? Colors.white : Colors.black,
+                          fontWeight: FontWeight.w400,
                         ),
                       ),
                     ),
                   ),
                   Container(
-                    padding: const EdgeInsets.symmetric(vertical: 4),
+                    padding: EdgeInsets.symmetric(vertical: 4),
                     child: Text(
                       widget.snap['date'],
                       style: TextStyle(
-                          fontSize: 16,
-                          color: mode ? Colors.white : Colors.black,),
+                        fontSize: 16,
+                        color: mode ? Colors.white : Colors.black,
+                      ),
                     ),
                   )
                 ],
@@ -413,159 +378,5 @@ class _PostCardState extends State<PostCard> {
           ],
         )
     );
-  }
-
-  Widget likesCard(){
-    return Scaffold(
-      body: SingleChildScrollView(
-        child: Container(
-          height: MediaQuery.of(context).size.height*0.098,
-          width: double.maxFinite,
-          child: Column(
-            children: [
-              Row(
-                children: [
-                  SizedBox(
-                    width: MediaQuery.of(context).size.width*0.03,
-                  ),
-                  ClipRRect(
-                    borderRadius: BorderRadius.circular(45),
-                    child: CachedNetworkImage(
-                      width: 60,
-                      height: 60,
-                      fit: BoxFit.cover,
-                      imageUrl: pfp,
-                      placeholder: (context, url) => const Center(child: CircularProgressIndicator()),
-                      errorWidget: (context, url, error) =>
-                      const CircleAvatar(
-                          child: Icon(Icons.person)
-                      ),
-                    ),
-                  ),
-                  SizedBox(
-                    width: MediaQuery.of(context).size.width/20,
-                  ),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Container(
-                        child: Text(
-                          widget.snap['name'],
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 15,
-                          ),
-                        ),
-                      ),
-                      SizedBox(
-                        height: MediaQuery.of(context).size.height*0.015,
-                      ),
-                      Container(
-                        child: Text(
-                          firstName+" "+lastName,
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-              Divider(
-                color: Colors.black,
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-    // return Scaffold(
-    //   appBar: AppBar(
-    //     backgroundColor: Colors.white,
-    //     iconTheme: IconThemeData(
-    //       color: Colors.black,
-    //     ),
-    //     title: Text(
-    //       'Likes',
-    //       style: TextStyle(
-    //         color: Colors.black,
-    //       ),
-    //     ),
-    //   ),
-    //   body: StreamBuilder(
-    //       stream: FirebaseFirestore.instance.collection('users').snapshots(),
-    //       builder: (context, AsyncSnapshot<QuerySnapshot<Map<String,dynamic>>> snapshot){
-    //         if(snapshot.connectionState==ConnectionState.waiting){
-    //           return Center(child: CircularProgressIndicator());
-    //         }
-    //         return ListView.builder(
-    //           itemCount: snapshot.data!.docs.length,
-    //           itemBuilder: (context,index){
-    //             updateData();
-    //             print(userName);
-    //             return SingleChildScrollView(
-    //                 child: Container(
-    //                   height: MediaQuery.of(context).size.height*0.098,
-    //                   width: double.maxFinite,
-    //                   child: Column(
-    //                     children: [
-    //                       Row(
-    //                         children: [
-    //                           SizedBox(
-    //                             width: MediaQuery.of(context).size.width*0.03,
-    //                           ),
-    //                           ClipRRect(
-    //                             borderRadius: BorderRadius.circular(45),
-    //                             child: CachedNetworkImage(
-    //                               width: 60,
-    //                               height: 60,
-    //                               fit: BoxFit.cover,
-    //                               imageUrl: img,
-    //                               placeholder: (context, url) => const Center(child: CircularProgressIndicator()),
-    //                               errorWidget: (context, url, error) =>
-    //                               const CircleAvatar(
-    //                                   child: Icon(Icons.person)
-    //                               ),
-    //                             ),
-    //                           ),
-    //                           SizedBox(
-    //                             width: MediaQuery.of(context).size.width/20,
-    //                           ),
-    //                           Column(
-    //                             crossAxisAlignment: CrossAxisAlignment.start,
-    //                             mainAxisAlignment: MainAxisAlignment.center,
-    //                             children: [
-    //                               Container(
-    //                                 child: Text(
-    //                                   userName,
-    //                                   style: TextStyle(
-    //                                     fontWeight: FontWeight.bold,
-    //                                     fontSize: 15,
-    //                                   ),
-    //                                 ),
-    //                               ),
-    //                               SizedBox(
-    //                                 height: MediaQuery.of(context).size.height*0.015,
-    //                               ),
-    //                               Container(
-    //                                 child: Text(
-    //                                   firstName+" "+lastName,
-    //                                 ),
-    //                               ),
-    //                             ],
-    //                           ),
-    //                         ],
-    //                       ),
-    //                       Divider(
-    //                         color: Colors.black,
-    //                       ),
-    //                     ],
-    //                   ),
-    //                 ),
-    //               );
-    //           },
-    //         );
-    //       }
-    //   ),
-    // );
   }
 }

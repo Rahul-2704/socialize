@@ -63,12 +63,6 @@ class _BioDataState extends State<BioData> {
           ),
         ),
         body: Container(
-          decoration: BoxDecoration(
-            image: DecorationImage(
-              image: AssetImage('images/indexBackground.jpg'),
-              fit: BoxFit.cover,
-            ),
-          ),
           child: Padding(
             padding: EdgeInsets.symmetric(
                 horizontal: MediaQuery.of(context).size.width*0.02,

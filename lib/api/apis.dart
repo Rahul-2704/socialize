@@ -10,14 +10,13 @@ import 'package:socialize/models/user.dart';
 import 'package:intl/intl.dart';
 import 'package:socialize/models/user.dart' as model;
 
+import '../pages/globals.dart';
+
 class AuthMethods{
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   Future<model.UserAccount> getUserDetails() async{
-    User? currentUser = _auth.currentUser;
-    DocumentSnapshot snap = await _firestore.collection("users")
-        .doc(currentUser!.uid).get();
     return model.UserAccount.fromJson(json as Map<String, dynamic>);
   }
   Future<String> signupUser({
@@ -31,6 +30,7 @@ class AuthMethods{
     required String bio,
     required String username,
     required bool login,
+    required bool mode,
   })async{
     String res='Some error occurred';
     try{
@@ -48,6 +48,7 @@ class AuthMethods{
           following: following,
           followers: followers,
           photoUrl: photoUrl,
+          mode: false,
         );
         await _firestore.collection("users").doc(cred.user!.uid).set(user.toJson(),);
         res="success";
@@ -69,7 +70,6 @@ class AuthMethods{
         await _auth.signInWithEmailAndPassword(
           email: email,
           password: password,
-
         );
         res="success";
         FirebaseFirestore
@@ -137,16 +137,30 @@ class APIs {
     }
   }
 
+  static Future<void> changeMode(bool mode) async{
+    await FirebaseFirestore
+        .instance
+        .collection('users')
+        .doc(FirebaseAuth.instance.currentUser!.uid)
+        .update({
+      'mode': mode,
+    });
+  }
+
   static Future<void> addPost(File file, String caption) async {
     var uuid = Uuid();
     var pid = uuid.v1();
     String? username;
+    String? firstName;
+    String? lastName;
     String? profUrl;
     FirebaseFirestore.instance.collection("users").
     doc(user.uid)
         .get().then((value) {
       username = value.data()!["username"];
       profUrl = value.data()!["photoUrl"];
+      firstName = value.data()!["firstname"];
+      lastName = value.data()!["lastname"];
     });
     final ext = file.path
         .split('.')
@@ -167,6 +181,8 @@ class APIs {
       profUrl: profUrl!,
       likes: [],
       name: username!,
+      firstname: firstName!,
+      lastname: lastName!,
       time: DateFormat.jm().format(DateTime.now()),
       date: DateFormat('EEEE,MMM d,yyyy').format(DateTime.now()),
     );

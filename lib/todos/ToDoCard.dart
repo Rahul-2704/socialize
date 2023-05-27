@@ -50,7 +50,6 @@ class _ToDoCardState extends State<ToDoCard> {
                   'check': check,
                 });
               });
-              print(check);
             },
             icon: !check ? Icon(
               Icons.check_box_outline_blank,
@@ -62,34 +61,14 @@ class _ToDoCardState extends State<ToDoCard> {
               size: 37,
             ),
           ),
-          // Theme(
-          //   child: Transform.scale(
-          //     scale: 1.5,
-          //     child: Checkbox(
-          //       shape: RoundedRectangleBorder(
-          //           borderRadius: BorderRadius.circular(5)
-          //       ),
-          //         activeColor: Color(0xff6cf8a9),
-          //         checkColor: Color(0xff0e3e26),
-          //         value:widget.check,
-          //         onChanged:(value) {
-          //           // check = !check;
-          //           value = tick;
-          //         },
-          //     ),
-          //   ),
-          //   data: ThemeData(
-          //     primarySwatch: Colors.blue,
-          //     unselectedWidgetColor: Color(0xff5e616a),
-          //   ),
-          // ),
           Expanded(
             child: Container(
               height: 75,
               child: Card(
                 shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12)),
-                color: Color(0xff2a2e3d),
+                  borderRadius: BorderRadius.circular(12)
+                ),
+                color: mode ? Colors.black87 : Colors.white,
                 child: Row(
                   children: [
                     SizedBox(
@@ -116,8 +95,8 @@ class _ToDoCardState extends State<ToDoCard> {
                         style: TextStyle(
                           fontSize: 18,
                           letterSpacing: 1,
-                          fontWeight: FontWeight.w400,
-                          color: Colors.white,
+                          fontWeight: FontWeight.w600,
+                          color: !mode ? Colors.black : Colors.white,
                         ),
                       ),
                     ),
@@ -125,7 +104,8 @@ class _ToDoCardState extends State<ToDoCard> {
                       widget.time,
                       style: TextStyle(
                         fontSize: 15,
-                        color: Colors.white,
+                        color: !mode ? Colors.black : Colors.white,
+                        fontWeight: FontWeight.w500
                       ),
                     ),
                     SizedBox(

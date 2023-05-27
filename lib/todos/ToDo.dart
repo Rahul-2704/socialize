@@ -1,7 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:socialize/todos/AddToDo.dart';
 import 'package:socialize/pages/requestPage.dart';
 import 'package:socialize/todos/viewToDo.dart';
@@ -26,9 +25,9 @@ class _ToDoState extends State<ToDo> {
   @override
   void initState() {
     FirebaseFirestore.instance
-    .collection('users')
-    .doc(FirebaseAuth.instance.currentUser!.uid)
-    .get().then((value){
+        .collection('users')
+        .doc(FirebaseAuth.instance.currentUser!.uid)
+        .get().then((value){
       firstName = value.data()!['firstname'];
     });
     print(firstName);
@@ -70,99 +69,24 @@ class _ToDoState extends State<ToDo> {
             ),
             actions:[
               IconButton(
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (BuildContext context) => AddToDo(),
-                    )
-                  );
-                },
-                icon: Icon(
-                  Icons.add_box_outlined,
-                  size: 25,
-                )
+                  onPressed: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (BuildContext context) => AddToDo(),
+                        )
+                    );
+                  },
+                  icon: Icon(
+                    Icons.add_box_outlined,
+                    size: 25,
+                    color: mode ? Colors.white : Colors.black,
+                  )
               ),
             ],
           ),
         ),
       ),
-      // appBar: AppBar(
-      //   backgroundColor: Colors.black38,
-      //   title: Text(
-      //     'Hello ' + firstName,
-      //     style: TextStyle(
-      //       fontSize: 34,
-      //       fontWeight: FontWeight.bold,
-      //       color: Colors.white,
-      //     ),
-      //   ),
-      //   actions: [
-      //     IconButton(
-      //         onPressed: () {
-      //           Navigator.push(
-      //             context,
-      //             MaterialPageRoute(
-      //               builder: (BuildContext context) => AddToDo(),
-      //             )
-      //           );
-      //         },
-      //         icon: Icon(
-      //           Icons.add_box_outlined,
-      //           size: 25,
-      //         )),
-      //     SizedBox(
-      //       width: 20,
-      //     ),
-      //     CircleAvatar(
-      //       backgroundImage: AssetImage('images/profilePicture.png'),
-      //     ),
-      //     SizedBox(
-      //       width: 10,
-      //     )
-      //   ],
-      //   bottom: PreferredSize(
-      //     child: Align(
-      //       alignment: Alignment.centerLeft,
-      //       child: Padding(
-      //         padding: const EdgeInsets.only(left: 22),
-      //         child: Row(
-      //           children: [
-      //             Text(
-      //               DateFormat.MMMMd().format(DateTime.now()),
-      //               style: TextStyle(
-      //                 fontSize: 33,
-      //                 fontWeight: FontWeight.w400,
-      //                 color: Colors.white,
-      //               ),
-      //             ),
-      //             SizedBox(
-      //               width: 180,
-      //             ),
-      //             IconButton(
-      //               onPressed: () {
-      //                 // FirebaseFirestore.instance.collection("Todo").doc(widget.snap['todoId']).delete()
-      //                 //     .then((value){
-      //                 //   Navigator.pop(context);
-      //                 // });
-      //                 //  var instance=FirebaseFirestore.instance.collection("Todo");
-      //                 // for(int i=0;i<selected.length;i++){
-      //                 //   instance.delete();
-      //                 // }
-      //               },
-      //               icon: Icon(
-      //                 Icons.delete,
-      //                 color: Colors.white,
-      //                 size: 28,
-      //               ),
-      //             ),
-      //           ],
-      //         ),
-      //       ),
-      //     ),
-      //     preferredSize: Size.fromHeight(35),
-      //   ),
-      // ),
       bottomNavigationBar: BottomAppBar(
         color: mode ? Colors.black87 : Colors.white,
         child: Padding(
@@ -250,7 +174,6 @@ class _ToDoState extends State<ToDo> {
           ),
         ),
       ),
-
       body: StreamBuilder(
         stream: FirebaseFirestore.instance
             .collection('users')
@@ -263,68 +186,70 @@ class _ToDoState extends State<ToDo> {
               child: CircularProgressIndicator(),
             );
           }
-          return ListView.builder(
-              itemCount: snapshot.data!.docs.length,
-              itemBuilder: (context, index) {
-                IconData iconData;
-                Color iconColor;
-                switch (snapshot.data!.docs[index]['Category']) {
-                  case 'Work':
-                    iconData = Icons.run_circle_outlined;
-                    iconColor = Colors.red;
-                    break;
-                  case 'WorkOut':
-                    iconData = Icons.alarm;
-                    iconColor = Colors.red;
-                    break;
-                  case 'Food':
-                    iconData = Icons.local_grocery_store;
-                    iconColor = Colors.green;
-                    break;
-                  case 'Code':
-                    iconData = Icons.code;
-                    iconColor = Colors.yellow;
-                    break;
-                  case 'Run':
-                    iconData = Icons.run_circle_outlined;
-                    iconColor = Colors.blue;
-                    break;
-                  case 'Entertainment':
-                    iconData = Icons.movie;
-                    iconColor = Colors.black38;
-                    break;
-                  default:
-                    iconData = Icons.run_circle_outlined;
-                    iconColor = Colors.red;
-                }
-                selected.add(
-                  Select(
+          return Container(
+            child: ListView.builder(
+                itemCount: snapshot.data!.docs.length,
+                itemBuilder: (context, index) {
+                  IconData iconData;
+                  Color iconColor;
+                  switch (snapshot.data!.docs[index]['Category']) {
+                    case 'Work':
+                      iconData = Icons.run_circle_outlined;
+                      iconColor = Colors.red;
+                      break;
+                    case 'WorkOut':
+                      iconData = Icons.alarm;
+                      iconColor = Colors.red;
+                      break;
+                    case 'Food':
+                      iconData = Icons.local_grocery_store;
+                      iconColor = Colors.green;
+                      break;
+                    case 'Code':
+                      iconData = Icons.code;
+                      iconColor = Colors.yellow;
+                      break;
+                    case 'Run':
+                      iconData = Icons.run_circle_outlined;
+                      iconColor = Colors.blue;
+                      break;
+                    case 'Entertainment':
+                      iconData = Icons.movie;
+                      iconColor = Colors.black38;
+                      break;
+                    default:
+                      iconData = Icons.run_circle_outlined;
+                      iconColor = Colors.red;
+                  }
+                  selected.add(
+                    Select(
                       id: snapshot.data!.docs[index]['todoId'],
-                  ),
-                );
-                return InkWell(
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (builder) => viewToDo(
-                          snap: snapshot.data!.docs[index].data(),
-                        )
-                      )
-                    );
-                  },
-                  child: ToDoCard(
-                    title: snapshot.data!.docs[index]['title'],
-                    iconData: iconData,
-                    iconColor: iconColor,
-                    check: snapshot.data!.docs[index]['check'],
-                    iconBgColor: Colors.white,
-                    time: snapshot.data!.docs[index]['time'],
-                    index: index,
-                    todoId: snapshot.data!.docs[index]['todoId'],
-                  ),
-                );
-              });
+                    ),
+                  );
+                  return InkWell(
+                    onTap: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (builder) => viewToDo(
+                                snap: snapshot.data!.docs[index].data(),
+                              )
+                          )
+                      );
+                    },
+                    child: ToDoCard(
+                      title: snapshot.data!.docs[index]['title'],
+                      iconData: iconData,
+                      iconColor: iconColor,
+                      check: snapshot.data!.docs[index]['check'],
+                      iconBgColor: !mode ? Colors.white10 : Colors.white,
+                      time: snapshot.data!.docs[index]['time'],
+                      index: index,
+                      todoId: snapshot.data!.docs[index]['todoId'],
+                    ),
+                  );
+                }),
+          );
         },
       ),
     );

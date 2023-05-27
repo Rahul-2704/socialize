@@ -5,6 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:uuid/uuid.dart';
 
+import '../pages/globals.dart';
+
 class AddToDo extends StatefulWidget {
   const AddToDo({Key? key}) : super(key: key);
 
@@ -23,19 +25,20 @@ class _AddToDoState extends State<AddToDo> {
       body:Container(
         height: MediaQuery.of(context).size.height,
         width: MediaQuery.of(context).size.width,
-        decoration: BoxDecoration(
-          gradient:LinearGradient(colors: [
-            Color(0xff1d1e26),
-            Color(0xff252041)
-          ])
-        ),
+        color: mode ? Colors.grey[900] : Colors.white,
         child: SingleChildScrollView(
           child:Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               SizedBox(height: 30,),
-              IconButton(onPressed: (){}, icon:Icon(CupertinoIcons.arrow_left
-              ,color: Colors.white,size: 28)
+              IconButton(onPressed: (){
+                Navigator.pop(context);
+              },
+                icon: Icon(
+                    CupertinoIcons.arrow_left,
+                    color: !mode ? Colors.black : Colors.white,
+                    size: 28
+                ),
               ),
               Padding(
                 padding: const EdgeInsets.symmetric(
@@ -45,15 +48,15 @@ class _AddToDoState extends State<AddToDo> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                      Text(
-                        'Create',
-                        style: TextStyle(
-                          fontSize:33,
-                          color:Colors.white,
-                          fontWeight: FontWeight.bold,
-                          letterSpacing: 4,
+                    Text(
+                      'Create',
+                      style: TextStyle(
+                        fontSize:33,
+                        color: !mode ? Colors.black : Colors.white,
+                        fontWeight: FontWeight.bold,
+                        letterSpacing: 4,
                       ),
-                      ),
+                    ),
                     SizedBox(
                       height: 8,
                     ),
@@ -61,7 +64,7 @@ class _AddToDoState extends State<AddToDo> {
                       'New Todo',
                       style: TextStyle(
                         fontSize:33,
-                        color:Colors.white,
+                        color: !mode ? Colors.black : Colors.white,
                         fontWeight: FontWeight.bold,
                         letterSpacing: 2,
                       ),
@@ -85,7 +88,7 @@ class _AddToDoState extends State<AddToDo> {
                       children: [
                         taskSelect("Important",0xff2662fa),
                         SizedBox(width: 20,),
-                        taskSelect("Planned",0xff2bc8d9),
+                        taskSelect("Planned",0xff2662fa),
                       ],
                     ),
                     SizedBox(
@@ -108,15 +111,15 @@ class _AddToDoState extends State<AddToDo> {
                       children: [
                         categorySelect("Food",0xff2662fa),
                         SizedBox(width: 20,),
-                        categorySelect("WorkOut",0xfff29732),
+                        categorySelect("WorkOut",0xff2662fa),
                         SizedBox(width: 20,),
-                        categorySelect("Work",0xff6557ff),
+                        categorySelect("Work",0xff2662fa),
                         SizedBox(width: 20,),
-                        categorySelect("Code",0xff234ebd),
+                        categorySelect("Code",0xff2662fa),
                         SizedBox(width: 20,),
-                        categorySelect("Run",0xff2bc8d9),
+                        categorySelect("Run",0xff2662fa),
                         SizedBox(width: 20,),
-                        categorySelect("Entertainment",0xff880e4f),
+                        categorySelect("Entertainment",0xff2662fa),
                       ],
                     ),
                     SizedBox(
@@ -154,27 +157,27 @@ class _AddToDoState extends State<AddToDo> {
         Navigator.pop(context);
       },
       child: Container(
-        height: 56,
-        width: MediaQuery.of(context).size.width,
-        decoration:BoxDecoration(
-          borderRadius: BorderRadius.circular(20),
-          gradient: LinearGradient(
-            colors: [
-              Color(0xff8a32f1),
-              Color(0xffad32f9),
-            ]
-          )
-        ),
-        child:Center(
-          child: Text(
-            'Add To Do',
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: 18,
-              fontWeight: FontWeight.w600,
-            ),
+          height: 56,
+          width: MediaQuery.of(context).size.width,
+          decoration:BoxDecoration(
+              borderRadius: BorderRadius.circular(20),
+              gradient: LinearGradient(
+                  colors: [
+                    Color(0xff8a32f1),
+                    Color(0xffad32f9),
+                  ]
+              )
           ),
-        )
+          child:Center(
+            child: Text(
+              'Add To Do',
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 18,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          )
       ),
     );
   }
@@ -184,13 +187,13 @@ class _AddToDoState extends State<AddToDo> {
       height: 150,
       width: MediaQuery.of(context).size.width,
       decoration: BoxDecoration(
-        color: Color(0xff2a2e3d),
+        color: !mode ? Colors.grey[300] : Colors.black87,
         borderRadius: BorderRadius.circular(15),
       ),
       child: TextFormField(
         controller: _descriptionController,
         style: TextStyle(
-          color: Colors.grey,
+          color: mode ? Colors.white : Colors.black87,
           fontSize: 17,
         ),
         maxLines: null,
@@ -198,7 +201,7 @@ class _AddToDoState extends State<AddToDo> {
             border: InputBorder.none,
             hintText: "Enter Description",
             hintStyle: TextStyle(
-              color: Colors.grey,
+              color: mode ? Colors.white : Colors.grey[700],
               fontSize: 17,
             ),
             contentPadding: EdgeInsets.only(
@@ -223,7 +226,7 @@ class _AddToDoState extends State<AddToDo> {
             10,
           ),
         ),
-        backgroundColor: type == label ? Colors.white : Color(color),
+        backgroundColor: type == label ? mode ? Colors.white : Color(0xff2bc8d9) : !mode ? Color(color) : Colors.grey[600],
         label:Text(
           label,
           style: TextStyle(
@@ -248,7 +251,7 @@ class _AddToDoState extends State<AddToDo> {
         });
       },
       child: Chip(
-        backgroundColor:category==label?Colors.white:Color(color),
+        backgroundColor:category==label?mode ? Colors.white : Color(0xff2bc8d9) : !mode ? Color(color) : Colors.grey[600],
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(
             10,
@@ -275,22 +278,26 @@ class _AddToDoState extends State<AddToDo> {
       height: 55,
       width: MediaQuery.of(context).size.width,
       decoration: BoxDecoration(
-        color: Color(0xff2a2e3d),
+        color: !mode ? Colors.grey[300] : Colors.black87,
         borderRadius: BorderRadius.circular(15),
       ),
       child: TextFormField(
+        style: TextStyle(
+          color: mode ? Colors.white : Colors.black,
+          fontSize: 17,
+        ),
         controller: _titleController,
         decoration: InputDecoration(
-          border: InputBorder.none,
-          hintText: "Task Title",
-          hintStyle: TextStyle(
-            color: Colors.white,
-            fontSize: 17,
-          ),
-          contentPadding: EdgeInsets.only(
-            left: 20,
-            right: 20,
-          )
+            border: InputBorder.none,
+            hintText: "Task Title",
+            hintStyle: TextStyle(
+              color: mode ? Colors.white : Colors.grey[700],
+              fontSize: 17,
+            ),
+            contentPadding: EdgeInsets.only(
+              left: 20,
+              right: 20,
+            )
         ),
       ),
     );
@@ -300,7 +307,7 @@ class _AddToDoState extends State<AddToDo> {
     return Text(
       label,
       style: TextStyle(
-        color: Colors.white,
+        color: !mode ? Colors.black : Colors.white,
         fontWeight: FontWeight.w600,
         fontSize: 16.5,
         letterSpacing: 0.2,

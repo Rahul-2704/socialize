@@ -29,7 +29,8 @@ class _RequestPageState extends State<RequestPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: mode ? Colors.black87 : Colors.white60,
+        automaticallyImplyLeading: false,
+        backgroundColor: mode ? Colors.black87 : Colors.white,
         elevation: 1,
         title:TextFormField(
           style: TextStyle(
@@ -61,6 +62,7 @@ class _RequestPageState extends State<RequestPage> {
         child: FutureBuilder(
             future: FirebaseFirestore.instance.collection("users")
               .where('username', isGreaterThanOrEqualTo: _searchController.text)
+              .where('username', isEqualTo: _searchController.text)
               .get(),
             builder:(context, snapshot) {
               if (!snapshot.hasData) {

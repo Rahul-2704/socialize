@@ -5,6 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:uuid/uuid.dart';
 
+import '../pages/globals.dart';
+
 class viewToDo extends StatefulWidget {
   final snap;
   const viewToDo({Key? key,required this.snap}) : super(key: key);
@@ -22,7 +24,7 @@ class _viewToDoState extends State<viewToDo> {
   void initState(){
     super.initState();
     String title=widget.snap['title']==null?
-        'Please give a title':widget.snap['title'];
+    'Please give a title':widget.snap['title'];
     _titleController=TextEditingController(text: title);
     String description=widget.snap['description']==null?
     'Please give a title':widget.snap['description'];
@@ -35,14 +37,9 @@ class _viewToDoState extends State<viewToDo> {
   Widget build(BuildContext context) {
     return Scaffold(
       body:Container(
+        color: mode ? Colors.grey[900] : Colors.white,
         height: MediaQuery.of(context).size.height,
         width: MediaQuery.of(context).size.width,
-        decoration: BoxDecoration(
-            gradient:LinearGradient(colors: [
-              Color(0xff1d1e26),
-              Color(0xff252041)
-            ])
-        ),
         child: SingleChildScrollView(
           child:Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -51,11 +48,14 @@ class _viewToDoState extends State<viewToDo> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-
                   IconButton(onPressed: (){
                     Navigator.pop(context);
-                  }, icon:Icon(CupertinoIcons.arrow_left
-                      ,color: Colors.white,size: 28)
+                  },
+                      icon: Icon(
+                        CupertinoIcons.arrow_left,
+                        color: !mode ? Colors.black : Colors.white,
+                        size: 28
+                      ),
                   ),
                   Row(
                     children: [
@@ -64,10 +64,10 @@ class _viewToDoState extends State<viewToDo> {
                           edit=!edit;
                         });
                       }, icon: Icon(
-                            Icons.edit,
-                            color: edit?Colors.green:Colors.white,
-                            size: 20,
-                          )
+                        Icons.edit,
+                        color: edit ? Colors.green : mode ? Colors.white : Colors.black,
+                        size: 20,
+                      )
                       ),
                       IconButton(
                         onPressed: (){
@@ -76,13 +76,13 @@ class _viewToDoState extends State<viewToDo> {
                               .doc(FirebaseAuth.instance.currentUser!.uid)
                               .collection('Todo').doc(widget.snap['todoId']).delete()
                               .then((value){
-                                Navigator.pop(context);
+                            Navigator.pop(context);
                           });
-                         
+
                         },
                         icon:Icon(
                           Icons.delete,
-                          color: Colors.white,
+                          color: !mode ? Colors.black : Colors.white,
                           size: 28,
                         ),),
                     ],
@@ -98,10 +98,10 @@ class _viewToDoState extends State<viewToDo> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      edit?'Editing':'View',
+                      edit ? 'Editing' : 'View',
                       style: TextStyle(
                         fontSize:33,
-                        color:Colors.white,
+                        color: !mode ? Colors.black : Colors.white,
                         fontWeight: FontWeight.bold,
                         letterSpacing: 4,
                       ),
@@ -113,7 +113,7 @@ class _viewToDoState extends State<viewToDo> {
                       'Your Todo',
                       style: TextStyle(
                         fontSize:33,
-                        color:Colors.white,
+                        color: !mode ? Colors.black : Colors.white,
                         fontWeight: FontWeight.bold,
                         letterSpacing: 2,
                       ),
@@ -135,9 +135,9 @@ class _viewToDoState extends State<viewToDo> {
                     ),
                     Row(
                       children: [
-                        taskSelect("Important",0xff2662fa),
+                        taskSelect("Important", 0xff2662fa),
                         SizedBox(width: 20,),
-                        taskSelect("Planned",0xff2bc8d9),
+                        taskSelect("Planned", 0xff2662fa),
                       ],
                     ),
                     SizedBox(
@@ -160,21 +160,21 @@ class _viewToDoState extends State<viewToDo> {
                       children: [
                         categorySelect("Food",0xff2662fa),
                         SizedBox(width: 20,),
-                        categorySelect("WorkOut",0xfff29732),
+                        categorySelect("WorkOut",0xff2662fa),
                         SizedBox(width: 20,),
-                        categorySelect("Work",0xff6557ff),
+                        categorySelect("Work",0xff2662fa),
                         SizedBox(width: 20,),
-                        categorySelect("Code",0xff234ebd),
+                        categorySelect("Code",0xff2662fa),
                         SizedBox(width: 20,),
-                        categorySelect("Run",0xff2bc8d9),
+                        categorySelect("Run",0xff2662fa),
                         SizedBox(width: 20,),
-                        categorySelect("Entertainment",0xff880e4f),
+                        categorySelect("Entertainment",0xff2662fa),
                       ],
                     ),
                     SizedBox(
                       height: 30,
                     ),
-                    edit?button():Container(),
+                    edit ? button() : Container(),
                   ],
                 ),
               )
@@ -203,7 +203,7 @@ class _viewToDoState extends State<viewToDo> {
       child: Container(
           height: 56,
           width: MediaQuery.of(context).size.width,
-          decoration:BoxDecoration(
+          decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(20),
               gradient: LinearGradient(
                   colors: [
@@ -212,11 +212,11 @@ class _viewToDoState extends State<viewToDo> {
                   ]
               )
           ),
-          child:Center(
+          child: Center(
             child: Text(
               'Edit To Do',
               style: TextStyle(
-                color: Colors.white,
+                color:Colors.white,
                 fontSize: 18,
                 fontWeight: FontWeight.w600,
               ),
@@ -231,14 +231,14 @@ class _viewToDoState extends State<viewToDo> {
       height: 150,
       width: MediaQuery.of(context).size.width,
       decoration: BoxDecoration(
-        color: Color(0xff2a2e3d),
+        color: !mode ? Colors.grey[300] : Colors.black87,
         borderRadius: BorderRadius.circular(15),
       ),
       child: TextFormField(
         enabled: edit,
         controller: _descriptionController,
         style: TextStyle(
-          color: Colors.grey,
+          color: mode ? Colors.white : Colors.black87,
           fontSize: 17,
         ),
         maxLines: null,
@@ -246,7 +246,7 @@ class _viewToDoState extends State<viewToDo> {
             border: InputBorder.none,
             hintText: "Enter Description",
             hintStyle: TextStyle(
-              color: Colors.white,
+              color: mode ? Colors.white : Colors.grey[700],
               fontSize: 17,
             ),
             contentPadding: EdgeInsets.only(
@@ -265,17 +265,16 @@ class _viewToDoState extends State<viewToDo> {
         });
       }:null,
       child: Chip(
-
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(
             10,
           ),
         ),
-        backgroundColor:type==label?Colors.white:Color(color),
+        backgroundColor:type==label? mode ? Colors.white : Color(0xff2bc8d9) : !mode ? Color(color) : Colors.grey[600],
         label:Text(
           label,
           style: TextStyle(
-            color:type==label?Colors.black:Colors.white,
+            color: type==label?Colors.black:Colors.white,
             fontSize: 15,
             fontWeight: FontWeight.w600,
           ),
@@ -295,7 +294,7 @@ class _viewToDoState extends State<viewToDo> {
         });
       }:null,
       child: Chip(
-        backgroundColor:category==label?Colors.white:Color(color),
+        backgroundColor:category==label?mode ? Colors.white : Color(0xff2bc8d9) : !mode ? Color(color) : Colors.grey[600],
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(
             10,
@@ -321,17 +320,21 @@ class _viewToDoState extends State<viewToDo> {
       height: 55,
       width: MediaQuery.of(context).size.width,
       decoration: BoxDecoration(
-        color: Color(0xff2a2e3d),
+        color: !mode ? Colors.grey[300] : Colors.black87,
         borderRadius: BorderRadius.circular(15),
       ),
       child: TextFormField(
+        style: TextStyle(
+          color: mode ? Colors.white : Colors.black,
+          fontSize: 17,
+        ),
         controller: _titleController,
         enabled: edit,
         decoration: InputDecoration(
             border: InputBorder.none,
-            hintText: "Task Title",
+            hintText: 'Task Title',
             hintStyle: TextStyle(
-              color:Colors.white,
+              color: mode ? Colors.white : Colors.grey[700],
               fontSize: 17,
             ),
             contentPadding: EdgeInsets.only(
@@ -346,7 +349,7 @@ class _viewToDoState extends State<viewToDo> {
     return Text(
       label,
       style: TextStyle(
-        color: Colors.white,
+        color: !mode ? Colors.black : Colors.white,
         fontWeight: FontWeight.w600,
         fontSize: 16.5,
         letterSpacing: 0.2,

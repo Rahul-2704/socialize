@@ -133,9 +133,9 @@ class _SuggestedUsersState extends State<SuggestedUsers> {
                 ),
               ],
             ),
-            Divider(
-              color: mode ? Colors.white60 : Colors.black,
-            ),
+            // Divider(
+            //   color: mode ? Colors.white60 : Colors.black,
+            // ),
           ],
         ),
       ),
